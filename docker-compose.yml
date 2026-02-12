@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:16
+    container_name: acci_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: acci
+      POSTGRES_PASSWORD: acci_password
+      POSTGRES_DB: acci
+    ports:
+      - "55432:5432"
+    volumes:
+      - acci_pgdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:4
+    container_name: acci_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  acci_pgdata:

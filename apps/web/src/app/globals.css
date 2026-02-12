@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@source "../app/**/*.{js,jsx,ts,tsx}";
+@source "../components/**/*.{js,jsx,ts,tsx}";
+@source "../pages/**/*.{js,jsx,ts,tsx}";
+@source "../lib/**/*.{js,jsx,ts,tsx}";
+
+html, body { height: 100%; }
+:root { color-scheme: dark; }
+
+@layer base {
+  body {
+    @apply text-slate-50;
+    background:
+      radial-gradient(900px circle at 6% 8%, rgba(255,255,255,.08), transparent 45%),
+      radial-gradient(1200px circle at 50% -10%, rgba(56,189,248,.20), transparent 55%),
+      radial-gradient(900px circle at 15% 30%, rgba(37,99,235,.16), transparent 55%),
+      radial-gradient(900px circle at 85% 65%, rgba(99,102,241,.12), transparent 55%),
+      #020617;
+  }
+
+  a { @apply no-underline; }
+}

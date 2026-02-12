@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+
+# env files
+.env
+.env.*
+!.env.example
+
+# next.js
+.next/
+out/
+
+# build
+build/
+dist/
+
+# uploads (user-generated files)
+apps/api/uploads/*
+!apps/api/uploads/.gitkeep
+
+# prisma
+apps/api/prisma/*.db
+apps/api/prisma/*.db-journal
+
+# misc
+.DS_Store
+*.pem
+*.log
+.vercel
+*.tsbuildinfo
+
+# old clone
+Acci-Platform/
