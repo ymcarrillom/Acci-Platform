@@ -12,6 +12,7 @@ const courseSchema = z.object({
   name: z.string().min(3).max(100),
   description: z.string().max(500).optional(),
   teacherId: z.string(),
+  periodId: z.string().optional().nullable(),
   startDate: z.string(),
   endDate: z.string(),
 });
@@ -20,6 +21,7 @@ const courseSchema = z.object({
 router.get("/", authRequired, async (req, res, next) => {
   try {
     const { role, sub } = req.user;
+    const { periodId } = req.query;
     let where = {};
 
     if (role === "TEACHER") {
@@ -32,10 +34,15 @@ router.get("/", authRequired, async (req, res, next) => {
     }
     // ADMIN: sin filtro (ve todos, incluyendo inactivos)
 
+    if (periodId) {
+      where.periodId = periodId;
+    }
+
     const courses = await prisma.course.findMany({
       where,
       include: {
         teacher: { select: { id: true, fullName: true, email: true } },
+        period: { select: { id: true, name: true } },
         _count: { select: { enrollments: true } },
       },
       orderBy: { createdAt: "desc" },
@@ -86,7 +93,7 @@ router.post("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
       return res.status(400).json({ message: "Datos inválidos", errors: parsed.error.flatten() });
     }
 
-    const { code, name, description, teacherId, startDate, endDate } = parsed.data;
+    const { code, name, description, teacherId, periodId, startDate, endDate } = parsed.data;
 
     // Verificar que el docente existe y tiene rol TEACHER
     const teacher = await prisma.user.findUnique({ where: { id: teacherId } });
@@ -106,6 +113,7 @@ router.post("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
         name,
         description,
         teacherId,
+        periodId: periodId || null,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
       },
@@ -131,7 +139,7 @@ router.put("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) =>
       return res.status(400).json({ message: "Datos inválidos", errors: parsed.error.flatten() });
     }
 
-    const { code, name, description, teacherId, startDate, endDate } = parsed.data;
+    const { code, name, description, teacherId, periodId, startDate, endDate } = parsed.data;
 
     // Verificar que el docente existe y tiene rol TEACHER
     const teacher = await prisma.user.findUnique({ where: { id: teacherId } });
@@ -154,6 +162,7 @@ router.put("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) =>
         name,
         description,
         teacherId,
+        periodId: periodId || null,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
       },

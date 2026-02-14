@@ -66,12 +66,25 @@ model RefreshToken {
   @@index([userId])
 }
 
+model AcademicPeriod {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  startDate DateTime
+  endDate   DateTime
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses Course[]
+}
+
 model Course {
   id          String   @id @default(cuid())
   code        String   @unique
   name        String
   description String?
   teacherId   String
+  periodId    String?
   startDate   DateTime
   endDate     DateTime
   isActive    Boolean  @default(true)
@@ -79,12 +92,14 @@ model Course {
   updatedAt   DateTime @updatedAt
 
   teacher      User @relation("TeacherCourses", fields: [teacherId], references: [id], onDelete: Cascade)
+  period       AcademicPeriod? @relation(fields: [periodId], references: [id])
   enrollments  CourseEnrollment[]
   activities   Activity[]
   attendance   Attendance[]
   reflections  SpiritualReflection[]
 
   @@index([teacherId])
+  @@index([periodId])
 }
 
 model CourseEnrollment {

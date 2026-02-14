@@ -48,12 +48,13 @@ export default function AccesoPage() {
     <div className="min-h-screen px-6 py-12 flex items-center justify-center">
       <div className="w-full max-w-6xl">
         {/* Logo ACCI */}
-        <div className="flex justify-center mb-12">
-          <div className="relative h-20 w-[320px] md:h-24 md:w-[420px]">
+        <div className="flex justify-center mb-12 mt-3">
+          <div className="relative h-28 w-[380px] md:h-32 md:w-[520px]">
             <Image
-              src="/brand/acci.jpeg"
+              src="/brand/acci.png"
               alt="ACCI"
               fill
+              sizes="(min-width: 768px) 520px, 380px"
               className="object-contain"
               priority
             />

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 function LogoBox({ children, variant = "dark" }) {
   const base =
-    "h-10 flex items-center justify-center overflow-hidden rounded-xl border shadow-sm";
+    "h-12 flex items-center justify-center overflow-hidden rounded-xl border shadow-sm";
   const styles =
     variant === "dark"
       ? "border-white/10 bg-black/50"
@@ -35,11 +35,11 @@ export default function BrandBar() {
             {/* ACCI */}
             <LogoBox variant="light">
               <Image
-                src="/brand/acci.jpeg"
+                src="/brand/acci.png"
                 alt="ACCI Academy"
-                width={96}
-                height={40}
-                className="h-8 w-auto object-contain"
+                width={140}
+                height={56}
+                className="h-11 w-auto object-contain translate-y-1"
                 priority
               />
             </LogoBox>

@@ -6,7 +6,7 @@ export default function BrandLockup({ variant = "hero", size = "md" }) {
   const sizeMap = {
     sm: {
       pad: "px-7 py-7 md:px-8 md:py-8",
-      img: "h-14 w-[250px] md:h-16 md:w-[340px]",
+      img: "h-18 w-[300px] md:h-20 md:w-[380px]",
       title: "text-lg md:text-xl",
       max: "max-w-xl",
       sep: "mt-4",
@@ -14,7 +14,7 @@ export default function BrandLockup({ variant = "hero", size = "md" }) {
     },
     md: {
       pad: "px-8 py-10",
-      img: "h-18 w-[300px] md:h-22 md:w-[400px]",
+      img: "h-22 w-[360px] md:h-24 md:w-[480px]",
       title: "text-2xl md:text-3xl",
       max: "max-w-2xl",
       sep: "mt-5",
@@ -22,7 +22,7 @@ export default function BrandLockup({ variant = "hero", size = "md" }) {
     },
     lg: {
       pad: "px-9 py-12",
-      img: "h-20 w-[320px] md:h-24 md:w-[440px]",
+      img: "h-24 w-[380px] md:h-28 md:w-[520px]",
       title: "text-2xl md:text-3xl",
       max: "max-w-2xl",
       sep: "mt-6",
@@ -42,8 +42,15 @@ export default function BrandLockup({ variant = "hero", size = "md" }) {
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/8 via-transparent to-black/35 opacity-80" />
 
           <div className={`relative ${s.pad} flex flex-col items-center`}>
-            <div className={`relative ${s.img} drop-shadow-2xl`}>
-              <Image src="/brand/acci.jpeg" alt="ACCI Academy" fill className="object-contain" priority />
+            <div className={`relative ${s.img} mt-1 drop-shadow-2xl`}>
+              <Image
+                src="/brand/acci.png"
+                alt="ACCI Academy"
+                fill
+                sizes="(min-width: 768px) 480px, 360px"
+                className="object-contain"
+                priority
+              />
             </div>
 
             <div className={`${s.sep} h-px w-full bg-gradient-to-r from-transparent via-white/12 to-transparent`} />

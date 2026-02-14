@@ -17,6 +17,7 @@ import coursesRoutes from "./routes/courses.routes.js";
 import activitiesRoutes from "./routes/activities.routes.js";
 import attendanceRoutes from "./routes/attendance.routes.js";
 import reflectionRoutes from "./routes/reflection.routes.js";
+import periodosRoutes from "./routes/periodos.routes.js";
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.get("/health", (req, res) => res.json({ ok: true }));
 app.use("/auth", authRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/users", usersRoutes);
+app.use("/periodos", periodosRoutes);
 app.use("/courses", coursesRoutes);
 app.use("/courses/:courseId/activities", activitiesRoutes);
 app.use("/courses/:courseId/attendance", attendanceRoutes);
