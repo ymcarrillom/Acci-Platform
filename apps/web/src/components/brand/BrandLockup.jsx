@@ -69,7 +69,7 @@ export default function BrandLockup({ variant = "hero", size = "md" }) {
           </div>
         </div>
 
-        <div className="pointer-events-none absolute -bottom-10 left-1/2 h-24 w-72 -translate-x-1/2 blur-3xl bg-sky-500/10" />
+        <div className="pointer-events-none absolute -bottom-20 left-1/2 w-full max-w-5xl -translate-x-1/2 h-36 blur-3xl bg-sky-500/10" />
       </div>
     </div>
   );

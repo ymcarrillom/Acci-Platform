@@ -45,8 +45,8 @@ function RoleCard({ title, desc, href, accent }) {
 
 export default function AccesoPage() {
   return (
-    <div className="min-h-screen px-6 py-12 flex items-center justify-center">
-      <div className="w-full max-w-6xl">
+    <div className="px-6 py-0 flex items-start justify-center pt-8">
+      <div className="w-full max-w-6xl relative">
         {/* Logo ACCI */}
         <div className="flex justify-center mb-12 mt-3">
           <div className="relative h-28 w-[380px] md:h-32 md:w-[520px]">
@@ -98,8 +98,10 @@ export default function AccesoPage() {
           </div>
         </div>
 
-        {/* ✅ footer más gruesito y más visible */}
-        <div className="mt-14 text-center text-sm font-bold tracking-wide text-slate-100/75">
+        {/* halo difuso debajo de las cards */}
+        <div className="pointer-events-none absolute left-1/2 w-full max-w-5xl -translate-x-1/2 -bottom-40 h-48 blur-3xl bg-sky-500/10" />
+
+        <div className="mt-12 text-center text-xs font-semibold text-slate-200/70">
           ACCI Platform · Academia de Crecimiento Cristiano Integral
         </div>
       </div>
