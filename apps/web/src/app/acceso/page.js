@@ -45,10 +45,10 @@ function RoleCard({ title, desc, href, accent }) {
 
 export default function AccesoPage() {
   return (
-    <div className="px-6 py-0 flex items-start justify-center pt-8">
+    <div className="px-6 flex items-start justify-center pt-8">
       <div className="w-full max-w-6xl relative">
         {/* Logo ACCI */}
-        <div className="flex justify-center mb-12 mt-3">
+        <div className="flex justify-center mb-6 mt-3">
           <div className="relative h-28 w-[380px] md:h-32 md:w-[520px]">
             <Image
               src="/brand/acci.png"
@@ -61,7 +61,7 @@ export default function AccesoPage() {
           </div>
         </div>
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-6">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">
             Acceso a la plataforma ACCI
           </h1>
