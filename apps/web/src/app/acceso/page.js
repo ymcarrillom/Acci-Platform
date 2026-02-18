@@ -62,7 +62,7 @@ export default function AccesoPage() {
         </div>
 
         <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
             Acceso a la plataforma ACCI
           </h1>
 

@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 function roleLabel(role) {
   if (role === "TEACHER") return "Instructor";
@@ -71,6 +72,20 @@ function LoginForm() {
         <div className="relative rounded-3xl border border-white/10 bg-slate-950/45 backdrop-blur-xl p-7 shadow-2xl overflow-hidden">
           <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${roleAccent(role)} opacity-70`} />
           <div className="relative">
+            {/* Sello institucional */}
+            <div className="flex justify-center mb-5">
+              <div className="relative h-20 w-20 overflow-hidden rounded-2xl border border-white/15 bg-white/5 shadow-lg ring-1 ring-white/10">
+                <Image
+                  src="/brand/iglesia.png"
+                  alt="Iglesia ACCI"
+                  fill
+                  className="object-cover"
+                  sizes="80px"
+                  priority
+                />
+              </div>
+            </div>
+
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-lg font-extrabold text-white">Iniciar sesión</div>
