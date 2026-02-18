@@ -2,9 +2,10 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 function roleLabel(role) {
-  if (role === "TEACHER") return "Docente";
+  if (role === "TEACHER") return "Instructor";
   if (role === "ADMIN") return "Coordinador";
   return "Estudiante";
 }
@@ -30,8 +31,12 @@ export default function DashboardHeader({ role, fullName }) {
 
   const navLinks = [
     { href: "/dashboard", label: "Inicio" },
+    { href: "/dashboard/cursos", label: "Cursos" },
     ...(role === "ADMIN"
-      ? [{ href: "/dashboard/usuarios", label: "Usuarios" }]
+      ? [
+          { href: "/dashboard/usuarios", label: "Usuarios" },
+          { href: "/dashboard/auditoria", label: "Auditoría" },
+        ]
       : []),
     { href: "/dashboard/configuracion", label: "Perfil" },
   ];
@@ -39,23 +44,37 @@ export default function DashboardHeader({ role, fullName }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="min-w-0">
-          <div className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
-            {fullName ? `Hola, ${fullName.split(" ")[0]}` : "Dashboard"}
+        <div className="flex items-center gap-4 min-w-0">
+          {/* Sello institucional de la iglesia */}
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-white/5 shadow-lg ring-1 ring-white/10">
+            <Image
+              src="/brand/iglesia.png"
+              alt="Iglesia ACCI"
+              fill
+              className="object-cover"
+              sizes="56px"
+              priority
+            />
           </div>
 
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <span
-              className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${roleBadge(
-                role
-              )}`}
-            >
-              {roleLabel(role)}
-            </span>
+          <div className="min-w-0">
+            <div className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+              {fullName ? `Hola, ${fullName.split(" ")[0]}` : "Dashboard"}
+            </div>
 
-            <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/90">
-              ACCI Platform
-            </span>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span
+                className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${roleBadge(
+                  role
+                )}`}
+              >
+                {roleLabel(role)}
+              </span>
+
+              <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/90">
+                ACCI Platform
+              </span>
+            </div>
           </div>
         </div>
 

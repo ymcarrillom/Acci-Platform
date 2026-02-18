@@ -130,9 +130,8 @@ export default function UserForm({ user }) {
                 required
               >
                 <option value="STUDENT">Estudiante</option>
-                <option value="TEACHER">Docente</option>
-                <option value="COORDINATOR">Coordinador</option>
-                <option value="ADMIN">Administrador</option>
+                <option value="TEACHER">Instructor</option>
+                <option value="ADMIN">Coordinador</option>
               </select>
             </div>
           </div>

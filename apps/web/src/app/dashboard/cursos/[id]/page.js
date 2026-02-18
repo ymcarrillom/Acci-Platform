@@ -3,6 +3,7 @@ import Link from "next/link";
 import CourseActions from "./CourseActions";
 import EnrollmentManager from "./EnrollmentManager";
 import ActivityList from "./actividades/ActivityList";
+import RecoveryVideoManager from "./RecoveryVideoManager";
 
 const API_URL = process.env.API_URL || "http://localhost:4000";
 
@@ -18,7 +19,8 @@ function formatDate(dateStr) {
 export default async function CourseDetailPage({ params }) {
   const { id } = await params;
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const raw = cookieStore.get("accessToken")?.value;
+  const accessToken = raw ? decodeURIComponent(raw) : null;
 
   if (!accessToken) {
     return (
@@ -31,22 +33,31 @@ export default async function CourseDetailPage({ params }) {
     );
   }
 
-  // Fetch course detail + role + students in parallel
-  const [courseRes, dashRes] = await Promise.all([
-    fetch(`${API_URL}/courses/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
-    }),
-    fetch(`${API_URL}/dashboard`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
-    }),
+  // Fetch all data in parallel (students fetch returns 403 for STUDENT role — handled gracefully)
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  const opts = { headers, cache: "no-store" };
+
+  const [courseRes, dashRes, studentsRes, activitiesRes, recoveryRes] = await Promise.all([
+    fetch(`${API_URL}/courses/${id}`, opts),
+    fetch(`${API_URL}/dashboard`, opts),
+    fetch(`${API_URL}/courses/${id}/students`, opts),
+    fetch(`${API_URL}/courses/${id}/activities`, opts),
+    fetch(`${API_URL}/courses/${id}/recovery-videos`, opts),
   ]);
 
-  const courseData = await courseRes.json().catch(() => null);
-  const dashData = await dashRes.json().catch(() => null);
+  const [courseData, dashData, studentsData, activitiesData, recoveryData] = await Promise.all([
+    courseRes.json().catch(() => null),
+    dashRes.json().catch(() => null),
+    studentsRes.ok ? studentsRes.json().catch(() => null) : null,
+    activitiesRes.json().catch(() => null),
+    recoveryRes.json().catch(() => null),
+  ]);
+
   const role = dashData?.role;
   const course = courseData?.course;
+  const students = (role === "ADMIN" || role === "TEACHER") ? (studentsData?.students || []) : [];
+  const activities = activitiesData?.activities || [];
+  const recoveryVideos = recoveryData?.videos || [];
 
   if (!course) {
     return (
@@ -61,25 +72,6 @@ export default async function CourseDetailPage({ params }) {
       </div>
     );
   }
-
-  // Fetch students if ADMIN or TEACHER
-  let students = [];
-  if (role === "ADMIN" || role === "TEACHER") {
-    const studentsRes = await fetch(`${API_URL}/courses/${id}/students`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
-    });
-    const studentsData = await studentsRes.json().catch(() => null);
-    students = studentsData?.students || [];
-  }
-
-  // Fetch activities
-  const activitiesRes = await fetch(`${API_URL}/courses/${id}/activities`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
-  });
-  const activitiesData = await activitiesRes.json().catch(() => null);
-  const activities = activitiesData?.activities || [];
 
   return (
     <div className="space-y-6">
@@ -118,7 +110,7 @@ export default async function CourseDetailPage({ params }) {
 
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-              <div className="text-xs font-semibold text-slate-400">Docente</div>
+              <div className="text-xs font-semibold text-slate-400">Instructor</div>
               <div className="mt-1 text-sm font-bold text-white">{course.teacher?.fullName || "-"}</div>
               <div className="text-xs text-slate-300/60">{course.teacher?.email || ""}</div>
             </div>
@@ -200,6 +192,26 @@ export default async function CourseDetailPage({ params }) {
           </div>
 
           <ActivityList activities={activities} courseId={id} role={role} />
+        </div>
+      </div>
+
+      {/* Recovery Videos panel */}
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl shadow-2xl">
+        <div className="pointer-events-none absolute -inset-20 opacity-50 blur-3xl bg-gradient-to-br from-amber-500/25 via-orange-500/10 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/7 via-transparent to-black/45" />
+        <div className="h-[3px] w-full bg-gradient-to-r from-amber-500 to-orange-600" />
+
+        <div className="relative p-7">
+          <h2 className="text-lg font-extrabold text-white mb-4">
+            {role === "STUDENT" ? "Clases por Recuperar" : "Clases de Recuperación"} ({recoveryVideos.length})
+          </h2>
+
+          <RecoveryVideoManager
+            courseId={id}
+            initialVideos={recoveryVideos}
+            students={students}
+            role={role}
+          />
         </div>
       </div>
 

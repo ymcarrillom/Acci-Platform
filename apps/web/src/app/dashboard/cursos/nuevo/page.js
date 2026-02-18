@@ -6,7 +6,8 @@ const API_URL = process.env.API_URL || "http://localhost:4000";
 
 export default async function NuevoCursoPage() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const raw = cookieStore.get("accessToken")?.value;
+  const accessToken = raw ? decodeURIComponent(raw) : null;
 
   if (!accessToken) {
     return (

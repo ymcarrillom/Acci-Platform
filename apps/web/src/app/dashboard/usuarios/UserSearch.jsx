@@ -38,9 +38,8 @@ function SearchInner() {
         className="rounded-xl border border-white/10 bg-slate-950/70 px-4 py-2.5 text-sm text-white focus:outline-none"
       >
         <option value="">Todos los roles</option>
-        <option value="ADMIN">Administrador</option>
-        <option value="TEACHER">Docente</option>
-        <option value="COORDINATOR">Coordinador</option>
+        <option value="ADMIN">Coordinador</option>
+        <option value="TEACHER">Instructor</option>
         <option value="STUDENT">Estudiante</option>
       </select>
       <button

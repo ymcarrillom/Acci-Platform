@@ -3,6 +3,7 @@ import { z } from "zod";
 import PDFDocument from "pdfkit";
 import { authRequired, requireRole } from "../middlewares/auth.middleware.js";
 import { prisma } from "../utils/prisma.js";
+import { audit, getIp } from "../utils/audit.js";
 
 const router = Router();
 
@@ -21,7 +22,11 @@ const courseSchema = z.object({
 router.get("/", authRequired, async (req, res, next) => {
   try {
     const { role, sub } = req.user;
-    const { periodId } = req.query;
+    const { periodId, page: pageQ, limit: limitQ } = req.query;
+    const page = Math.max(1, parseInt(pageQ) || 1);
+    const limit = Math.min(Math.max(1, parseInt(limitQ) || 20), 100);
+    const skip = (page - 1) * limit;
+
     let where = {};
 
     if (role === "TEACHER") {
@@ -38,17 +43,22 @@ router.get("/", authRequired, async (req, res, next) => {
       where.periodId = periodId;
     }
 
-    const courses = await prisma.course.findMany({
-      where,
-      include: {
-        teacher: { select: { id: true, fullName: true, email: true } },
-        period: { select: { id: true, name: true } },
-        _count: { select: { enrollments: true } },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    const [courses, total] = await Promise.all([
+      prisma.course.findMany({
+        where,
+        include: {
+          teacher: { select: { id: true, fullName: true, email: true } },
+          period: { select: { id: true, name: true } },
+          _count: { select: { enrollments: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.course.count({ where }),
+    ]);
 
-    return res.json({ courses });
+    return res.json({ courses, total, page, limit, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     next(err);
   }
@@ -122,6 +132,8 @@ router.post("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
       },
     });
 
+    await audit({ userId: req.user.sub, action: "COURSE_CREATED", entity: "Course", entityId: course.id, detail: { code, name, teacherId }, ip: getIp(req) });
+
     return res.status(201).json({ course });
   } catch (err) {
     next(err);
@@ -171,6 +183,8 @@ router.put("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) =>
       },
     });
 
+    await audit({ userId: req.user.sub, action: "COURSE_UPDATED", entity: "Course", entityId: course.id, detail: { code, name, teacherId }, ip: getIp(req) });
+
     return res.json({ course });
   } catch (err) {
     next(err);
@@ -189,6 +203,8 @@ router.patch("/:id/toggle", authRequired, requireRole("ADMIN"), async (req, res,
       select: { id: true, name: true, isActive: true },
     });
 
+    await audit({ userId: req.user.sub, action: course.isActive ? "COURSE_ACTIVATED" : "COURSE_DEACTIVATED", entity: "Course", entityId: course.id, detail: { name: course.name }, ip: getIp(req) });
+
     return res.json({
       course,
       message: course.isActive ? "Curso activado" : "Curso desactivado",
@@ -205,6 +221,9 @@ router.delete("/:id", authRequired, requireRole("ADMIN"), async (req, res, next)
     if (!existing) return res.status(404).json({ message: "Curso no encontrado" });
 
     await prisma.course.delete({ where: { id: req.params.id } });
+
+    await audit({ userId: req.user.sub, action: "COURSE_DELETED", entity: "Course", entityId: req.params.id, detail: { code: existing.code, name: existing.name }, ip: getIp(req) });
+
     return res.json({ message: "Curso eliminado permanentemente" });
   } catch (err) {
     next(err);
@@ -242,11 +261,19 @@ router.get("/:id/grades/export", authRequired, requireRole("TEACHER", "ADMIN"), 
       orderBy: { attempt: "desc" },
     });
 
+    // Index submissions by activityId+studentId for O(1) lookup
+    const subsMap = new Map();
+    for (const s of submissions) {
+      const key = `${s.activityId}:${s.studentId}`;
+      if (!subsMap.has(key)) subsMap.set(key, []);
+      subsMap.get(key).push(s);
+    }
+
     // Build student rows
     const studentRows = enrollments.map((e) => {
       const student = e.student;
       const grades = activities.map((act) => {
-        const subs = submissions.filter((s) => s.activityId === act.id && s.studentId === student.id);
+        const subs = subsMap.get(`${act.id}:${student.id}`) || [];
         if (subs.length === 0) return "-";
         const best = subs.reduce((max, s) => (s.grade != null && s.grade > max ? s.grade : max), -1);
         return best >= 0 ? best.toFixed(1) : "Pend.";
@@ -620,6 +647,8 @@ router.post("/:id/enroll", authRequired, requireRole("ADMIN"), async (req, res, 
       },
     });
 
+    await audit({ userId: req.user.sub, action: "STUDENT_ENROLLED", entity: "Course", entityId: req.params.id, detail: { studentId, studentName: student.fullName, courseName: course.name, courseId: req.params.id }, ip: getIp(req) });
+
     return res.status(201).json({ enrollment });
   } catch (err) {
     next(err);
@@ -633,6 +662,10 @@ router.delete("/:id/enroll/:studentId", authRequired, requireRole("ADMIN"), asyn
 
     const enrollment = await prisma.courseEnrollment.findUnique({
       where: { courseId_studentId: { courseId: id, studentId } },
+      include: {
+        student: { select: { fullName: true } },
+        course: { select: { name: true } },
+      },
     });
     if (!enrollment) {
       return res.status(404).json({ message: "Inscripción no encontrada" });
@@ -641,6 +674,8 @@ router.delete("/:id/enroll/:studentId", authRequired, requireRole("ADMIN"), asyn
     await prisma.courseEnrollment.delete({
       where: { id: enrollment.id },
     });
+
+    await audit({ userId: req.user.sub, action: "STUDENT_UNENROLLED", entity: "Course", entityId: id, detail: { studentId, studentName: enrollment.student.fullName, courseName: enrollment.course.name, courseId: id }, ip: getIp(req) });
 
     return res.json({ message: "Estudiante desinscrito" });
   } catch (err) {

@@ -47,13 +47,11 @@ function RoleBadge({ role }) {
   const styles = {
     ADMIN: "bg-blue-500/15 text-blue-200 border-blue-400/20",
     TEACHER: "bg-sky-500/15 text-sky-200 border-sky-400/20",
-    COORDINATOR: "bg-purple-500/15 text-purple-200 border-purple-400/20",
     STUDENT: "bg-emerald-500/15 text-emerald-200 border-emerald-400/20",
   };
   const labels = {
-    ADMIN: "Administrador",
-    TEACHER: "Docente",
-    COORDINATOR: "Coordinador",
+    ADMIN: "Coordinador",
+    TEACHER: "Instructor",
     STUDENT: "Estudiante",
   };
 
@@ -77,22 +75,19 @@ function formatDate(dateStr) {
   });
 }
 
-const ROLE_ORDER = ["ADMIN", "COORDINATOR", "TEACHER", "STUDENT"];
+const ROLE_ORDER = ["ADMIN", "TEACHER", "STUDENT"];
 const ROLE_LABELS = {
-  ADMIN: "Administradores",
-  COORDINATOR: "Coordinadores",
-  TEACHER: "Docentes",
+  ADMIN: "Coordinadores",
+  TEACHER: "Instructores",
   STUDENT: "Estudiantes",
 };
 const ROLE_GRADIENTS = {
   ADMIN: "from-blue-500 to-indigo-600",
-  COORDINATOR: "from-purple-500 to-violet-600",
   TEACHER: "from-sky-500 to-blue-600",
   STUDENT: "from-emerald-500 to-green-600",
 };
 const ROLE_GLOWS = {
   ADMIN: "from-blue-500/30 via-indigo-500/15 to-transparent",
-  COORDINATOR: "from-purple-500/30 via-violet-500/15 to-transparent",
   TEACHER: "from-sky-500/30 via-blue-500/15 to-transparent",
   STUDENT: "from-emerald-500/30 via-green-500/15 to-transparent",
 };

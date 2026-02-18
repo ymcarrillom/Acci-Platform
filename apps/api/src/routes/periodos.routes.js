@@ -15,14 +15,24 @@ const periodoSchema = z.object({
 // ===== GET /periodos — Listar periodos (ADMIN) =====
 router.get("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
   try {
-    const periodos = await prisma.academicPeriod.findMany({
-      include: {
-        _count: { select: { courses: true } },
-      },
-      orderBy: { startDate: "desc" },
-    });
+    const { page: pageQ, limit: limitQ } = req.query;
+    const page = Math.max(1, parseInt(pageQ) || 1);
+    const limit = Math.min(Math.max(1, parseInt(limitQ) || 20), 100);
+    const skip = (page - 1) * limit;
 
-    return res.json({ periodos });
+    const [periodos, total] = await Promise.all([
+      prisma.academicPeriod.findMany({
+        include: {
+          _count: { select: { courses: true } },
+        },
+        orderBy: { startDate: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.academicPeriod.count(),
+    ]);
+
+    return res.json({ periodos, total, page, limit, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     next(err);
   }

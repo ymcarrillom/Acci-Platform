@@ -43,20 +43,29 @@ router.get("/", authRequired, verifyCourseAccess, async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const { role, sub } = req.user;
+    const { page: pageQ, limit: limitQ } = req.query;
+    const page = Math.max(1, parseInt(pageQ) || 1);
+    const limit = Math.min(Math.max(1, parseInt(limitQ) || 20), 100);
+    const skip = (page - 1) * limit;
 
     const where = { courseId };
     // Students only see their own reflections
     if (role === "STUDENT") where.studentId = sub;
 
-    const reflections = await prisma.spiritualReflection.findMany({
-      where,
-      include: {
-        student: { select: { id: true, fullName: true, email: true } },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    const [reflections, total] = await Promise.all([
+      prisma.spiritualReflection.findMany({
+        where,
+        include: {
+          student: { select: { id: true, fullName: true, email: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.spiritualReflection.count({ where }),
+    ]);
 
-    return res.json({ reflections });
+    return res.json({ reflections, total, page, limit, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     next(err);
   }

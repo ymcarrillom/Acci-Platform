@@ -33,7 +33,7 @@ export default async function ConfiguracionPage() {
     );
   }
 
-  const roleLabels = { STUDENT: "Estudiante", TEACHER: "Docente", ADMIN: "Administrador", COORDINATOR: "Coordinador" };
+  const roleLabels = { STUDENT: "Estudiante", TEACHER: "Instructor", ADMIN: "Coordinador" };
 
   return (
     <div className="space-y-6">

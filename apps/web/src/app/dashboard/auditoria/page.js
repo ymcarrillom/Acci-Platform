@@ -1,41 +1,119 @@
-import { cookies } from "next/headers";
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const ACTION_LABELS = {
+  LOGIN_SUCCESS: { label: "Inicio sesión", color: "text-emerald-400" },
+  LOGIN_FAILED: { label: "Login fallido", color: "text-red-400" },
+  LOGIN_BLOCKED: { label: "Login bloqueado", color: "text-orange-400" },
+  LOGOUT: { label: "Cierre sesión", color: "text-slate-300" },
+  USER_CREATED: { label: "Usuario creado", color: "text-sky-400" },
+  USER_UPDATED: { label: "Usuario editado", color: "text-blue-400" },
+  USER_DELETED: { label: "Usuario eliminado", color: "text-red-400" },
+  USER_ACTIVATED: { label: "Usuario activado", color: "text-emerald-400" },
+  USER_DEACTIVATED: { label: "Usuario desactivado", color: "text-orange-400" },
+  COURSE_CREATED: { label: "Curso creado", color: "text-sky-400" },
+  COURSE_UPDATED: { label: "Curso editado", color: "text-blue-400" },
+  COURSE_DELETED: { label: "Curso eliminado", color: "text-red-400" },
+  COURSE_ACTIVATED: { label: "Curso activado", color: "text-emerald-400" },
+  COURSE_DEACTIVATED: { label: "Curso desactivado", color: "text-orange-400" },
+  STUDENT_ENROLLED: { label: "Estudiante inscrito", color: "text-emerald-400" },
+  STUDENT_UNENROLLED: { label: "Estudiante desinscrito", color: "text-orange-400" },
+  SUBMISSION_GRADED: { label: "Envío calificado", color: "text-purple-400" },
+};
 
-export default async function AuditoriaPage() {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+function getAfectado(log) {
+  const d = log.detail;
+  if (!d) return null;
 
-  if (!accessToken) {
-    return (
-      <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
-        <div className="text-white font-extrabold text-xl">Sesión no válida</div>
-        <a href="/acceso" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
-          Ir a /acceso
-        </a>
-      </div>
-    );
+  switch (log.action) {
+    case "USER_CREATED":
+    case "USER_DELETED":
+      return d.fullName ? { name: d.fullName, sub: d.email } : null;
+    case "USER_UPDATED":
+      return d.changes?.fullName ? { name: d.changes.fullName, sub: d.changes.email } : null;
+    case "USER_ACTIVATED":
+    case "USER_DEACTIVATED":
+      return d.fullName ? { name: d.fullName } : null;
+    case "COURSE_CREATED":
+    case "COURSE_UPDATED":
+    case "COURSE_DELETED":
+      return d.name ? { name: d.name, sub: d.code } : null;
+    case "COURSE_ACTIVATED":
+    case "COURSE_DEACTIVATED":
+      return d.name ? { name: d.name } : null;
+    case "STUDENT_ENROLLED":
+    case "STUDENT_UNENROLLED":
+      return d.studentName ? { name: d.studentName, sub: d.courseName } : null;
+    case "SUBMISSION_GRADED":
+      return d.studentName ? { name: d.studentName, sub: `Nota: ${d.grade}` } : null;
+    default:
+      return null;
   }
+}
 
-  const dashRes = await fetch(`${API_URL}/dashboard`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
+function formatDate(iso) {
+  if (!iso) return "-";
+  return new Date(iso).toLocaleString("es-CO", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
-  const dashData = await dashRes.json().catch(() => null);
+}
 
-  if (dashData?.role !== "ADMIN") {
-    return (
-      <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
-        <div className="text-white font-extrabold text-xl">Acceso denegado</div>
-        <Link href="/dashboard" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
-          Volver al dashboard
-        </Link>
-      </div>
-    );
+export default function AuditoriaPage() {
+  const [logs, setLogs] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filterAction, setFilterAction] = useState("");
+  const [metrics, setMetrics] = useState(null);
+
+  const fetchLogs = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({ page, limit: 25 });
+      if (filterAction) params.set("action", filterAction);
+
+      const r = await fetchWithAuth(`/api/audit?${params}`);
+      if (r.status === 401 || r.status === 403) {
+        setError("Sin permisos para ver auditoría.");
+        return;
+      }
+      const data = await r.json();
+      setLogs(data.logs || []);
+      setTotal(data.total || 0);
+      setTotalPages(data.totalPages || 1);
+    } catch {
+      setError("Error cargando los registros de auditoría.");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, filterAction]);
+
+  useEffect(() => {
+    // Fetch dashboard metrics for the top cards
+    fetchWithAuth("/api/dashboard")
+      .then((r) => r.json())
+      .then((d) => setMetrics(d.metrics || null))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetchLogs();
+  }, [fetchLogs]);
+
+  function handleFilterChange(action) {
+    setFilterAction(action);
+    setPage(1);
   }
-
-  const metrics = dashData.metrics || {};
 
   return (
     <div className="space-y-6">
@@ -51,32 +129,132 @@ export default async function AuditoriaPage() {
         <div className="relative p-7 space-y-6">
           <div>
             <h1 className="text-2xl font-extrabold text-white">Auditoría y seguridad</h1>
-            <p className="text-sm text-slate-400 mt-1">Sesiones activas y control de accesos</p>
+            <p className="text-sm text-slate-400 mt-1">Registro de acciones críticas en la plataforma</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="rounded-xl border border-white/10 bg-white/5 p-5 text-center">
-              <div className="text-xs font-semibold text-slate-400">Sesiones activas</div>
-              <div className="text-3xl font-extrabold text-white mt-2">{metrics.sessionsActive ?? 0}</div>
-              <p className="text-xs text-slate-500 mt-1">Refresh tokens vigentes</p>
+          {/* Metric cards */}
+          {metrics && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-5 text-center">
+                <div className="text-xs font-semibold text-slate-400">Sesiones activas</div>
+                <div className="text-3xl font-extrabold text-white mt-2">{metrics.sessionsActive ?? 0}</div>
+                <p className="text-xs text-slate-500 mt-1">Refresh tokens vigentes</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-5 text-center">
+                <div className="text-xs font-semibold text-slate-400">Usuarios activos</div>
+                <div className="text-3xl font-extrabold text-white mt-2">{metrics.activeUsers ?? 0}</div>
+                <p className="text-xs text-slate-500 mt-1">Cuentas habilitadas</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-5 text-center">
+                <div className="text-xs font-semibold text-slate-400">Total registros</div>
+                <div className="text-3xl font-extrabold text-white mt-2">{total}</div>
+                <p className="text-xs text-slate-500 mt-1">Eventos auditados</p>
+              </div>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/5 p-5 text-center">
-              <div className="text-xs font-semibold text-slate-400">Usuarios activos</div>
-              <div className="text-3xl font-extrabold text-white mt-2">{metrics.activeUsers ?? 0}</div>
-              <p className="text-xs text-slate-500 mt-1">Cuentas habilitadas</p>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-white/5 p-5 text-center">
-              <div className="text-xs font-semibold text-slate-400">Total usuarios</div>
-              <div className="text-3xl font-extrabold text-white mt-2">{metrics.totalUsers ?? 0}</div>
-              <p className="text-xs text-slate-500 mt-1">Registrados en plataforma</p>
-            </div>
+          )}
+
+          {/* Filters */}
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="text-xs font-semibold text-slate-400">Filtrar:</span>
+            {["", "LOGIN_SUCCESS", "LOGIN_FAILED", "USER_CREATED", "USER_DELETED", "COURSE_CREATED", "SUBMISSION_GRADED"].map((action) => (
+              <button
+                key={action}
+                onClick={() => handleFilterChange(action)}
+                className={`rounded-lg px-3 py-1 text-xs font-bold transition border ${
+                  filterAction === action
+                    ? "bg-blue-500/20 border-blue-400/40 text-blue-200"
+                    : "bg-white/5 border-white/10 text-slate-300/70 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                {action ? (ACTION_LABELS[action]?.label ?? action) : "Todos"}
+              </button>
+            ))}
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-            <p className="text-sm text-slate-300">
-              El sistema implementa autenticación JWT con refresh tokens, RBAC por roles, y cookies httpOnly para mayor seguridad.
-            </p>
-          </div>
+          {/* Table */}
+          {error ? (
+            <div className="rounded-xl border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-300">{error}</div>
+          ) : loading ? (
+            <div className="text-center py-12 text-slate-400 text-sm">Cargando registros...</div>
+          ) : logs.length === 0 ? (
+            <div className="text-center py-12 text-slate-400 text-sm">No hay registros de auditoría.</div>
+          ) : (
+            <div className="overflow-x-auto rounded-xl border border-white/10">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/10 bg-white/5">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Fecha</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Acción</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Realizado por</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Afectado</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">IP</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {logs.map((log) => {
+                    const actionMeta = ACTION_LABELS[log.action] || { label: log.action, color: "text-slate-300" };
+                    const afectado = getAfectado(log);
+                    return (
+                      <tr key={log.id} className="hover:bg-white/3 transition">
+                        <td className="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">{formatDate(log.createdAt)}</td>
+                        <td className="px-4 py-3">
+                          <span className={`text-xs font-bold ${actionMeta.color}`}>{actionMeta.label}</span>
+                        </td>
+                        <td className="px-4 py-3 text-xs text-white/80">
+                          {log.user ? (
+                            <div>
+                              <div className="font-semibold">{log.user.fullName}</div>
+                              <div className="text-slate-500">{log.user.email}</div>
+                            </div>
+                          ) : (
+                            <span className="text-slate-500">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-xs">
+                          {afectado ? (
+                            <div>
+                              <div className="font-semibold text-white/90">{afectado.name}</div>
+                              {afectado.sub && (
+                                <div className="text-slate-500 mt-0.5">{afectado.sub}</div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-slate-600">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-slate-500 font-mono">{log.ip || "—"}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-2">
+              <span className="text-xs text-slate-400">
+                Página {page} de {totalPages} — {total} registros
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-white disabled:opacity-40 hover:bg-white/10 transition"
+                >
+                  Anterior
+                </button>
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-white disabled:opacity-40 hover:bg-white/10 transition"
+                >
+                  Siguiente
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

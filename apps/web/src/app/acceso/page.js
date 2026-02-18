@@ -83,7 +83,7 @@ export default function AccesoPage() {
             />
 
             <RoleCard
-              title="Docente"
+              title="Instructor"
               desc="Administra cursos, crea actividades, evalúa quizzes y acompaña el crecimiento académico y cristiano de tus estudiantes."
               href="/login?role=TEACHER"
               accent="from-sky-500/35 via-indigo-500/15 to-transparent"

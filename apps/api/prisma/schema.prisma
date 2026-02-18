@@ -10,7 +10,6 @@ datasource db {
 enum Role {
   STUDENT
   TEACHER
-  COORDINATOR
   ADMIN
 }
 
@@ -45,12 +44,15 @@ model User {
   updatedAt    DateTime @updatedAt
 
   refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]
   coursesTeaching Course[] @relation("TeacherCourses")
   coursesEnrolled CourseEnrollment[]
   submissions     Submission[] @relation("StudentSubmissions")
   gradedSubmissions Submission[] @relation("GradedSubmissions")
   attendance      Attendance[] @relation("StudentAttendance")
   reflections     SpiritualReflection[] @relation("StudentReflections")
+  uploadedRecoveryVideos RecoveryVideo[] @relation("UploadedRecoveryVideos")
+  recoveryVideoAccess    RecoveryVideoAccess[] @relation("RecoveryVideoAccess")
 }
 
 model RefreshToken {
@@ -64,6 +66,7 @@ model RefreshToken {
   user      User @relation(fields: [userId], references: [id])
 
   @@index([userId])
+  @@index([tokenHash])
 }
 
 model AcademicPeriod {
@@ -97,6 +100,7 @@ model Course {
   activities   Activity[]
   attendance   Attendance[]
   reflections  SpiritualReflection[]
+  recoveryVideos RecoveryVideo[]
 
   @@index([teacherId])
   @@index([periodId])
@@ -240,4 +244,56 @@ model SpiritualReflection {
 
   @@index([studentId])
   @@index([courseId])
+}
+
+model RecoveryVideo {
+  id           String   @id @default(cuid())
+  courseId      String
+  uploadedById  String
+  title        String
+  description  String?
+  fileUrl      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  course       Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  uploadedBy   User   @relation("UploadedRecoveryVideos", fields: [uploadedById], references: [id])
+  accessGrants RecoveryVideoAccess[]
+
+  @@index([courseId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  detail    Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([entity, entityId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model RecoveryVideoAccess {
+  id              String   @id @default(cuid())
+  recoveryVideoId String
+  studentId       String
+  enabled         Boolean  @default(true)
+  expiresAt       DateTime
+  viewedAt        DateTime?
+  createdAt       DateTime @default(now())
+
+  recoveryVideo RecoveryVideo @relation(fields: [recoveryVideoId], references: [id], onDelete: Cascade)
+  student       User          @relation("RecoveryVideoAccess", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([recoveryVideoId, studentId])
+  @@index([recoveryVideoId])
+  @@index([studentId])
 }

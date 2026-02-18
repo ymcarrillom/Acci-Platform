@@ -135,7 +135,7 @@ export default function CourseForm({ course }) {
 
           <div>
             <label className="block text-sm font-medium text-slate-200">
-              Docente *
+              Instructor *
             </label>
             <select
               className={inputClass}

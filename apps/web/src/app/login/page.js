@@ -2,10 +2,9 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { auth } from "@/lib/auth";
 
 function roleLabel(role) {
-  if (role === "TEACHER") return "Docente";
+  if (role === "TEACHER") return "Instructor";
   if (role === "ADMIN") return "Coordinador";
   return "Estudiante";
 }
@@ -55,17 +54,8 @@ function LoginForm() {
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(data?.message || "No se pudo iniciar sesión");
-      
-      // Guardar el rol en localStorage
-      if (data.role) {
-        auth.setTokens({ 
-          accessToken: data.user?.accessToken || "",
-          refreshToken: data.user?.refreshToken || "",
-          role: data.role 
-        });
-      }
-      
-      // Redirigir según el rol
+
+      // Redirigir según el rol (tokens se manejan via httpOnly cookies en el BFF)
       const redirectPath = getRedirectPath(data.role || role);
       router.replace(redirectPath);
     } catch (err) {

@@ -56,7 +56,10 @@ const bulkAttendanceSchema = z.object({
 router.get("/", authRequired, requireRole("TEACHER", "ADMIN"), verifyCourseAccess, async (req, res, next) => {
   try {
     const { courseId } = req.params;
-    const { date } = req.query;
+    const { date, page: pageQ, limit: limitQ } = req.query;
+    const page = Math.max(1, parseInt(pageQ) || 1);
+    const limit = Math.min(Math.max(1, parseInt(limitQ) || 50), 200);
+    const skip = (page - 1) * limit;
 
     const where = { courseId };
 
@@ -68,15 +71,20 @@ router.get("/", authRequired, requireRole("TEACHER", "ADMIN"), verifyCourseAcces
       where.date = parsed;
     }
 
-    const attendance = await prisma.attendance.findMany({
-      where,
-      include: {
-        student: { select: { id: true, fullName: true, email: true } },
-      },
-      orderBy: [{ date: "desc" }, { student: { fullName: "asc" } }],
-    });
+    const [attendance, total] = await Promise.all([
+      prisma.attendance.findMany({
+        where,
+        include: {
+          student: { select: { id: true, fullName: true, email: true } },
+        },
+        orderBy: [{ date: "desc" }, { student: { fullName: "asc" } }],
+        skip,
+        take: limit,
+      }),
+      prisma.attendance.count({ where }),
+    ]);
 
-    return res.json({ attendance });
+    return res.json({ attendance, total, page, limit, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     next(err);
   }
@@ -149,33 +157,38 @@ router.get("/summary", authRequired, requireRole("TEACHER", "ADMIN"), verifyCour
   try {
     const { courseId } = req.params;
 
-    const attendance = await prisma.attendance.findMany({
-      where: { courseId },
-      include: {
-        student: { select: { id: true, fullName: true, email: true } },
-      },
-    });
+    // Use groupBy to aggregate at DB level instead of loading all records
+    const [grouped, enrollments] = await Promise.all([
+      prisma.attendance.groupBy({
+        by: ["studentId", "status"],
+        where: { courseId },
+        _count: { id: true },
+      }),
+      prisma.courseEnrollment.findMany({
+        where: { courseId },
+        include: { student: { select: { id: true, fullName: true, email: true } } },
+      }),
+    ]);
 
-    // Group by student
+    // Build summary from groupBy results
     const studentMap = {};
-    for (const record of attendance) {
-      const sid = record.studentId;
-      if (!studentMap[sid]) {
-        studentMap[sid] = {
-          student: record.student,
-          total: 0,
-          present: 0,
-          absent: 0,
-          late: 0,
-          excused: 0,
-        };
-      }
-      studentMap[sid].total++;
-      switch (record.status) {
-        case "PRESENT": studentMap[sid].present++; break;
-        case "ABSENT": studentMap[sid].absent++; break;
-        case "LATE": studentMap[sid].late++; break;
-        case "EXCUSED": studentMap[sid].excused++; break;
+    for (const e of enrollments) {
+      studentMap[e.studentId] = {
+        student: e.student,
+        total: 0, present: 0, absent: 0, late: 0, excused: 0,
+      };
+    }
+
+    for (const row of grouped) {
+      const entry = studentMap[row.studentId];
+      if (!entry) continue;
+      const count = row._count.id;
+      entry.total += count;
+      switch (row.status) {
+        case "PRESENT": entry.present += count; break;
+        case "ABSENT": entry.absent += count; break;
+        case "LATE": entry.late += count; break;
+        case "EXCUSED": entry.excused += count; break;
       }
     }
 

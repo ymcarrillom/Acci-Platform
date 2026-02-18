@@ -123,7 +123,69 @@ NEXT_PUBLIC_API_URL=https://acci-api.onrender.com
 
 ---
 
-## 6. Checklist Pre-Despliegue
+## 6. Infraestructura del servidor (VPS)
+
+### Nginx + SSL
+
+```bash
+# 1. Instalar dependencias
+apt install nginx certbot python3-certbot-nginx
+
+# 2. Copiar configuracion
+cp nginx/acci.conf /etc/nginx/sites-available/acci
+ln -s /etc/nginx/sites-available/acci /etc/nginx/sites-enabled/acci
+
+# 3. Editar el archivo y reemplazar 'acci.example.com' con tu dominio real
+nano /etc/nginx/sites-available/acci
+
+# 4. Obtener certificados SSL (Let's Encrypt)
+certbot --nginx -d tudominio.com -d api.tudominio.com
+
+# 5. Verificar y recargar
+nginx -t && systemctl reload nginx
+```
+
+La configuracion de Nginx incluye:
+- Redireccion HTTP → HTTPS automatica
+- Cabeceras de seguridad: HSTS, X-Frame-Options, X-Content-Type-Options, CSP
+- Rate limiting a nivel Nginx (auth: 10/min, API: 100/min, uploads: 5/min)
+- Bloqueo de acceso directo a recovery-videos (solo via `/stream` autenticado)
+- Soporte de uploads de 2GB con streaming directo (sin buffering en Nginx)
+- Renovacion automatica de SSL via Certbot timer
+
+---
+
+### Backups automaticos
+
+```bash
+# Ejecutar una sola vez en el servidor (como root):
+sudo bash scripts/setup-production.sh
+```
+
+Esto instala:
+- **`acci-backup-db`**: pg_dump comprimido diario a las 3:00 AM → `/backups/db/`
+  - Retencion: 30 dias
+  - Verificacion de integridad del archivo tras cada backup
+- **`acci-backup-files`**: tar.gz de uploads diario a las 3:30 AM → `/backups/files/`
+  - Retencion: 14 dias
+  - Soporte opcional de rsync a servidor remoto (`REMOTE_DEST` en `/etc/acci-backup.env`)
+- Logs en `/var/log/acci-backup-db.log` y `/var/log/acci-backup-files.log`
+- Logrotate semanal automatico
+
+Para probar los backups manualmente:
+```bash
+sudo acci-backup-db
+sudo acci-backup-files
+```
+
+Para restaurar la base de datos en caso de desastre:
+```bash
+sudo acci-restore-db /backups/db/acci_db_2026-02-17_03-00-00.sql.gz
+```
+
+---
+
+## 7. Checklist Pre-Despliegue
 
 - [ ] Secretos JWT generados con valores unicos y seguros
 - [ ] `DATABASE_URL` apunta a la BD de produccion
@@ -132,5 +194,10 @@ NEXT_PUBLIC_API_URL=https://acci-api.onrender.com
 - [ ] `COOKIE_SECURE=true` en produccion
 - [ ] `COOKIE_SAMESITE` configurado segun si los dominios son iguales o distintos
 - [ ] Migraciones de Prisma ejecutadas en la BD de produccion
-- [ ] El backend responde en `/auth/login` (o cualquier ruta conocida)
+- [ ] El backend responde en `/health` con `{ ok: true, db: "connected" }`
 - [ ] El frontend carga y puede hacer login correctamente
+- [ ] Nginx configurado y SSL activo (`https://` en ambos dominios)
+- [ ] `sudo bash scripts/setup-production.sh` ejecutado en el servidor
+- [ ] Backup DB probado manualmente: `sudo acci-backup-db`
+- [ ] Backup archivos probado manualmente: `sudo acci-backup-files`
+- [ ] Restore probado en entorno de staging antes de produccion

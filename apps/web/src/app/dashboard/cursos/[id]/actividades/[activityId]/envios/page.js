@@ -13,7 +13,8 @@ function formatDate(dateStr) {
 export default async function EnviosPage({ params }) {
   const { id, activityId } = await params;
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const raw = cookieStore.get("accessToken")?.value;
+  const accessToken = raw ? decodeURIComponent(raw) : null;
 
   if (!accessToken) {
     return (

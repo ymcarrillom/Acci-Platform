@@ -17,13 +17,11 @@ function RoleBadge({ role }) {
   const styles = {
     ADMIN: "bg-blue-500/15 text-blue-200 border-blue-400/20",
     TEACHER: "bg-sky-500/15 text-sky-200 border-sky-400/20",
-    COORDINATOR: "bg-purple-500/15 text-purple-200 border-purple-400/20",
     STUDENT: "bg-emerald-500/15 text-emerald-200 border-emerald-400/20",
   };
   const labels = {
-    ADMIN: "Administrador",
-    TEACHER: "Docente",
-    COORDINATOR: "Coordinador",
+    ADMIN: "Coordinador",
+    TEACHER: "Instructor",
     STUDENT: "Estudiante",
   };
 
@@ -139,7 +137,7 @@ export default async function UserDetailPage({ params }) {
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
               <div className="text-xs font-semibold text-slate-400">Rol</div>
               <div className="mt-1 text-sm font-bold text-white">
-                {({ ADMIN: "Administrador", TEACHER: "Docente", COORDINATOR: "Coordinador", STUDENT: "Estudiante" })[user.role] || user.role}
+                {({ ADMIN: "Coordinador", TEACHER: "Instructor", STUDENT: "Estudiante" })[user.role] || user.role}
               </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">

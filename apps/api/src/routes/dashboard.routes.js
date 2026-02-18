@@ -213,22 +213,34 @@ router.get("/pending-feedback", authRequired, requireRole("TEACHER", "ADMIN"), a
       })
     ).map((c) => c.id);
 
-    const submissions = await prisma.submission.findMany({
-      where: {
-        grade: null,
-        activity: {
-          courseId: { in: teacherCourseIds },
-          isActive: true,
-        },
-      },
-      include: {
-        activity: { select: { id: true, title: true, type: true, courseId: true, course: { select: { name: true } } } },
-        student: { select: { id: true, fullName: true, email: true } },
-      },
-      orderBy: { submittedAt: "desc" },
-    });
+    const { page: pageQ, limit: limitQ } = req.query;
+    const page = Math.max(1, parseInt(pageQ) || 1);
+    const limit = Math.min(Math.max(1, parseInt(limitQ) || 20), 100);
+    const skip = (page - 1) * limit;
 
-    return res.json({ submissions });
+    const where = {
+      grade: null,
+      activity: {
+        courseId: { in: teacherCourseIds },
+        isActive: true,
+      },
+    };
+
+    const [submissions, total] = await Promise.all([
+      prisma.submission.findMany({
+        where,
+        include: {
+          activity: { select: { id: true, title: true, type: true, courseId: true, course: { select: { name: true } } } },
+          student: { select: { id: true, fullName: true, email: true } },
+        },
+        orderBy: { submittedAt: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.submission.count({ where }),
+    ]);
+
+    return res.json({ submissions, total, page, limit, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     next(err);
   }
@@ -258,13 +270,20 @@ router.get("/group-tracking/:courseId", authRequired, requireRole("TEACHER", "AD
       where: { courseId, studentId: { in: studentIds } },
     });
 
-    // Per-student attendance stats
+    // Per-student attendance stats (indexed by studentId for O(1) lookup)
     const attendanceByStudent = {};
     for (const s of students) {
-      const records = attendance.filter((a) => a.studentId === s.id);
-      const total = records.length;
-      const present = records.filter((a) => a.status === "PRESENT" || a.status === "LATE").length;
-      attendanceByStudent[s.id] = { total, present, pct: total > 0 ? Math.round((present / total) * 100) : null };
+      attendanceByStudent[s.id] = { total: 0, present: 0, pct: null };
+    }
+    for (const a of attendance) {
+      const entry = attendanceByStudent[a.studentId];
+      if (!entry) continue;
+      entry.total++;
+      if (a.status === "PRESENT" || a.status === "LATE") entry.present++;
+    }
+    for (const s of students) {
+      const entry = attendanceByStudent[s.id];
+      entry.pct = entry.total > 0 ? Math.round((entry.present / entry.total) * 100) : null;
     }
 
     // Graded submissions (for grade averages)
@@ -276,18 +295,24 @@ router.get("/group-tracking/:courseId", authRequired, requireRole("TEACHER", "AD
       include: { activity: { select: { id: true, title: true, type: true } } },
     });
 
-    // Per-student grade averages
+    // Per-student grade averages + pending (single pass)
     const gradesByStudent = {};
-    for (const s of students) {
-      const graded = submissions.filter((sub) => sub.studentId === s.id && sub.grade !== null);
-      const avg = graded.length > 0 ? Math.round(graded.reduce((sum, sub) => sum + sub.grade, 0) / graded.length) : null;
-      gradesByStudent[s.id] = { count: graded.length, avg };
-    }
-
-    // Pending submissions per student (ungraded)
     const pendingByStudent = {};
     for (const s of students) {
-      pendingByStudent[s.id] = submissions.filter((sub) => sub.studentId === s.id && sub.grade === null).length;
+      gradesByStudent[s.id] = { count: 0, sum: 0, avg: null };
+      pendingByStudent[s.id] = 0;
+    }
+    for (const sub of submissions) {
+      if (sub.grade !== null) {
+        const entry = gradesByStudent[sub.studentId];
+        if (entry) { entry.count++; entry.sum += sub.grade; }
+      } else {
+        if (pendingByStudent[sub.studentId] !== undefined) pendingByStudent[sub.studentId]++;
+      }
+    }
+    for (const s of students) {
+      const entry = gradesByStudent[s.id];
+      entry.avg = entry.count > 0 ? Math.round(entry.sum / entry.count) : null;
     }
 
     // Build per-student summary

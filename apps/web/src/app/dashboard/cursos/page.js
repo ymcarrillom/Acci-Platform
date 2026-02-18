@@ -47,7 +47,8 @@ function formatDate(dateStr) {
 
 export default async function CursosPage() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const raw = cookieStore.get("accessToken")?.value;
+  const accessToken = raw ? decodeURIComponent(raw) : null;
 
   if (!accessToken) {
     return (
@@ -137,7 +138,7 @@ export default async function CursosPage() {
 
                 <div className="space-y-1.5 text-xs font-semibold text-slate-200/60">
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-400">Docente:</span>
+                    <span className="text-slate-400">Instructor:</span>
                     <span className="text-slate-200/90">{course.teacher?.fullName || "-"}</span>
                   </div>
                   <div className="flex items-center gap-2">

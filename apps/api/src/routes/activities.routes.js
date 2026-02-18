@@ -1,11 +1,15 @@
 import { Router } from "express";
 import { z } from "zod";
+import jwt from "jsonwebtoken";
 import { authRequired, requireRole } from "../middlewares/auth.middleware.js";
 import { prisma } from "../utils/prisma.js";
+import { audit, getIp } from "../utils/audit.js";
+import { env } from "../config/env.js";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { access, mkdir } from "fs/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,7 +18,9 @@ const router = Router({ mergeParams: true });
 
 // ===== File upload config =====
 const uploadsDir = path.resolve(__dirname, "../../uploads");
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+(async () => {
+  try { await access(uploadsDir); } catch { await mkdir(uploadsDir, { recursive: true }); }
+})();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
@@ -124,6 +130,10 @@ router.get("/", authRequired, verifyCourseAccess, async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const { role, sub } = req.user;
+    const { page: pageQ, limit: limitQ } = req.query;
+    const page = Math.max(1, parseInt(pageQ) || 1);
+    const limit = Math.min(Math.max(1, parseInt(limitQ) || 20), 100);
+    const skip = (page - 1) * limit;
 
     const where = { courseId };
     if (role === "STUDENT") {
@@ -131,13 +141,18 @@ router.get("/", authRequired, verifyCourseAccess, async (req, res, next) => {
       where.isActive = true;
     }
 
-    const activities = await prisma.activity.findMany({
-      where,
-      include: {
-        _count: { select: { questions: true, submissions: true } },
-      },
-      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
-    });
+    const [activities, total] = await Promise.all([
+      prisma.activity.findMany({
+        where,
+        include: {
+          _count: { select: { questions: true, submissions: true } },
+        },
+        orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+        skip,
+        take: limit,
+      }),
+      prisma.activity.count({ where }),
+    ]);
 
     // For students, attach whether they have submitted each activity
     if (role === "STUDENT") {
@@ -155,7 +170,7 @@ router.get("/", authRequired, verifyCourseAccess, async (req, res, next) => {
       }
     }
 
-    return res.json({ activities });
+    return res.json({ activities, total, page, limit, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     next(err);
   }
@@ -403,6 +418,47 @@ router.post("/:activityId/upload", authRequired, requireRole("TEACHER", "ADMIN")
   }
 });
 
+// ===== POST /:activityId/start — Issue a signed start token for a timed quiz =====
+router.post("/:activityId/start", authRequired, requireRole("STUDENT"), verifyCourseAccess, async (req, res, next) => {
+  try {
+    const { activityId } = req.params;
+    const studentId = req.user.sub;
+
+    const activity = await prisma.activity.findUnique({
+      where: { id: activityId },
+      select: { id: true, courseId: true, type: true, isPublished: true, isActive: true, maxAttempts: true, timeLimit: true },
+    });
+
+    if (!activity || activity.courseId !== req.params.courseId) {
+      return res.status(404).json({ message: "Actividad no encontrada" });
+    }
+    if (!activity.isPublished || !activity.isActive) {
+      return res.status(400).json({ message: "Actividad no disponible" });
+    }
+    if (activity.type !== "QUIZ") {
+      return res.status(400).json({ message: "Solo disponible para quizzes" });
+    }
+
+    // Check attempts remaining
+    const existingCount = await prisma.submission.count({ where: { activityId, studentId } });
+    if (activity.maxAttempts > 0 && existingCount >= activity.maxAttempts) {
+      return res.status(409).json({ message: `Has alcanzado el máximo de ${activity.maxAttempts} intento(s)` });
+    }
+
+    // Sign a start token — expires with enough margin to cover the time limit
+    const expiresIn = activity.timeLimit ? `${activity.timeLimit * 60 + 120}s` : "24h";
+    const startToken = jwt.sign(
+      { activityId, studentId, startedAt: Date.now() },
+      env.JWT_ACCESS_SECRET,
+      { expiresIn }
+    );
+
+    return res.json({ startToken, timeLimit: activity.timeLimit });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // ===== POST /:activityId/submit — Submit quiz or task =====
 router.post("/:activityId/submit", authRequired, requireRole("STUDENT"), verifyCourseAccess, upload.single("file"), async (req, res, next) => {
   try {
@@ -430,17 +486,26 @@ router.post("/:activityId/submit", authRequired, requireRole("STUDENT"), verifyC
       return res.status(400).json({ message: "No se puede enviar un material" });
     }
 
-    // Check attempts
-    const existingCount = await prisma.submission.count({
-      where: { activityId, studentId },
-    });
-
-    // maxAttempts=0 means unlimited
-    if (activity.maxAttempts > 0 && existingCount >= activity.maxAttempts) {
-      return res.status(409).json({ message: `Has alcanzado el máximo de ${activity.maxAttempts} intento(s)` });
+    // Validate start token for timed quizzes
+    if (activity.type === "QUIZ" && activity.timeLimit) {
+      const { startToken } = req.body;
+      if (!startToken) {
+        return res.status(400).json({ message: "Token de inicio requerido para quizzes con tiempo límite" });
+      }
+      try {
+        const decoded = jwt.verify(startToken, env.JWT_ACCESS_SECRET);
+        if (decoded.activityId !== activityId || decoded.studentId !== studentId) {
+          return res.status(400).json({ message: "Token de inicio inválido" });
+        }
+        const elapsedSeconds = (Date.now() - decoded.startedAt) / 1000;
+        const limitSeconds = activity.timeLimit * 60;
+        if (elapsedSeconds > limitSeconds + 30) { // 30 seconds grace period
+          return res.status(400).json({ message: `Tiempo límite superado (${activity.timeLimit} min)` });
+        }
+      } catch {
+        return res.status(400).json({ message: "Token de inicio inválido o expirado" });
+      }
     }
-
-    const attempt = existingCount + 1;
 
     if (activity.type === "QUIZ") {
       const parsed = submitQuizSchema.safeParse(req.body);
@@ -450,7 +515,7 @@ router.post("/:activityId/submit", authRequired, requireRole("STUDENT"), verifyC
 
       const { answers } = parsed.data;
 
-      // Auto-grade
+      // Auto-grade (pure computation — done before transaction to minimize lock time)
       let grade = 0;
       let maxGrade = 0;
       const answerData = [];
@@ -492,21 +557,36 @@ router.post("/:activityId/submit", authRequired, requireRole("STUDENT"), verifyC
         }
       }
 
-      const submission = await prisma.submission.create({
-        data: {
-          activityId,
-          studentId,
-          attempt,
-          grade,
-          maxGrade,
-          answers: { create: answerData },
-        },
-        include: {
-          answers: {
-            include: { selectedOption: true },
-          },
-        },
-      });
+      // Atomic: count + create inside transaction to prevent race conditions
+      let submission;
+      try {
+        submission = await prisma.$transaction(async (tx) => {
+          const existingCount = await tx.submission.count({ where: { activityId, studentId } });
+          if (activity.maxAttempts > 0 && existingCount >= activity.maxAttempts) {
+            const err = new Error(`Has alcanzado el máximo de ${activity.maxAttempts} intento(s)`);
+            err.status = 409;
+            throw err;
+          }
+          return tx.submission.create({
+            data: {
+              activityId,
+              studentId,
+              attempt: existingCount + 1,
+              grade,
+              maxGrade,
+              answers: { create: answerData },
+            },
+            include: {
+              answers: { include: { selectedOption: true } },
+            },
+          });
+        });
+      } catch (txErr) {
+        if (txErr.status === 409) {
+          return res.status(409).json({ message: txErr.message });
+        }
+        throw txErr;
+      }
 
       return res.status(201).json({ submission });
     }
@@ -519,15 +599,32 @@ router.post("/:activityId/submit", authRequired, requireRole("STUDENT"), verifyC
       return res.status(400).json({ message: "Debes escribir un texto o adjuntar un archivo" });
     }
 
-    const submission = await prisma.submission.create({
-      data: {
-        activityId,
-        studentId,
-        attempt,
-        content,
-        fileUrl,
-      },
-    });
+    // Atomic: count + create inside transaction to prevent race conditions
+    let submission;
+    try {
+      submission = await prisma.$transaction(async (tx) => {
+        const existingCount = await tx.submission.count({ where: { activityId, studentId } });
+        if (activity.maxAttempts > 0 && existingCount >= activity.maxAttempts) {
+          const err = new Error(`Has alcanzado el máximo de ${activity.maxAttempts} intento(s)`);
+          err.status = 409;
+          throw err;
+        }
+        return tx.submission.create({
+          data: {
+            activityId,
+            studentId,
+            attempt: existingCount + 1,
+            content,
+            fileUrl,
+          },
+        });
+      });
+    } catch (txErr) {
+      if (txErr.status === 409) {
+        return res.status(409).json({ message: txErr.message });
+      }
+      throw txErr;
+    }
 
     return res.status(201).json({ submission });
   } catch (err) {
@@ -545,15 +642,25 @@ router.get("/:activityId/submissions", authRequired, requireRole("TEACHER", "ADM
       return res.status(404).json({ message: "Actividad no encontrada" });
     }
 
-    const submissions = await prisma.submission.findMany({
-      where: { activityId },
-      include: {
-        student: { select: { id: true, fullName: true, email: true } },
-      },
-      orderBy: [{ submittedAt: "desc" }],
-    });
+    const { page: pageQ, limit: limitQ } = req.query;
+    const page = Math.max(1, parseInt(pageQ) || 1);
+    const limit = Math.min(Math.max(1, parseInt(limitQ) || 50), 200);
+    const skip = (page - 1) * limit;
 
-    return res.json({ submissions, activity });
+    const [submissions, total] = await Promise.all([
+      prisma.submission.findMany({
+        where: { activityId },
+        include: {
+          student: { select: { id: true, fullName: true, email: true } },
+        },
+        orderBy: [{ submittedAt: "desc" }],
+        skip,
+        take: limit,
+      }),
+      prisma.submission.count({ where: { activityId } }),
+    ]);
+
+    return res.json({ submissions, activity, total, page, limit, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     next(err);
   }
@@ -624,6 +731,8 @@ router.patch("/:activityId/submissions/:submissionId/grade", authRequired, requi
         gradedBy: { select: { id: true, fullName: true } },
       },
     });
+
+    await audit({ userId: req.user.sub, action: "SUBMISSION_GRADED", entity: "Submission", entityId: submissionId, detail: { grade: parsed.data.grade, studentId: submission.studentId, studentName: updated.student.fullName, activityId }, ip: getIp(req) });
 
     return res.json({ submission: updated });
   } catch (err) {

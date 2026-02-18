@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 function roleLabel(role) {
-  if (role === "TEACHER") return "Docente";
+  if (role === "TEACHER") return "Instructor";
   if (role === "ADMIN") return "Coordinador";
   return "Estudiante";
 }

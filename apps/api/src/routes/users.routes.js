@@ -3,6 +3,7 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { authRequired, requireRole } from "../middlewares/auth.middleware.js";
 import { prisma } from "../utils/prisma.js";
+import { audit, getIp } from "../utils/audit.js";
 
 const router = Router();
 
@@ -13,14 +14,14 @@ const createUserSchema = z.object({
   fullName: z.string().min(2).max(100),
   email: z.string().email(),
   password: z.string().min(6),
-  role: z.enum(["STUDENT", "TEACHER", "COORDINATOR", "ADMIN"]),
+  role: z.enum(["STUDENT", "TEACHER", "ADMIN"]),
 });
 
 const updateUserSchema = z.object({
   fullName: z.string().min(2).max(100),
   email: z.string().email(),
   password: z.string().min(6).optional(),
-  role: z.enum(["STUDENT", "TEACHER", "COORDINATOR", "ADMIN"]),
+  role: z.enum(["STUDENT", "TEACHER", "ADMIN"]),
   isActive: z.boolean().optional(),
 });
 
@@ -224,6 +225,8 @@ router.post("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
       },
     });
 
+    await audit({ userId: req.user.sub, action: "USER_CREATED", entity: "User", entityId: user.id, detail: { fullName, email, role }, ip: getIp(req) });
+
     return res.status(201).json({ user });
   } catch (err) {
     next(err);
@@ -286,6 +289,8 @@ router.put("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) =>
       },
     });
 
+    await audit({ userId: req.user.sub, action: "USER_UPDATED", entity: "User", entityId: user.id, detail: { changes: { fullName, email, role, passwordChanged: !!password } }, ip: getIp(req) });
+
     return res.json({ user });
   } catch (err) {
     next(err);
@@ -311,6 +316,8 @@ router.patch("/:id/toggle", authRequired, requireRole("ADMIN"), async (req, res,
       data: { isActive: !existing.isActive },
       select: { id: true, fullName: true, isActive: true },
     });
+
+    await audit({ userId: req.user.sub, action: user.isActive ? "USER_ACTIVATED" : "USER_DEACTIVATED", entity: "User", entityId: user.id, detail: { fullName: user.fullName }, ip: getIp(req) });
 
     return res.json({
       user,
@@ -339,6 +346,9 @@ router.delete("/:id", authRequired, requireRole("ADMIN"), async (req, res, next)
     await prisma.refreshToken.deleteMany({ where: { userId: req.params.id } });
 
     await prisma.user.delete({ where: { id: req.params.id } });
+
+    await audit({ userId: req.user.sub, action: "USER_DELETED", entity: "User", entityId: req.params.id, detail: { fullName: existing.fullName, email: existing.email }, ip: getIp(req) });
+
     return res.json({ message: "Usuario eliminado permanentemente" });
   } catch (err) {
     next(err);

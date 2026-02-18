@@ -15,7 +15,8 @@ function formatDate(dateStr) {
 export default async function SubmissionDetailPage({ params }) {
   const { id, activityId, submissionId } = await params;
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const raw = cookieStore.get("accessToken")?.value;
+  const accessToken = raw ? decodeURIComponent(raw) : null;
 
   if (!accessToken) {
     return (
