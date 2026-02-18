@@ -19,14 +19,14 @@
 
 set -euo pipefail
 
-# ── Configuracion ─────────────────────────────────────────────────────────────
-# Autodetectar el directorio de uploads relativo al script
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DEFAULT_UPLOADS="${SCRIPT_DIR}/../apps/api/uploads"
+# ── Cargar config de produccion si existe ─────────────────────────────────────
+[ -f /etc/acci-backup.env ] && . /etc/acci-backup.env
 
-UPLOADS_DIR="${UPLOADS_DIR:-${DEFAULT_UPLOADS}}"
-BACKUP_DIR="${BACKUP_DIR:-/backups/files}"
-RETENTION="${RETENTION:-14}"
+# ── Configuracion ─────────────────────────────────────────────────────────────
+# El env file usa BACKUP_DIR_FILES y RETENTION_FILES; aceptar ambas formas.
+UPLOADS_DIR="${UPLOADS_DIR:-/srv/acci/uploads}"
+BACKUP_DIR="${BACKUP_DIR:-${BACKUP_DIR_FILES:-/backups/files}}"
+RETENTION="${RETENTION:-${RETENTION_FILES:-14}}"
 REMOTE_DEST="${REMOTE_DEST:-}"
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 FILENAME="acci_files_${TIMESTAMP}.tar.gz"

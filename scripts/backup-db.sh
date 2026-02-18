@@ -20,13 +20,21 @@
 
 set -euo pipefail
 
+# ── Cargar config de produccion si existe ─────────────────────────────────────
+# El archivo /etc/acci-backup.env es generado por setup-production.sh
+# y contiene las credenciales reales del servidor.
+[ -f /etc/acci-backup.env ] && . /etc/acci-backup.env
+# pg_dump necesita PGPASSWORD exportada para no pedir password interactivo
+export PGPASSWORD="${PGPASSWORD:-}"
+
 # ── Configuracion ─────────────────────────────────────────────────────────────
+# El env file usa BACKUP_DIR_DB y RETENTION_DB; aceptar ambas formas.
 DB_NAME="${DB_NAME:-acci}"
 DB_USER="${DB_USER:-acci}"
 DB_HOST="${DB_HOST:-localhost}"
 DB_PORT="${DB_PORT:-5432}"
-BACKUP_DIR="${BACKUP_DIR:-/backups/db}"
-RETENTION="${RETENTION:-30}"
+BACKUP_DIR="${BACKUP_DIR:-${BACKUP_DIR_DB:-/backups/db}}"
+RETENTION="${RETENTION:-${RETENTION_DB:-30}}"
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 FILENAME="acci_db_${TIMESTAMP}.sql.gz"
 FILEPATH="${BACKUP_DIR}/${FILENAME}"

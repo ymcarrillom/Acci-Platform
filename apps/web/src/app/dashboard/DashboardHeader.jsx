@@ -58,7 +58,7 @@ export default function DashboardHeader({ role, fullName }) {
           </div>
 
           <div className="min-w-0">
-            <div className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+            <div className="text-lg md:text-xl font-bold tracking-tight text-white truncate">
               {fullName ? `Hola, ${fullName.split(" ")[0]}` : "Dashboard"}
             </div>
 
