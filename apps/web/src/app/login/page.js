@@ -89,7 +89,7 @@ function LoginForm() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-lg font-extrabold text-white">Iniciar sesión</div>
-                <p className="mt-1 text-sm text-slate-200/70">Usa tus credenciales ACCI.</p>
+                <p className="mt-1 text-sm font-semibold text-slate-200/70">Usa tus credenciales ACCI.</p>
               </div>
 
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white">
@@ -133,15 +133,21 @@ function LoginForm() {
                 {loading ? "Ingresando..." : "Ingresar"}
               </button>
 
-              <div className="text-xs text-slate-300/80 text-center">
-                ¿Perfil equivocado?{" "}
-                <a className="underline hover:text-white" href="/acceso">
+              <div className="flex items-center justify-center gap-2 text-xs font-semibold text-slate-300/80">
+                ¿Perfil equivocado?
+                <a
+                  href="/acceso"
+                  className="inline-flex items-center gap-1 rounded-lg border border-white/15 bg-white/10 px-2.5 py-1 text-xs font-semibold text-white/80 hover:bg-white/20 hover:text-white transition"
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M19 12H5M12 5l-7 7 7 7"/>
+                  </svg>
                   Volver
                 </a>
               </div>
             </form>
 
-            <div className="mt-6 text-center text-[11px] text-slate-300/60">
+            <div className="mt-6 text-center text-[11px] font-semibold text-slate-300/60">
               ACCI Platform · Academia de Crecimiento Cristiano Integral
             </div>
           </div>
