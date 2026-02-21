@@ -84,6 +84,7 @@ export default function AccesoPage() {
         {/* ── Logo ACCI ── */}
         <div className="flex justify-center mb-5">
           <div className="relative h-24 w-[300px] sm:h-28 sm:w-[400px] md:h-[120px] md:w-[480px]">
+            {/* Capa base — visible en ambos modos */}
             <Image
               src="/brand/acci.png"
               alt="ACCI"
@@ -92,6 +93,8 @@ export default function AccesoPage() {
               className="object-contain acci-logo-img"
               priority
             />
+            {/* Capa de relleno gradiente — solo light mode (ver globals.css) */}
+            <div className="acci-logo-fill" />
           </div>
         </div>
 

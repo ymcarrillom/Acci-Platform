@@ -1250,13 +1250,53 @@ html:not(.dark) textarea::placeholder {
 
 
 /* ══════════════════════════════════════════════════════════
-   LOGO ACCI — Light mode: blend para eliminar fondo blanco
-   mix-blend-mode: multiply → el blanco se funde con la página,
-   los trazos negros (ACCI + ACADEMY) permanecen visibles.
-   Dark mode: se deja sin cambios (el usuario lo prefiere así).
+   LOGO ACCI — Light mode
+   Técnica de dos capas:
+   1. .acci-logo-img  → mix-blend-mode: multiply elimina el
+      fondo blanco del PNG; los trazos negros quedan visibles.
+   2. .acci-logo-fill → gradiente brand sobre las letras ACCI.
+      CSS mask (luminance) usa el PNG como máscara: solo las
+      áreas blancas (relleno de letras) muestran el gradiente.
+      El gradiente es radial y se desvanece a transparent antes
+      de llegar a ACADEMY, que queda intacta en la capa base.
+   Dark mode: sin cambios (el usuario lo prefiere así).
    ══════════════════════════════════════════════════════════ */
+
+/* Capa base: elimina el fondo blanco del PNG en light mode */
 html:not(.dark) .acci-logo-img {
   mix-blend-mode: multiply;
+}
+
+/* Capa de relleno: gradiente sobre las letras ACCI únicamente */
+html:not(.dark) .acci-logo-fill {
+  position:       absolute;
+  inset:          0;
+  pointer-events: none;
+
+  /* Gradiente brand concentrado en la zona ACCI (top 65%) */
+  background: radial-gradient(
+    ellipse 90% 50% at 50% 28%,
+    #0EA5E9  5%,
+    #2563EB 50%,
+    transparent 65%
+  );
+
+  /* PNG como máscara luminance: blanco = opaco, negro = transparente */
+  -webkit-mask-image:    url('/brand/acci.png');
+          mask-image:    url('/brand/acci.png');
+  -webkit-mask-size:     contain;
+          mask-size:     contain;
+  -webkit-mask-repeat:   no-repeat;
+          mask-repeat:   no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-mode:     luminance;
+          mask-mode:     luminance;
+}
+
+/* En dark mode, ocultar la capa de relleno */
+.dark .acci-logo-fill {
+  display: none;
 }
 
 
