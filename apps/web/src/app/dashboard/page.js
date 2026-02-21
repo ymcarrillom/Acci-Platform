@@ -29,15 +29,14 @@ async function getDashboardData() {
 
 function StatCard({ title, value, hint, accent }) {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-xl shadow-2xl">
-      <div className={`pointer-events-none absolute -inset-16 opacity-70 blur-3xl bg-gradient-to-br ${accent}`} />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/8 via-transparent to-black/40" />
+    <div className="relative overflow-hidden rounded-3xl border border-line-strong bg-[var(--glass-bg)] backdrop-blur-xl shadow-lg">
+      <div className={`pointer-events-none absolute -inset-16 opacity-55 blur-3xl bg-gradient-to-br ${accent}`} />
       <div className={`h-[3px] w-full bg-gradient-to-r ${accent}`} />
 
       <div className="relative p-6">
-        <div className="text-sm font-semibold text-slate-100/85">{title}</div>
-        <div className="mt-2 text-4xl font-black text-white">{String(value ?? "-")}</div>
-        {hint ? <div className="mt-2 text-xs font-semibold text-slate-200/70">{hint}</div> : null}
+        <div className="text-sm font-semibold text-fg-secondary">{title}</div>
+        <div className="mt-2 text-4xl font-black text-fg-primary">{String(value ?? "-")}</div>
+        {hint ? <div className="mt-2 text-xs font-semibold text-fg-tertiary">{hint}</div> : null}
       </div>
     </div>
   );
@@ -45,15 +44,14 @@ function StatCard({ title, value, hint, accent }) {
 
 function Panel({ title, subtitle, children, accent }) {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl shadow-2xl">
-      <div className={`pointer-events-none absolute -inset-20 opacity-50 blur-3xl bg-gradient-to-br ${accent}`} />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/7 via-transparent to-black/45" />
+    <div className="relative overflow-hidden rounded-3xl border border-line-strong bg-[var(--glass-bg)] backdrop-blur-xl shadow-xl">
+      <div className={`pointer-events-none absolute -inset-20 opacity-40 blur-3xl bg-gradient-to-br ${accent}`} />
       <div className={`h-[3px] w-full bg-gradient-to-r ${accent}`} />
 
       <div className="relative p-7">
         <div className="flex flex-col gap-1">
-          <div className="text-lg font-extrabold text-white">{title}</div>
-          {subtitle ? <div className="text-sm font-semibold text-slate-100/70">{subtitle}</div> : null}
+          <div className="text-lg font-extrabold text-fg-primary">{title}</div>
+          {subtitle ? <div className="text-sm font-semibold text-fg-secondary">{subtitle}</div> : null}
         </div>
 
         <div className="mt-5">{children}</div>
@@ -63,38 +61,33 @@ function Panel({ title, subtitle, children, accent }) {
 }
 
 function ActionCard({ title, desc, meta, accent, href }) {
+  const cls =
+    "group relative overflow-hidden rounded-2xl border border-line-strong bg-[var(--glass-bg)] backdrop-blur-sm p-5 min-h-[128px] flex flex-col hover:shadow-md hover:-translate-y-0.5 transition-all duration-150";
+
   const content = (
     <>
-      <div className={`pointer-events-none absolute -inset-12 opacity-45 blur-2xl bg-gradient-to-br ${accent}`} />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/8 via-transparent to-black/40" />
-      <div className="relative">
-        <div className="font-extrabold text-white">{title}</div>
-        <p className="mt-2 text-sm font-medium text-slate-100/85">{desc}</p>
-        {meta ? <div className="mt-3 text-xs font-semibold text-slate-200/70">{meta}</div> : null}
+      <div className={`pointer-events-none absolute -inset-12 opacity-35 blur-2xl bg-gradient-to-br ${accent}`} />
+      <div className="relative flex flex-col gap-1.5 flex-1">
+        <div className="font-extrabold text-fg-primary">{title}</div>
+        <p className="text-sm font-medium text-fg-secondary leading-snug">{desc}</p>
+        {meta ? (
+          <div className="mt-auto pt-2 text-xs font-bold text-[var(--primary)]">{meta}</div>
+        ) : null}
       </div>
     </>
   );
 
   if (href) {
-    return (
-      <Link href={href} className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 block hover:bg-white/8 transition">
-        {content}
-      </Link>
-    );
+    return <Link href={href} className={cls}>{content}</Link>;
   }
-
-  return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4">
-      {content}
-    </div>
-  );
+  return <div className={cls}>{content}</div>;
 }
 
 const typeLabels = { QUIZ: "Quiz", TASK: "Tarea", MATERIAL: "Material" };
 const typeBadge = {
-  QUIZ: "bg-violet-500/15 text-violet-300 border-violet-400/20",
-  TASK: "bg-amber-500/15 text-amber-300 border-amber-400/20",
-  MATERIAL: "bg-cyan-500/15 text-cyan-300 border-cyan-400/20",
+  QUIZ:     "acci-badge-quiz",
+  TASK:     "acci-badge-task",
+  MATERIAL: "acci-badge-material",
 };
 
 function formatDate(dateStr) {
@@ -108,11 +101,11 @@ export default async function DashboardPage() {
   if (!data) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 text-center shadow-2xl">
-          <div className="text-white font-extrabold text-xl">Sesión no válida</div>
-          <p className="text-slate-200/80 mt-2 font-medium">Vuelve a ingresar desde la selección de perfil.</p>
+        <div className="rounded-3xl border border-line-strong bg-[var(--glass-bg)] backdrop-blur-xl p-8 text-center shadow-xl">
+          <div className="text-fg-primary font-extrabold text-xl">Sesión no válida</div>
+          <p className="text-fg-secondary mt-2 font-medium">Vuelve a ingresar desde la selección de perfil.</p>
           <a
-            className="inline-block mt-5 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+            className="acci-btn acci-btn-secondary inline-flex mt-5"
             href="/acceso"
           >
             Ir a /acceso
@@ -265,20 +258,20 @@ export default async function DashboardPage() {
             accent={A.soft}
           >
             {recentCourses.length === 0 ? (
-              <p className="text-sm font-medium text-slate-200/60">No tienes cursos asignados.</p>
+              <p className="text-sm font-medium text-fg-muted">No tienes cursos asignados.</p>
             ) : (
               <div className="space-y-2">
                 {recentCourses.map((c) => (
                   <Link
                     key={c.id}
                     href={`/dashboard/cursos/${c.id}`}
-                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/8 transition"
+                    className="flex items-center justify-between rounded-xl border border-line-strong bg-[var(--glass-bg)] px-4 py-3.5 hover:border-[var(--primary-ring)] hover:-translate-y-px transition-all duration-150"
                   >
                     <div className="min-w-0">
-                      <span className="text-sm font-bold text-white">{c.name}</span>
-                      <span className="ml-2 text-xs text-slate-400">{c.code}</span>
+                      <span className="text-sm font-bold text-fg-primary">{c.name}</span>
+                      <span className="ml-2 text-xs text-fg-tertiary">{c.code}</span>
                     </div>
-                    <span className="shrink-0 text-xs text-slate-400">
+                    <span className="shrink-0 text-xs text-fg-tertiary">
                       {c._count?.enrollments ?? 0} inscritos
                     </span>
                   </Link>
@@ -298,15 +291,15 @@ export default async function DashboardPage() {
                   <Link
                     key={act.id}
                     href={`/dashboard/cursos/${act.courseId}/actividades/${act.id}`}
-                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/8 transition"
+                    className="flex items-center justify-between rounded-xl border border-line-strong bg-[var(--glass-bg)] px-4 py-3.5 hover:border-[var(--primary-ring)] hover:-translate-y-px transition-all duration-150"
                   >
                     <div className="min-w-0 flex items-center gap-2 flex-wrap">
-                      <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold ${typeBadge[act.type] || typeBadge.MATERIAL}`}>
+                      <span className={`acci-badge ${typeBadge[act.type] || typeBadge.MATERIAL}`}>
                         {typeLabels[act.type] || act.type}
                       </span>
-                      <span className="text-sm font-bold text-white truncate">{act.title}</span>
+                      <span className="text-sm font-bold text-fg-primary truncate">{act.title}</span>
                     </div>
-                    <div className="shrink-0 text-xs text-slate-400 ml-2">
+                    <div className="shrink-0 text-xs text-fg-tertiary ml-2">
                       {act.course?.name} {act.createdAt ? `· ${formatDate(act.createdAt)}` : ""}
                     </div>
                   </Link>
@@ -382,28 +375,28 @@ export default async function DashboardPage() {
             accent={A.soft}
           >
             {recentCourses.length === 0 ? (
-              <p className="text-sm font-medium text-slate-200/60">No hay cursos activos.</p>
+              <p className="text-sm font-medium text-fg-muted">No hay cursos activos.</p>
             ) : (
               <div className="space-y-2">
                 {recentCourses.map((c) => (
                   <Link
                     key={c.id}
                     href={`/dashboard/cursos/${c.id}`}
-                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/8 transition"
+                    className="flex items-center justify-between rounded-xl border border-line-strong bg-[var(--glass-bg)] px-4 py-3.5 hover:border-[var(--primary-ring)] hover:-translate-y-px transition-all duration-150"
                   >
                     <div className="min-w-0">
-                      <span className="text-sm font-bold text-white">{c.name}</span>
-                      <span className="ml-2 text-xs text-slate-400">{c.code}</span>
-                      {c.teacher && <span className="ml-2 text-xs text-slate-500">({c.teacher.fullName})</span>}
+                      <span className="text-sm font-bold text-fg-primary">{c.name}</span>
+                      <span className="ml-2 text-xs text-fg-tertiary">{c.code}</span>
+                      {c.teacher && <span className="ml-2 text-xs text-fg-muted">({c.teacher.fullName})</span>}
                     </div>
-                    <span className="shrink-0 text-xs text-slate-400">
+                    <span className="shrink-0 text-xs text-fg-tertiary">
                       {c._count?.enrollments ?? 0} inscritos
                     </span>
                   </Link>
                 ))}
                 <Link
                   href="/dashboard/cursos"
-                  className="block text-center text-xs font-bold text-sky-400/80 hover:text-sky-300 transition pt-2"
+                  className="block text-center text-xs font-bold text-[var(--primary)] hover:opacity-80 transition pt-3"
                 >
                   Ver todos los cursos
                 </Link>
@@ -422,22 +415,22 @@ export default async function DashboardPage() {
                   <Link
                     key={act.id}
                     href={`/dashboard/cursos/${act.courseId}/actividades/${act.id}`}
-                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/8 transition"
+                    className="flex items-center justify-between rounded-xl border border-line-strong bg-[var(--glass-bg)] px-4 py-3.5 hover:border-[var(--primary-ring)] hover:-translate-y-px transition-all duration-150"
                   >
                     <div className="min-w-0 flex items-center gap-2 flex-wrap">
-                      <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold ${typeBadge[act.type] || typeBadge.MATERIAL}`}>
+                      <span className={`acci-badge ${typeBadge[act.type] || typeBadge.MATERIAL}`}>
                         {typeLabels[act.type] || act.type}
                       </span>
-                      <span className="text-sm font-bold text-white truncate">{act.title}</span>
+                      <span className="text-sm font-bold text-fg-primary truncate">{act.title}</span>
                     </div>
-                    <div className="shrink-0 text-xs text-slate-400 ml-2">
+                    <div className="shrink-0 text-xs text-fg-tertiary ml-2">
                       {act.course?.name} {act.createdAt ? `· ${formatDate(act.createdAt)}` : ""}
                     </div>
                   </Link>
                 ))}
                 <Link
                   href="/dashboard/actividades"
-                  className="block text-center text-xs font-bold text-sky-400/80 hover:text-sky-300 transition pt-2"
+                  className="block text-center text-xs font-bold text-[var(--primary)] hover:opacity-80 transition pt-3"
                 >
                   Ver todas las actividades
                 </Link>
@@ -447,7 +440,7 @@ export default async function DashboardPage() {
         </>
       ) : null}
 
-      <div className="text-center text-xs font-semibold text-slate-200/70">
+      <div className="text-center text-xs font-semibold text-fg-muted">
         ACCI Platform · Academia de Crecimiento Cristiano Integral
       </div>
     </div>

@@ -42,7 +42,7 @@ export default function DashboardShell({ me, children }) {
       <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
         {/* Sidebar */}
         <aside className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl shadow-2xl overflow-hidden">
-          <div className="p-6 border-b border-white/10">
+          <div className="p-6 border-b border-[var(--line)]">
             <div className="text-white font-extrabold text-lg leading-tight">
               {me.name || me.email}
             </div>
@@ -57,7 +57,7 @@ export default function DashboardShell({ me, children }) {
                 <Link
                   key={it.href}
                   href={it.href}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-bold text-white/90 hover:bg-white/10 transition"
+                  className="acci-sidebar-link"
                 >
                   {it.label}
                 </Link>
@@ -65,9 +65,9 @@ export default function DashboardShell({ me, children }) {
             </div>
           </nav>
 
-          <div className="p-4 border-t border-white/10">
+          <div className="p-4 border-t border-[var(--line)]">
             <form action="/api/auth/logout" method="POST">
-              <button className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-extrabold text-white hover:bg-white/10 transition">
+              <button className="acci-btn acci-btn-danger w-full">
                 Cerrar sesión
               </button>
             </form>

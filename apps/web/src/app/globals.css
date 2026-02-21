@@ -624,6 +624,14 @@
     color:        var(--role-student-text);
   }
 
+  /* Brand institucional */
+  .acci-badge-brand {
+    background:   var(--primary-muted);
+    border-color: var(--primary-ring);
+    color:        var(--primary);
+    font-weight:  700;
+  }
+
   /* Actividad */
   .acci-badge-quiz {
     background:   rgba(139, 92, 246, 0.10);
@@ -680,6 +688,33 @@
   .acci-nav-link.active {
     color:      var(--primary);
     background: var(--primary-muted);
+  }
+
+  /* ── Sidebar navigation link ──────────────────────────── */
+  .acci-sidebar-link {
+    display:       block;
+    padding:       0.75rem 1rem;
+    border-radius: var(--radius-panel);
+    border:        1px solid var(--line);
+    background:    var(--glass-bg);
+    color:         var(--fg-secondary);
+    font-size:     0.875rem;
+    font-weight:   700;
+    transition:
+      background   var(--duration-fast) var(--ease-smooth),
+      border-color var(--duration-fast) var(--ease-smooth),
+      color        var(--duration-fast) var(--ease-smooth);
+  }
+  .acci-sidebar-link:hover {
+    background:   var(--bg-elevated);
+    border-color: var(--line-strong);
+    color:        var(--fg-primary);
+  }
+  .acci-sidebar-link[data-active="true"],
+  .acci-sidebar-link.active {
+    background:   var(--primary-muted);
+    border-color: var(--primary-ring);
+    color:        var(--primary);
   }
 
   /* ────────────────────────────────────────────────────────
@@ -1211,6 +1246,17 @@ html:not(.dark) select:focus {
 html:not(.dark) input::placeholder,
 html:not(.dark) textarea::placeholder {
   color: #94A3B8 !important;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   LOGO ACCI — Light mode: blend para eliminar fondo blanco
+   mix-blend-mode: multiply → el blanco se funde con la página,
+   los trazos negros (ACCI + ACADEMY) permanecen visibles.
+   Dark mode: se deja sin cambios (el usuario lo prefiere así).
+   ══════════════════════════════════════════════════════════ */
+html:not(.dark) .acci-logo-img {
+  mix-blend-mode: multiply;
 }
 
 

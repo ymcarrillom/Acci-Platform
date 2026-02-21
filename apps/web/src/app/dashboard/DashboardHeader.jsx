@@ -11,9 +11,9 @@ function roleLabel(role) {
 }
 
 function roleBadge(role) {
-  if (role === "TEACHER") return "bg-sky-500/15 text-sky-200 border-sky-400/20";
-  if (role === "ADMIN") return "bg-blue-500/15 text-blue-200 border-blue-400/20";
-  return "bg-emerald-500/15 text-emerald-200 border-emerald-400/20";
+  if (role === "TEACHER") return "acci-badge acci-badge-teacher";
+  if (role === "ADMIN") return "acci-badge acci-badge-admin";
+  return "acci-badge acci-badge-student";
 }
 
 export default function DashboardHeader({ role, fullName }) {
@@ -63,15 +63,11 @@ export default function DashboardHeader({ role, fullName }) {
             </div>
 
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span
-                className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${roleBadge(
-                  role
-                )}`}
-              >
+              <span className={roleBadge(role)}>
                 {roleLabel(role)}
               </span>
 
-              <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/90">
+              <span className="acci-badge acci-badge-brand">
                 ACCI Platform
               </span>
             </div>
@@ -81,9 +77,9 @@ export default function DashboardHeader({ role, fullName }) {
         <div className="flex items-center justify-end gap-3">
           <button
             onClick={onLogout}
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white hover:bg-white/10 transition"
+            className="acci-btn acci-btn-danger"
           >
-            Cerrar sesion
+            Cerrar sesión
           </button>
         </div>
       </div>
@@ -99,11 +95,8 @@ export default function DashboardHeader({ role, fullName }) {
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-lg px-3 py-1.5 text-sm font-bold transition ${
-                isActive
-                  ? "bg-white/10 text-white"
-                  : "text-slate-300/70 hover:text-white hover:bg-white/5"
-              }`}
+              data-active={isActive ? "true" : undefined}
+              className="acci-nav-link"
             >
               {link.label}
             </Link>
