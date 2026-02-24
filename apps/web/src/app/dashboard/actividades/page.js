@@ -1,22 +1,26 @@
-import { cookies } from "next/headers";
-import Link from "next/link";
+import { cookies } from 'next/headers';
+import Link from 'next/link';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 const typeConfig = {
-  QUIZ: { label: "Quiz", color: "bg-violet-500/15 text-violet-300 border-violet-400/20" },
-  TASK: { label: "Tarea", color: "bg-amber-500/15 text-amber-300 border-amber-400/20" },
-  MATERIAL: { label: "Material", color: "bg-cyan-500/15 text-cyan-300 border-cyan-400/20" },
+  QUIZ: { label: 'Quiz', color: 'bg-violet-500/15 text-violet-300 border-violet-400/20' },
+  TASK: { label: 'Tarea', color: 'bg-amber-500/15 text-amber-300 border-amber-400/20' },
+  MATERIAL: { label: 'Material', color: 'bg-cyan-500/15 text-cyan-300 border-cyan-400/20' },
 };
 
 function formatDate(dateStr) {
   if (!dateStr) return null;
-  return new Date(dateStr).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" });
+  return new Date(dateStr).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
 }
 
 export default async function ActividadesPage() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get('accessToken')?.value;
 
   if (!accessToken) {
     return (
@@ -29,7 +33,7 @@ export default async function ActividadesPage() {
   // Get user's courses, then fetch activities for each
   const coursesRes = await fetch(`${API_URL}/courses`, {
     headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   const coursesData = await coursesRes.json().catch(() => null);
   const courses = coursesData?.courses || [];
@@ -38,7 +42,7 @@ export default async function ActividadesPage() {
   for (const course of courses) {
     const activitiesRes = await fetch(`${API_URL}/courses/${course.id}/activities`, {
       headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
+      cache: 'no-store',
     });
     const activitiesData = await activitiesRes.json().catch(() => null);
     const activities = activitiesData?.activities || [];
@@ -71,14 +75,14 @@ export default async function ActividadesPage() {
                     key={act.id}
                     href={`/dashboard/cursos/${act.courseId}/actividades/${act.id}`}
                     className={`flex items-center justify-between rounded-xl border px-4 py-3 hover:bg-white/8 transition ${
-                      done
-                        ? "border-emerald-500/20 bg-emerald-500/5"
-                        : "border-white/10 bg-white/5"
+                      done ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-white/10 bg-white/5'
                     }`}
                   >
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold ${cfg.color}`}>
+                        <span
+                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold ${cfg.color}`}
+                        >
                           {cfg.label}
                         </span>
                         <span className="text-sm font-bold text-white truncate">{act.title}</span>
@@ -89,8 +93,18 @@ export default async function ActividadesPage() {
                         )}
                         {done && (
                           <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
-                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            <svg
+                              className="w-3 h-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={3}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
                             </svg>
                             Realizada
                           </span>
@@ -103,7 +117,13 @@ export default async function ActividadesPage() {
                     </div>
                     {done && (
                       <div className="shrink-0 ml-3 flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30">
-                        <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <svg
+                          className="w-5 h-5 text-emerald-400"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={3}
+                        >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>

@@ -1,13 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-function LogoBox({ children, variant = "dark" }) {
-  const base =
-    "h-20 flex items-center justify-center overflow-hidden rounded-xl border shadow-sm";
-  const styles =
-    variant === "dark"
-      ? "border-white/10 bg-black/50"
-      : "border-white/10 bg-white/5";
+function LogoBox({ children, variant = 'dark' }) {
+  const base = 'h-20 flex items-center justify-center overflow-hidden rounded-xl border shadow-sm';
+  const styles = variant === 'dark' ? 'border-white/10 bg-black/50' : 'border-white/10 bg-white/5';
 
   return <div className={`${base} ${styles}`}>{children}</div>;
 }

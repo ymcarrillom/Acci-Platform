@@ -1,10 +1,10 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function ChurchLogo({
-  className = "",
-  size = "md", // md | lg
+  className = '',
+  size = 'md', // md | lg
 }) {
-  const dims = size === "lg" ? "h-12 w-40" : "h-10 w-32";
+  const dims = size === 'lg' ? 'h-12 w-40' : 'h-10 w-32';
 
   return (
     <div className={`relative ${dims} ${className}`}>

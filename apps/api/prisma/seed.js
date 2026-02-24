@@ -3,6 +3,15 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+function requireEnv(name) {
+  const value = process.env[name];
+  if (!value) {
+    console.error(`❌ Variable de entorno requerida para seed: ${name}`);
+    process.exit(1);
+  }
+  return value;
+}
+
 async function upsertUser({ email, fullName, role, password }) {
   const passwordHash = await bcrypt.hash(password, 10);
 
@@ -14,12 +23,35 @@ async function upsertUser({ email, fullName, role, password }) {
 }
 
 async function main() {
-  const password = 'Acci12345*';
+  const SEED_ADMIN_EMAIL = requireEnv('SEED_ADMIN_EMAIL');
+  const SEED_ADMIN_PASSWORD = requireEnv('SEED_ADMIN_PASSWORD');
+  const SEED_RECOVERY_PASSWORD = requireEnv('SEED_RECOVERY_PASSWORD');
+  const SEED_DEFAULT_PASSWORD = requireEnv('SEED_DEFAULT_PASSWORD');
 
-  const admin = await upsertUser({ email: 'carri_2286@hotmail.com', fullName: 'Admin ACCI', role: 'ADMIN', password: 'Matias15' });
-  const recovery = await upsertUser({ email: 'recovery@acci.com', fullName: 'Recuperación ACCI', role: 'ADMIN', password: 'Acci-Recovery-2026!' });
-  const profe = await upsertUser({ email: 'profe@acci.com', fullName: 'Profesor ACCI', role: 'TEACHER', password });
-  const estudiante = await upsertUser({ email: 'estudiante@acci.com', fullName: 'Estudiante ACCI', role: 'STUDENT', password });
+  const admin = await upsertUser({
+    email: SEED_ADMIN_EMAIL,
+    fullName: 'Admin ACCI',
+    role: 'ADMIN',
+    password: SEED_ADMIN_PASSWORD,
+  });
+  const recovery = await upsertUser({
+    email: 'recovery@acci.com',
+    fullName: 'Recuperación ACCI',
+    role: 'ADMIN',
+    password: SEED_RECOVERY_PASSWORD,
+  });
+  const profe = await upsertUser({
+    email: 'profe@acci.com',
+    fullName: 'Profesor ACCI',
+    role: 'TEACHER',
+    password: SEED_DEFAULT_PASSWORD,
+  });
+  const estudiante = await upsertUser({
+    email: 'estudiante@acci.com',
+    fullName: 'Estudiante ACCI',
+    role: 'STUDENT',
+    password: SEED_DEFAULT_PASSWORD,
+  });
 
   console.log('✅ Seed listo: admin/recovery/profe/estudiante');
 
@@ -108,7 +140,8 @@ async function main() {
       courseId: course.id,
       type: 'TASK',
       title: 'Tarea 1: Calculadora en JavaScript',
-      description: 'Crea una calculadora básica usando funciones en JavaScript. Debe soportar suma, resta, multiplicación y división.',
+      description:
+        'Crea una calculadora básica usando funciones en JavaScript. Debe soportar suma, resta, multiplicación y división.',
       order: 2,
       dueDate: new Date('2026-03-01'),
       isPublished: true,
@@ -124,7 +157,8 @@ async function main() {
       courseId: course.id,
       type: 'MATERIAL',
       title: 'Clase 1: Introducción a Variables',
-      description: 'En esta clase veremos los conceptos fundamentales de variables en JavaScript:\n\n- Declaración con var, let y const\n- Scope y hoisting\n- Tipos de datos primitivos\n- Conversión de tipos\n\nRecuerda practicar los ejemplos en tu consola del navegador.',
+      description:
+        'En esta clase veremos los conceptos fundamentales de variables en JavaScript:\n\n- Declaración con var, let y const\n- Scope y hoisting\n- Tipos de datos primitivos\n- Conversión de tipos\n\nRecuerda practicar los ejemplos en tu consola del navegador.',
       order: 0,
       isPublished: true,
     },
@@ -135,5 +169,10 @@ async function main() {
 }
 
 main()
-  .catch((e) => { console.error(e); process.exit(1); })
-  .finally(async () => { await prisma.$disconnect(); });
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

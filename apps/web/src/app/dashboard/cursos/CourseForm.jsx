@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function CourseForm({ course }) {
   const router = useRouter();
@@ -9,21 +9,19 @@ export default function CourseForm({ course }) {
 
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
-  const [code, setCode] = useState(course?.code || "");
-  const [name, setName] = useState(course?.name || "");
-  const [description, setDescription] = useState(course?.description || "");
-  const [teacherId, setTeacherId] = useState(course?.teacherId || "");
+  const [code, setCode] = useState(course?.code || '');
+  const [name, setName] = useState(course?.name || '');
+  const [description, setDescription] = useState(course?.description || '');
+  const [teacherId, setTeacherId] = useState(course?.teacherId || '');
   const [startDate, setStartDate] = useState(
-    course?.startDate ? course.startDate.slice(0, 10) : ""
+    course?.startDate ? course.startDate.slice(0, 10) : ''
   );
-  const [endDate, setEndDate] = useState(
-    course?.endDate ? course.endDate.slice(0, 10) : ""
-  );
+  const [endDate, setEndDate] = useState(course?.endDate ? course.endDate.slice(0, 10) : '');
 
   useEffect(() => {
-    fetch("/api/users/teachers")
+    fetch('/api/users/teachers')
       .then((r) => r.json())
       .then((d) => setTeachers(d.teachers || []))
       .catch(() => {});
@@ -31,10 +29,10 @@ export default function CourseForm({ course }) {
 
   async function onSubmit(e) {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (!code || !name || !teacherId || !startDate || !endDate) {
-      setError("Todos los campos obligatorios deben completarse.");
+      setError('Todos los campos obligatorios deben completarse.');
       return;
     }
 
@@ -49,17 +47,17 @@ export default function CourseForm({ course }) {
         endDate: new Date(endDate).toISOString(),
       };
 
-      const url = isEdit ? `/api/courses/${course.id}` : "/api/courses";
-      const method = isEdit ? "PUT" : "POST";
+      const url = isEdit ? `/api/courses/${course.id}` : '/api/courses';
+      const method = isEdit ? 'PUT' : 'POST';
 
       const r = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 
       const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data?.message || "Error al guardar");
+      if (!r.ok) throw new Error(data?.message || 'Error al guardar');
 
       router.push(`/dashboard/cursos/${data.course?.id || course?.id}`);
       router.refresh();
@@ -71,7 +69,7 @@ export default function CourseForm({ course }) {
   }
 
   const inputClass =
-    "mt-1 w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40";
+    'mt-1 w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40';
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl shadow-2xl">
@@ -81,20 +79,18 @@ export default function CourseForm({ course }) {
 
       <div className="relative p-7">
         <h2 className="text-lg font-extrabold text-white">
-          {isEdit ? "Editar curso" : "Crear curso"}
+          {isEdit ? 'Editar curso' : 'Crear curso'}
         </h2>
         <p className="mt-1 text-sm font-medium text-slate-200/70">
           {isEdit
-            ? "Modifica los datos del curso."
-            : "Completa los datos para crear un nuevo curso."}
+            ? 'Modifica los datos del curso.'
+            : 'Completa los datos para crear un nuevo curso.'}
         </p>
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-200">
-                Código *
-              </label>
+              <label className="block text-sm font-medium text-slate-200">Código *</label>
               <input
                 className={inputClass}
                 value={code}
@@ -105,9 +101,7 @@ export default function CourseForm({ course }) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-200">
-                Nombre *
-              </label>
+              <label className="block text-sm font-medium text-slate-200">Nombre *</label>
               <input
                 className={inputClass}
                 value={name}
@@ -120,9 +114,7 @@ export default function CourseForm({ course }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-200">
-              Descripción
-            </label>
+            <label className="block text-sm font-medium text-slate-200">Descripción</label>
             <textarea
               className={`${inputClass} resize-none`}
               value={description}
@@ -134,9 +126,7 @@ export default function CourseForm({ course }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-200">
-              Instructor *
-            </label>
+            <label className="block text-sm font-medium text-slate-200">Instructor *</label>
             <select
               className={inputClass}
               value={teacherId}
@@ -154,9 +144,7 @@ export default function CourseForm({ course }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-200">
-                Fecha inicio *
-              </label>
+              <label className="block text-sm font-medium text-slate-200">Fecha inicio *</label>
               <input
                 className={inputClass}
                 type="date"
@@ -166,9 +154,7 @@ export default function CourseForm({ course }) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-200">
-                Fecha fin *
-              </label>
+              <label className="block text-sm font-medium text-slate-200">Fecha fin *</label>
               <input
                 className={inputClass}
                 type="date"
@@ -191,11 +177,7 @@ export default function CourseForm({ course }) {
               disabled={loading}
               className="rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-2.5 text-sm font-extrabold text-white hover:from-sky-400 hover:to-blue-500 transition disabled:opacity-60"
             >
-              {loading
-                ? "Guardando..."
-                : isEdit
-                ? "Guardar cambios"
-                : "Crear curso"}
+              {loading ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Crear curso'}
             </button>
             <button
               type="button"

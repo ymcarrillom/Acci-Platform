@@ -1,21 +1,25 @@
-import { cookies } from "next/headers";
-import Link from "next/link";
-import GradeForm from "../GradeForm";
-import ResetButton from "../ResetButton";
+import { cookies } from 'next/headers';
+import Link from 'next/link';
+import GradeForm from '../GradeForm';
+import ResetButton from '../ResetButton';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 function formatDate(dateStr) {
-  if (!dateStr) return "-";
-  return new Date(dateStr).toLocaleDateString("es-CO", {
-    day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+  if (!dateStr) return '-';
+  return new Date(dateStr).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 }
 
 export default async function SubmissionDetailPage({ params }) {
   const { id, activityId, submissionId } = await params;
   const cookieStore = await cookies();
-  const raw = cookieStore.get("accessToken")?.value;
+  const raw = cookieStore.get('accessToken')?.value;
   const accessToken = raw ? decodeURIComponent(raw) : null;
 
   if (!accessToken) {
@@ -30,11 +34,11 @@ export default async function SubmissionDetailPage({ params }) {
   const [subRes, dashRes] = await Promise.all([
     fetch(`${API_URL}/courses/${id}/activities/${activityId}/submissions/${submissionId}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
+      cache: 'no-store',
     }),
     fetch(`${API_URL}/dashboard`, {
       headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
+      cache: 'no-store',
     }),
   ]);
 
@@ -46,7 +50,10 @@ export default async function SubmissionDetailPage({ params }) {
   if (!submission) {
     return (
       <div className="space-y-4">
-        <Link href={`/dashboard/cursos/${id}/actividades/${activityId}/envios`} className="text-sm font-semibold text-slate-300/70 hover:text-white transition">
+        <Link
+          href={`/dashboard/cursos/${id}/actividades/${activityId}/envios`}
+          className="text-sm font-semibold text-slate-300/70 hover:text-white transition"
+        >
           ← Volver a envíos
         </Link>
         <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
@@ -56,12 +63,16 @@ export default async function SubmissionDetailPage({ params }) {
     );
   }
 
-  const isTeacher = role === "TEACHER" || role === "ADMIN";
+  const isTeacher = role === 'TEACHER' || role === 'ADMIN';
 
   return (
     <div className="space-y-6">
       <Link
-        href={isTeacher ? `/dashboard/cursos/${id}/actividades/${activityId}/envios` : `/dashboard/cursos/${id}/actividades/${activityId}`}
+        href={
+          isTeacher
+            ? `/dashboard/cursos/${id}/actividades/${activityId}/envios`
+            : `/dashboard/cursos/${id}/actividades/${activityId}`
+        }
         className="text-sm font-semibold text-slate-300/70 hover:text-white transition"
       >
         ← Volver
@@ -88,7 +99,7 @@ export default async function SubmissionDetailPage({ params }) {
               <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-2">
                 <span className="text-xs font-semibold text-slate-400">Calificación</span>
                 <div className="text-lg font-extrabold text-emerald-300">
-                  {submission.grade} / {submission.maxGrade || "-"}
+                  {submission.grade} / {submission.maxGrade || '-'}
                 </div>
               </div>
             )}
@@ -119,10 +130,12 @@ export default async function SubmissionDetailPage({ params }) {
             <div className="rounded-xl border border-amber-400/20 bg-amber-500/10 p-4 flex items-center justify-between">
               <div>
                 <div className="text-sm font-bold text-amber-300">Archivo adjunto</div>
-                <p className="text-xs text-slate-400 mt-0.5">{submission.fileUrl.split("/").pop()}</p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {submission.fileUrl.split('/').pop()}
+                </p>
               </div>
               <a
-                href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}${submission.fileUrl}`}
+                href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}${submission.fileUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-xl bg-amber-500/20 border border-amber-400/20 px-4 py-2 text-xs font-bold text-amber-200 hover:bg-amber-500/30 transition"
@@ -143,12 +156,14 @@ export default async function SubmissionDetailPage({ params }) {
                       {i + 1}. {ans.question?.text}
                     </p>
                     {ans.isCorrect != null && (
-                      <span className={`shrink-0 text-xs font-bold rounded-full px-2 py-0.5 ${
-                        ans.isCorrect
-                          ? "bg-emerald-500/15 text-emerald-300 border border-emerald-400/20"
-                          : "bg-red-500/15 text-red-300 border border-red-400/20"
-                      }`}>
-                        {ans.isCorrect ? "Correcta" : "Incorrecta"}
+                      <span
+                        className={`shrink-0 text-xs font-bold rounded-full px-2 py-0.5 ${
+                          ans.isCorrect
+                            ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/20'
+                            : 'bg-red-500/15 text-red-300 border border-red-400/20'
+                        }`}
+                      >
+                        {ans.isCorrect ? 'Correcta' : 'Incorrecta'}
                       </span>
                     )}
                     {ans.isCorrect == null && (
@@ -168,7 +183,7 @@ export default async function SubmissionDetailPage({ params }) {
                   </div>
                   {isTeacher && ans.question?.options?.length > 0 && (
                     <div className="mt-2 text-xs text-slate-500">
-                      Correcta: {ans.question.options.find((o) => o.isCorrect)?.text || "-"}
+                      Correcta: {ans.question.options.find((o) => o.isCorrect)?.text || '-'}
                     </div>
                   )}
                 </div>
@@ -194,7 +209,7 @@ export default async function SubmissionDetailPage({ params }) {
               courseId={id}
               activityId={activityId}
               submissionId={submissionId}
-              studentName={submission.student?.fullName || "estudiante"}
+              studentName={submission.student?.fullName || 'estudiante'}
             />
           )}
         </div>

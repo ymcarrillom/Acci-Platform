@@ -4,16 +4,23 @@
   "scripts": {
     "dev": "NEXT_DISABLE_TURBOPACK=1 next dev -p 3100",
     "build": "next build",
-    "start": "next start -p 3100"
+    "start": "next start -p 3100",
+    "lint": "eslint src",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.39.0",
     "next": "^16.1.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.3",
     "@tailwindcss/postcss": "^4.1.18",
     "autoprefixer": "^10.4.24",
+    "eslint": "^10.0.1",
+    "eslint-config-next": "^16.1.6",
     "tailwindcss": "^4.1.18"
   }
 }

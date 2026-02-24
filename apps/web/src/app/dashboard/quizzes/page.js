@@ -1,16 +1,20 @@
-import { cookies } from "next/headers";
-import Link from "next/link";
+import { cookies } from 'next/headers';
+import Link from 'next/link';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 function formatDate(dateStr) {
   if (!dateStr) return null;
-  return new Date(dateStr).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" });
+  return new Date(dateStr).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
 }
 
 export default async function QuizzesPage() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get('accessToken')?.value;
 
   if (!accessToken) {
     return (
@@ -22,7 +26,7 @@ export default async function QuizzesPage() {
 
   const coursesRes = await fetch(`${API_URL}/courses`, {
     headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   const coursesData = await coursesRes.json().catch(() => null);
   const courses = coursesData?.courses || [];
@@ -31,12 +35,12 @@ export default async function QuizzesPage() {
   for (const course of courses) {
     const activitiesRes = await fetch(`${API_URL}/courses/${course.id}/activities`, {
       headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
+      cache: 'no-store',
     });
     const activitiesData = await activitiesRes.json().catch(() => null);
     const activities = activitiesData?.activities || [];
     for (const act of activities) {
-      if (act.type === "QUIZ") {
+      if (act.type === 'QUIZ') {
         quizzes.push({ ...act, courseName: course.name, courseId: course.id });
       }
     }
@@ -50,9 +54,7 @@ export default async function QuizzesPage() {
         <div className="h-[3px] w-full bg-gradient-to-r from-violet-500 to-purple-600" />
 
         <div className="relative p-7">
-          <h1 className="text-xl font-extrabold text-white mb-6">
-            Quizzes ({quizzes.length})
-          </h1>
+          <h1 className="text-xl font-extrabold text-white mb-6">Quizzes ({quizzes.length})</h1>
 
           {quizzes.length === 0 ? (
             <p className="text-sm font-medium text-slate-200/60">No hay quizzes disponibles.</p>

@@ -1,27 +1,27 @@
 'use client';
 
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 /* ─── Mapa de acentos de color por rol ─── */
 const roleAccents = {
   STUDENT: {
-    glow:   "from-emerald-500/40 via-sky-500/20 to-transparent",
-    bar:    "from-emerald-500 to-sky-500",
-    btn:    "bg-gradient-to-r from-emerald-500 to-sky-500 shadow-[0_4px_14px_rgba(16,185,129,0.35)]",
-    btnHov: "hover:from-emerald-400 hover:to-sky-400",
+    glow: 'from-emerald-500/40 via-sky-500/20 to-transparent',
+    bar: 'from-emerald-500 to-sky-500',
+    btn: 'bg-gradient-to-r from-emerald-500 to-sky-500 shadow-[0_4px_14px_rgba(16,185,129,0.35)]',
+    btnHov: 'hover:from-emerald-400 hover:to-sky-400',
   },
   TEACHER: {
-    glow:   "from-sky-500/40 via-indigo-500/20 to-transparent",
-    bar:    "from-sky-500 to-indigo-500",
-    btn:    "bg-gradient-to-r from-sky-500 to-indigo-500 shadow-[0_4px_14px_rgba(14,165,233,0.35)]",
-    btnHov: "hover:from-sky-400 hover:to-indigo-400",
+    glow: 'from-sky-500/40 via-indigo-500/20 to-transparent',
+    bar: 'from-sky-500 to-indigo-500',
+    btn: 'bg-gradient-to-r from-sky-500 to-indigo-500 shadow-[0_4px_14px_rgba(14,165,233,0.35)]',
+    btnHov: 'hover:from-sky-400 hover:to-indigo-400',
   },
   ADMIN: {
-    glow:   "from-blue-500/40 via-violet-500/20 to-transparent",
-    bar:    "from-blue-500 to-violet-500",
-    btn:    "bg-gradient-to-r from-blue-500 to-violet-500 shadow-[0_4px_14px_rgba(37,99,235,0.35)]",
-    btnHov: "hover:from-blue-400 hover:to-violet-400",
+    glow: 'from-blue-500/40 via-violet-500/20 to-transparent',
+    bar: 'from-blue-500 to-violet-500',
+    btn: 'bg-gradient-to-r from-blue-500 to-violet-500 shadow-[0_4px_14px_rgba(37,99,235,0.35)]',
+    btnHov: 'hover:from-blue-400 hover:to-violet-400',
   },
 };
 
@@ -40,13 +40,13 @@ function RoleCard({ title, desc, href, roleKey }) {
       <div className={`h-[3px] w-full bg-gradient-to-r ${a.bar} shrink-0`} />
 
       {/* Glow de rol */}
-      <div className={`pointer-events-none absolute -inset-8 opacity-45 blur-3xl bg-gradient-to-br ${a.glow}`} />
+      <div
+        className={`pointer-events-none absolute -inset-8 opacity-45 blur-3xl bg-gradient-to-br ${a.glow}`}
+      />
 
       {/* Contenido */}
       <div className="relative flex flex-1 flex-col p-6 sm:p-7">
-        <h2 className="text-xl font-extrabold tracking-tight text-fg-primary">
-          {title}
-        </h2>
+        <h2 className="text-xl font-extrabold tracking-tight text-fg-primary">{title}</h2>
 
         <p className="mt-3 text-sm sm:text-[15px] leading-relaxed font-medium text-fg-secondary">
           {desc}
@@ -62,9 +62,14 @@ function RoleCard({ title, desc, href, roleKey }) {
           >
             Ingresar
             <svg
-              width="14" height="14" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" strokeWidth="2.5"
-              strokeLinecap="round" strokeLinejoin="round"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               aria-hidden="true"
             >
               <path d="M5 12h14M12 5l7 7-7 7" />
@@ -80,7 +85,6 @@ export default function AccesoPage() {
   return (
     <div className="min-h-screen px-4 sm:px-6 py-8 flex items-center justify-center">
       <div className="w-full max-w-5xl">
-
         {/* ── Logo ACCI ── */}
         <div className="flex justify-center mb-5">
           <div className="relative h-24 w-[300px] sm:h-28 sm:w-[400px] md:h-[120px] md:w-[480px]">
@@ -134,7 +138,6 @@ export default function AccesoPage() {
         <p className="mt-8 text-center text-xs font-semibold text-fg-muted">
           ACCI Platform · Academia de Crecimiento Cristiano Integral
         </p>
-
       </div>
     </div>
   );

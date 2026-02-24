@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function CourseActions({ courseId, isActive }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function handleToggle() {
-    const action = isActive ? "desactivar" : "activar";
-    if (!confirm(`¿${isActive ? "Desactivar" : "Activar"} este curso?`)) return;
+    const action = isActive ? 'desactivar' : 'activar';
+    if (!confirm(`¿${isActive ? 'Desactivar' : 'Activar'} este curso?`)) return;
     setLoading(true);
     try {
-      const r = await fetch(`/api/courses/${courseId}`, { method: "PATCH" });
+      const r = await fetch(`/api/courses/${courseId}`, { method: 'PATCH' });
       if (!r.ok) {
         const data = await r.json().catch(() => ({}));
         alert(data?.message || `Error al ${action}`);
@@ -26,16 +26,17 @@ export default function CourseActions({ courseId, isActive }) {
   }
 
   async function handleDelete() {
-    if (!confirm("¿Eliminar este curso PERMANENTEMENTE?\nEsta acción no se puede deshacer.")) return;
+    if (!confirm('¿Eliminar este curso PERMANENTEMENTE?\nEsta acción no se puede deshacer.'))
+      return;
     setLoading(true);
     try {
-      const r = await fetch(`/api/courses/${courseId}`, { method: "DELETE" });
+      const r = await fetch(`/api/courses/${courseId}`, { method: 'DELETE' });
       if (!r.ok) {
         const data = await r.json().catch(() => ({}));
-        alert(data?.message || "Error al eliminar");
+        alert(data?.message || 'Error al eliminar');
         return;
       }
-      router.push("/dashboard/cursos");
+      router.push('/dashboard/cursos');
       router.refresh();
     } finally {
       setLoading(false);
@@ -56,11 +57,11 @@ export default function CourseActions({ courseId, isActive }) {
         disabled={loading}
         className={`rounded-xl border px-4 py-2 text-sm font-bold transition disabled:opacity-60 ${
           isActive
-            ? "border-amber-500/20 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
-            : "border-emerald-500/20 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+            ? 'border-amber-500/20 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'
+            : 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20'
         }`}
       >
-        {loading ? "Procesando..." : isActive ? "Desactivar" : "Activar"}
+        {loading ? 'Procesando...' : isActive ? 'Desactivar' : 'Activar'}
       </button>
 
       <button
@@ -68,7 +69,7 @@ export default function CourseActions({ courseId, isActive }) {
         disabled={loading}
         className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-300 hover:bg-red-500/20 transition disabled:opacity-60"
       >
-        {loading ? "Procesando..." : "Eliminar permanentemente"}
+        {loading ? 'Procesando...' : 'Eliminar permanentemente'}
       </button>
     </div>
   );

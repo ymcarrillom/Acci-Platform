@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { headers } from 'next/headers';
 
 /**
  * getMeOrNull
@@ -8,12 +8,12 @@ import { headers } from "next/headers";
 export async function getMeOrNull() {
   const h = await headers();
 
-  const host = h.get("host"); // ej: localhost:3100
-  const proto = h.get("x-forwarded-proto") || "http";
+  const host = h.get('host'); // ej: localhost:3100
+  const proto = h.get('x-forwarded-proto') || 'http';
   const base = `${proto}://${host}`;
 
   try {
-    const res = await fetch(`${base}/api/users/me`, { cache: "no-store" });
+    const res = await fetch(`${base}/api/users/me`, { cache: 'no-store' });
     if (!res.ok) return null;
     return res.json();
   } catch {

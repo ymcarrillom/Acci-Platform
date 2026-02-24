@@ -1,19 +1,19 @@
-import { cookies } from "next/headers";
-import Link from "next/link";
-import UserSearch from "./UserSearch";
+import { cookies } from 'next/headers';
+import Link from 'next/link';
+import UserSearch from './UserSearch';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
-async function getUsers(token, { search = "", role = "", page = "1" } = {}) {
+async function getUsers(token, { search = '', role = '', page = '1' } = {}) {
   const params = new URLSearchParams();
-  if (search) params.set("search", search);
-  if (role) params.set("role", role);
-  params.set("page", page);
-  params.set("limit", "12");
+  if (search) params.set('search', search);
+  if (role) params.set('role', role);
+  params.set('page', page);
+  params.set('limit', '12');
 
   const r = await fetch(`${API_URL}/users?${params}`, {
     headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   if (!r.ok) return null;
   return r.json();
@@ -22,7 +22,7 @@ async function getUsers(token, { search = "", role = "", page = "1" } = {}) {
 async function getUserRole(token) {
   const r = await fetch(`${API_URL}/dashboard`, {
     headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   if (!r.ok) return null;
   const data = await r.json();
@@ -34,25 +34,25 @@ function StatusBadge({ isActive }) {
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${
         isActive
-          ? "bg-emerald-500/15 text-emerald-300 border border-emerald-400/20"
-          : "bg-red-500/15 text-red-300 border border-red-400/20"
+          ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/20'
+          : 'bg-red-500/15 text-red-300 border border-red-400/20'
       }`}
     >
-      {isActive ? "Activo" : "Inactivo"}
+      {isActive ? 'Activo' : 'Inactivo'}
     </span>
   );
 }
 
 function RoleBadge({ role }) {
   const styles = {
-    ADMIN: "bg-blue-500/15 text-blue-200 border-blue-400/20",
-    TEACHER: "bg-sky-500/15 text-sky-200 border-sky-400/20",
-    STUDENT: "bg-emerald-500/15 text-emerald-200 border-emerald-400/20",
+    ADMIN: 'bg-blue-500/15 text-blue-200 border-blue-400/20',
+    TEACHER: 'bg-sky-500/15 text-sky-200 border-sky-400/20',
+    STUDENT: 'bg-emerald-500/15 text-emerald-200 border-emerald-400/20',
   };
   const labels = {
-    ADMIN: "Coordinador",
-    TEACHER: "Instructor",
-    STUDENT: "Estudiante",
+    ADMIN: 'Coordinador',
+    TEACHER: 'Instructor',
+    STUDENT: 'Estudiante',
   };
 
   return (
@@ -67,29 +67,29 @@ function RoleBadge({ role }) {
 }
 
 function formatDate(dateStr) {
-  if (!dateStr) return "-";
-  return new Date(dateStr).toLocaleDateString("es-CO", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
+  if (!dateStr) return '-';
+  return new Date(dateStr).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
   });
 }
 
-const ROLE_ORDER = ["ADMIN", "TEACHER", "STUDENT"];
+const ROLE_ORDER = ['ADMIN', 'TEACHER', 'STUDENT'];
 const ROLE_LABELS = {
-  ADMIN: "Coordinadores",
-  TEACHER: "Instructores",
-  STUDENT: "Estudiantes",
+  ADMIN: 'Coordinadores',
+  TEACHER: 'Instructores',
+  STUDENT: 'Estudiantes',
 };
 const ROLE_GRADIENTS = {
-  ADMIN: "from-blue-500 to-indigo-600",
-  TEACHER: "from-sky-500 to-blue-600",
-  STUDENT: "from-emerald-500 to-green-600",
+  ADMIN: 'from-blue-500 to-indigo-600',
+  TEACHER: 'from-sky-500 to-blue-600',
+  STUDENT: 'from-emerald-500 to-green-600',
 };
 const ROLE_GLOWS = {
-  ADMIN: "from-blue-500/30 via-indigo-500/15 to-transparent",
-  TEACHER: "from-sky-500/30 via-blue-500/15 to-transparent",
-  STUDENT: "from-emerald-500/30 via-green-500/15 to-transparent",
+  ADMIN: 'from-blue-500/30 via-indigo-500/15 to-transparent',
+  TEACHER: 'from-sky-500/30 via-blue-500/15 to-transparent',
+  STUDENT: 'from-emerald-500/30 via-green-500/15 to-transparent',
 };
 
 function UserCard({ user }) {
@@ -98,9 +98,13 @@ function UserCard({ user }) {
       href={`/dashboard/usuarios/${user.id}`}
       className="group relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl shadow-2xl transition hover:-translate-y-1 hover:shadow-3xl"
     >
-      <div className={`pointer-events-none absolute -inset-16 opacity-50 blur-3xl bg-gradient-to-br ${ROLE_GLOWS[user.role] || ROLE_GLOWS.STUDENT}`} />
+      <div
+        className={`pointer-events-none absolute -inset-16 opacity-50 blur-3xl bg-gradient-to-br ${ROLE_GLOWS[user.role] || ROLE_GLOWS.STUDENT}`}
+      />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/7 via-transparent to-black/45" />
-      <div className={`h-[3px] w-full bg-gradient-to-r ${ROLE_GRADIENTS[user.role] || ROLE_GRADIENTS.STUDENT}`} />
+      <div
+        className={`h-[3px] w-full bg-gradient-to-r ${ROLE_GRADIENTS[user.role] || ROLE_GRADIENTS.STUDENT}`}
+      />
 
       <div className="relative p-6 space-y-3">
         <div className="flex items-start justify-between gap-2">
@@ -108,9 +112,7 @@ function UserCard({ user }) {
             <h3 className="text-lg font-extrabold text-white truncate group-hover:text-sky-200 transition">
               {user.fullName}
             </h3>
-            <p className="text-sm font-medium text-slate-200/70 truncate">
-              {user.email}
-            </p>
+            <p className="text-sm font-medium text-slate-200/70 truncate">{user.email}</p>
           </div>
           <StatusBadge isActive={user.isActive} />
         </div>
@@ -120,7 +122,7 @@ function UserCard({ user }) {
         </div>
 
         <div className="text-xs font-semibold text-slate-200/60">
-          <span className="text-slate-400">Creado:</span>{" "}
+          <span className="text-slate-400">Creado:</span>{' '}
           <span className="text-slate-200/90">{formatDate(user.createdAt)}</span>
         </div>
       </div>
@@ -130,19 +132,22 @@ function UserCard({ user }) {
 
 export default async function UsuariosPage({ searchParams }) {
   const sp = await searchParams;
-  const currentSearch = sp?.search || "";
-  const currentRole = sp?.role || "";
-  const currentPage = sp?.page || "1";
+  const currentSearch = sp?.search || '';
+  const currentRole = sp?.role || '';
+  const currentPage = sp?.page || '1';
 
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get('accessToken')?.value;
 
   if (!accessToken) {
     return (
       <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
         <div className="text-white font-extrabold text-xl">Sesión no válida</div>
         <p className="text-slate-200/80 mt-2">Vuelve a ingresar.</p>
-        <a href="/acceso" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
+        <a
+          href="/acceso"
+          className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+        >
           Ir a /acceso
         </a>
       </div>
@@ -154,12 +159,15 @@ export default async function UsuariosPage({ searchParams }) {
     getUserRole(accessToken),
   ]);
 
-  if (role !== "ADMIN") {
+  if (role !== 'ADMIN') {
     return (
       <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
         <div className="text-white font-extrabold text-xl">Sin permisos</div>
         <p className="text-slate-200/80 mt-2">Solo administradores pueden gestionar usuarios.</p>
-        <Link href="/dashboard" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
+        <Link
+          href="/dashboard"
+          className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+        >
           Volver al dashboard
         </Link>
       </div>
@@ -183,9 +191,9 @@ export default async function UsuariosPage({ searchParams }) {
 
   function buildPageUrl(page) {
     const params = new URLSearchParams();
-    if (currentSearch) params.set("search", currentSearch);
-    if (currentRole) params.set("role", currentRole);
-    params.set("page", String(page));
+    if (currentSearch) params.set('search', currentSearch);
+    if (currentRole) params.set('role', currentRole);
+    params.set('page', String(page));
     return `/dashboard/usuarios?${params}`;
   }
 
@@ -217,10 +225,12 @@ export default async function UsuariosPage({ searchParams }) {
           <div className="pointer-events-none absolute -inset-20 opacity-50 blur-3xl bg-gradient-to-br from-sky-500/30 via-blue-500/15 to-transparent" />
           <div className="relative">
             <div className="text-lg font-extrabold text-white">
-              {currentSearch ? "Sin resultados" : "Sin usuarios"}
+              {currentSearch ? 'Sin resultados' : 'Sin usuarios'}
             </div>
             <p className="mt-2 text-sm font-medium text-slate-200/70">
-              {currentSearch ? `No se encontraron usuarios para "${currentSearch}"` : "Crea tu primer usuario para comenzar."}
+              {currentSearch
+                ? `No se encontraron usuarios para "${currentSearch}"`
+                : 'Crea tu primer usuario para comenzar.'}
             </p>
           </div>
         </div>
@@ -228,9 +238,7 @@ export default async function UsuariosPage({ searchParams }) {
         activeRoles.map((r) => (
           <div key={r} className="space-y-3">
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-extrabold text-white">
-                {ROLE_LABELS[r]}
-              </h2>
+              <h2 className="text-lg font-extrabold text-white">{ROLE_LABELS[r]}</h2>
               <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs font-bold text-slate-300">
                 {grouped[r].length}
               </span>
@@ -262,8 +270,8 @@ export default async function UsuariosPage({ searchParams }) {
               href={buildPageUrl(p)}
               className={`rounded-lg px-3 py-1.5 text-sm font-bold transition ${
                 p === pageNum
-                  ? "bg-sky-500/20 border border-sky-400/30 text-sky-200"
-                  : "border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                  ? 'bg-sky-500/20 border border-sky-400/30 text-sky-200'
+                  : 'border border-white/10 bg-white/5 text-white hover:bg-white/10'
               }`}
             >
               {p}

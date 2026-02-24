@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 
 function roleLabel(role) {
-  if (role === "TEACHER") return "Instructor";
-  if (role === "ADMIN") return "Coordinador";
-  return "Estudiante";
+  if (role === 'TEACHER') return 'Instructor';
+  if (role === 'ADMIN') return 'Coordinador';
+  return 'Estudiante';
 }
 
 function roleBadge(role) {
-  if (role === "TEACHER") return "acci-badge acci-badge-teacher";
-  if (role === "ADMIN") return "acci-badge acci-badge-admin";
-  return "acci-badge acci-badge-student";
+  if (role === 'TEACHER') return 'acci-badge acci-badge-teacher';
+  if (role === 'ADMIN') return 'acci-badge acci-badge-admin';
+  return 'acci-badge acci-badge-student';
 }
 
 export default function DashboardHeader({ role, fullName }) {
@@ -22,23 +22,23 @@ export default function DashboardHeader({ role, fullName }) {
 
   async function onLogout() {
     try {
-      await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+      await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
     } finally {
-      router.replace("/acceso");
+      router.replace('/acceso');
       router.refresh();
     }
   }
 
   const navLinks = [
-    { href: "/dashboard", label: "Inicio" },
-    { href: "/dashboard/cursos", label: "Cursos" },
-    ...(role === "ADMIN"
+    { href: '/dashboard', label: 'Inicio' },
+    { href: '/dashboard/cursos', label: 'Cursos' },
+    ...(role === 'ADMIN'
       ? [
-          { href: "/dashboard/usuarios", label: "Usuarios" },
-          { href: "/dashboard/auditoria", label: "Auditoría" },
+          { href: '/dashboard/usuarios', label: 'Usuarios' },
+          { href: '/dashboard/auditoria', label: 'Auditoría' },
         ]
       : []),
-    { href: "/dashboard/configuracion", label: "Perfil" },
+    { href: '/dashboard/configuracion', label: 'Perfil' },
   ];
 
   return (
@@ -59,26 +59,19 @@ export default function DashboardHeader({ role, fullName }) {
 
           <div className="min-w-0">
             <div className="text-lg md:text-xl font-bold tracking-tight text-white truncate">
-              {fullName ? `Hola, ${fullName.split(" ")[0]}` : "Dashboard"}
+              {fullName ? `Hola, ${fullName.split(' ')[0]}` : 'Dashboard'}
             </div>
 
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className={roleBadge(role)}>
-                {roleLabel(role)}
-              </span>
+              <span className={roleBadge(role)}>{roleLabel(role)}</span>
 
-              <span className="acci-badge acci-badge-brand">
-                ACCI Platform
-              </span>
+              <span className="acci-badge acci-badge-brand">ACCI Platform</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-end gap-3">
-          <button
-            onClick={onLogout}
-            className="acci-btn acci-btn-danger"
-          >
+          <button onClick={onLogout} className="acci-btn acci-btn-danger">
             Cerrar sesión
           </button>
         </div>
@@ -88,14 +81,12 @@ export default function DashboardHeader({ role, fullName }) {
       <nav className="flex items-center gap-1">
         {navLinks.map((link) => {
           const isActive =
-            link.href === "/dashboard"
-              ? pathname === "/dashboard"
-              : pathname.startsWith(link.href);
+            link.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(link.href);
           return (
             <Link
               key={link.href}
               href={link.href}
-              data-active={isActive ? "true" : undefined}
+              data-active={isActive ? 'true' : undefined}
               className="acci-nav-link"
             >
               {link.label}

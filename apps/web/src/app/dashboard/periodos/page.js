@@ -1,12 +1,12 @@
-import { cookies } from "next/headers";
-import Link from "next/link";
+import { cookies } from 'next/headers';
+import Link from 'next/link';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 async function getPeriodos(token) {
   const r = await fetch(`${API_URL}/periodos`, {
     headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   if (!r.ok) return null;
   return r.json();
@@ -15,7 +15,7 @@ async function getPeriodos(token) {
 async function getUserRole(token) {
   const r = await fetch(`${API_URL}/dashboard`, {
     headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   if (!r.ok) return null;
   const data = await r.json();
@@ -23,11 +23,11 @@ async function getUserRole(token) {
 }
 
 function formatDate(dateStr) {
-  if (!dateStr) return "-";
-  return new Date(dateStr).toLocaleDateString("es-CO", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
+  if (!dateStr) return '-';
+  return new Date(dateStr).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
   });
 }
 
@@ -36,42 +36,45 @@ function StatusBadge({ isActive }) {
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${
         isActive
-          ? "bg-emerald-500/15 text-emerald-300 border border-emerald-400/20"
-          : "bg-slate-500/15 text-slate-300 border border-slate-400/20"
+          ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/20'
+          : 'bg-slate-500/15 text-slate-300 border border-slate-400/20'
       }`}
     >
-      {isActive ? "Activo" : "Inactivo"}
+      {isActive ? 'Activo' : 'Inactivo'}
     </span>
   );
 }
 
 export default async function PeriodosPage() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get('accessToken')?.value;
 
   if (!accessToken) {
     return (
       <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
         <div className="text-white font-extrabold text-xl">Sesion no valida</div>
         <p className="text-slate-200/80 mt-2">Vuelve a ingresar.</p>
-        <a href="/acceso" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
+        <a
+          href="/acceso"
+          className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+        >
           Ir a /acceso
         </a>
       </div>
     );
   }
 
-  const [data, role] = await Promise.all([
-    getPeriodos(accessToken),
-    getUserRole(accessToken),
-  ]);
+  const [data, role] = await Promise.all([getPeriodos(accessToken), getUserRole(accessToken)]);
 
-  if (role !== "ADMIN") {
+  if (role !== 'ADMIN') {
     return (
       <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
         <div className="text-white font-extrabold text-xl">Sin permisos</div>
         <p className="text-slate-200/80 mt-2">Solo administradores pueden gestionar periodos.</p>
-        <Link href="/dashboard" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
+        <Link
+          href="/dashboard"
+          className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+        >
           Volver al dashboard
         </Link>
       </div>

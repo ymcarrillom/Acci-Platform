@@ -1,17 +1,17 @@
-import { NextResponse } from "next/server";
-import { getTokenOrRefresh, applyTokenCookie } from "@/lib/proxy-auth";
+import { NextResponse } from 'next/server';
+import { getTokenOrRefresh, applyTokenCookie } from '@/lib/proxy-auth';
 
-export const runtime = "nodejs";
-const API_URL = process.env.API_URL || "http://localhost:4000";
+export const runtime = 'nodejs';
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 export async function GET(_request, { params }) {
   const { courseId } = await params;
   const { token, refreshed } = await getTokenOrRefresh();
-  if (!token) return NextResponse.json({ message: "No autorizado" }, { status: 401 });
+  if (!token) return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
 
   const r = await fetch(`${API_URL}/dashboard/group-tracking/${courseId}`, {
     headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   const data = await r.json().catch(() => null);
   const res = NextResponse.json(data, { status: r.status });

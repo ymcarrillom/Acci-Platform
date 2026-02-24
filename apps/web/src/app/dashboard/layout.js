@@ -1,11 +1,11 @@
-import { cookies } from "next/headers";
-import DashboardHeader from "./DashboardHeader";
+import { cookies } from 'next/headers';
+import DashboardHeader from './DashboardHeader';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 export default async function DashboardLayout({ children }) {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get('accessToken')?.value;
 
   let role = null;
   let fullName = null;
@@ -13,7 +13,7 @@ export default async function DashboardLayout({ children }) {
     try {
       const r = await fetch(`${API_URL}/dashboard`, {
         headers: { Authorization: `Bearer ${accessToken}` },
-        cache: "no-store",
+        cache: 'no-store',
       });
       if (r.ok) {
         const data = await r.json();

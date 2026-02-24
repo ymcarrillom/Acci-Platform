@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function EnrollmentManager({ courseId, initialStudents }) {
   const router = useRouter();
   const [students, setStudents] = useState(initialStudents || []);
   const [allStudents, setAllStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState("");
+  const [selectedStudent, setSelectedStudent] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch("/api/users/students")
+    fetch('/api/users/students')
       .then((r) => r.json())
       .then((d) => setAllStudents(d.students || []))
       .catch(() => {});
@@ -24,22 +24,22 @@ export default function EnrollmentManager({ courseId, initialStudents }) {
 
   async function enroll() {
     if (!selectedStudent) return;
-    setError("");
+    setError('');
     setLoading(true);
     try {
       const r = await fetch(`/api/courses/${courseId}/students`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ studentId: selectedStudent }),
       });
       const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data?.message || "Error al inscribir");
+      if (!r.ok) throw new Error(data?.message || 'Error al inscribir');
 
       // Refresh student list
       const r2 = await fetch(`/api/courses/${courseId}/students`);
       const d2 = await r2.json().catch(() => ({}));
       setStudents(d2.students || []);
-      setSelectedStudent("");
+      setSelectedStudent('');
       router.refresh();
     } catch (err) {
       setError(err.message);
@@ -49,14 +49,14 @@ export default function EnrollmentManager({ courseId, initialStudents }) {
   }
 
   async function unenroll(studentId) {
-    setError("");
+    setError('');
     setLoading(true);
     try {
       const r = await fetch(`/api/courses/${courseId}/enroll/${studentId}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data?.message || "Error al desinscribir");
+      if (!r.ok) throw new Error(data?.message || 'Error al desinscribir');
 
       setStudents((prev) => prev.filter((s) => s.id !== studentId));
       router.refresh();
@@ -88,7 +88,7 @@ export default function EnrollmentManager({ courseId, initialStudents }) {
           disabled={loading || !selectedStudent}
           className="rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-2.5 text-sm font-extrabold text-white hover:from-emerald-400 hover:to-green-500 transition disabled:opacity-60"
         >
-          {loading ? "..." : "Inscribir"}
+          {loading ? '...' : 'Inscribir'}
         </button>
       </div>
 
@@ -100,9 +100,7 @@ export default function EnrollmentManager({ courseId, initialStudents }) {
 
       {/* Student list */}
       {students.length === 0 ? (
-        <p className="text-sm font-medium text-slate-200/60">
-          No hay estudiantes inscritos.
-        </p>
+        <p className="text-sm font-medium text-slate-200/60">No hay estudiantes inscritos.</p>
       ) : (
         <div className="space-y-2">
           {students.map((s) => (
@@ -111,12 +109,8 @@ export default function EnrollmentManager({ courseId, initialStudents }) {
               className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3"
             >
               <div>
-                <span className="text-sm font-bold text-white">
-                  {s.fullName}
-                </span>
-                <span className="ml-2 text-xs text-slate-300/70">
-                  {s.email}
-                </span>
+                <span className="text-sm font-bold text-white">{s.fullName}</span>
+                <span className="ml-2 text-xs text-slate-300/70">{s.email}</span>
               </div>
               <button
                 onClick={() => unenroll(s.id)}

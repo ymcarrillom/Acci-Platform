@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ── Source discovery ────────────────────────────────────── */
 @source "../app/**/*.{js,jsx,ts,tsx}";
@@ -14,64 +14,63 @@
 /* ── Tailwind v4 Custom Theme Tokens ─────────────────────── */
 @theme {
   /* ── Brand: Institutional Blue ─ */
-  --color-brand-50:  #EFF6FF;
-  --color-brand-100: #DBEAFE;
-  --color-brand-200: #BFDBFE;
-  --color-brand-300: #93C5FD;
-  --color-brand-400: #60A5FA;
-  --color-brand-500: #3B82F6;
-  --color-brand-600: #2563EB;
-  --color-brand-700: #1D4ED8;
-  --color-brand-800: #1E40AF;
-  --color-brand-900: #1E3A8A;
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
 
   /* ── Brand: Celestial Sky ─────── */
-  --color-sky-brand-300: #7DD3FC;
-  --color-sky-brand-400: #38BDF8;
-  --color-sky-brand-500: #0EA5E9;
-  --color-sky-brand-600: #0284C7;
+  --color-sky-brand-300: #7dd3fc;
+  --color-sky-brand-400: #38bdf8;
+  --color-sky-brand-500: #0ea5e9;
+  --color-sky-brand-600: #0284c7;
 
   /* ── Brand: Sacred Gold ──────── */
-  --color-sacred-200: #FDE68A;
-  --color-sacred-300: #FCD34D;
-  --color-sacred-400: #FBBF24;
-  --color-sacred-500: #F59E0B;
-  --color-sacred-600: #D97706;
-  --color-sacred-700: #B45309;
+  --color-sacred-200: #fde68a;
+  --color-sacred-300: #fcd34d;
+  --color-sacred-400: #fbbf24;
+  --color-sacred-500: #f59e0b;
+  --color-sacred-600: #d97706;
+  --color-sacred-700: #b45309;
 
   /* ── Semantic Adaptive Tokens ── */
-  --color-bg-base:      var(--bg-base);
-  --color-bg-surface:   var(--bg-surface);
-  --color-bg-elevated:  var(--bg-elevated);
-  --color-bg-input:     var(--bg-input);
-  --color-bg-overlay:   var(--bg-overlay);
-  --color-fg-primary:   var(--fg-primary);
+  --color-bg-base: var(--bg-base);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-input: var(--bg-input);
+  --color-bg-overlay: var(--bg-overlay);
+  --color-fg-primary: var(--fg-primary);
   --color-fg-secondary: var(--fg-secondary);
-  --color-fg-tertiary:  var(--fg-tertiary);
-  --color-fg-muted:     var(--fg-muted);
-  --color-fg-inverse:   var(--fg-inverse);
-  --color-line:         var(--line);
-  --color-line-subtle:  var(--line-subtle);
-  --color-line-strong:  var(--line-strong);
+  --color-fg-tertiary: var(--fg-tertiary);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-inverse: var(--fg-inverse);
+  --color-line: var(--line);
+  --color-line-subtle: var(--line-subtle);
+  --color-line-strong: var(--line-strong);
 
   /* ── Radius ───────────────────── */
-  --radius-card:  1.5rem;
+  --radius-card: 1.5rem;
   --radius-panel: 1rem;
   --radius-input: 0.75rem;
   --radius-badge: 9999px;
-  --radius-btn:   0.75rem;
+  --radius-btn: 0.75rem;
 
   /* ── Easing ───────────────────── */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out:    cubic-bezier(0, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
 
   /* ── Durations ────────────────── */
-  --duration-fast:   150ms;
+  --duration-fast: 150ms;
   --duration-normal: 250ms;
-  --duration-slow:   400ms;
+  --duration-slow: 400ms;
 }
-
 
 /* ══════════════════════════════════════════════════════════
    ☀️  MODO CLARO — Light Mode  (:root sin .dark)
@@ -80,110 +79,108 @@
   color-scheme: light;
 
   /* ── Backgrounds ─────────────────────────────────────── */
-  --bg-base:     #EEF3FD;
-  --bg-surface:  #FFFFFF;
-  --bg-elevated: #F8FAFD;
-  --bg-input:    #F1F5F9;
-  --bg-overlay:  rgba(15, 23, 42, 0.04);
+  --bg-base: #eef3fd;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f8fafd;
+  --bg-input: #f1f5f9;
+  --bg-overlay: rgba(15, 23, 42, 0.04);
 
   /* Glass card light */
-  --glass-bg:     rgba(255, 255, 255, 0.88);
+  --glass-bg: rgba(255, 255, 255, 0.88);
   --glass-border: rgba(15, 23, 42, 0.09);
-  --glass-inner:  rgba(255, 255, 255, 0.60);
-  --glass-glow:   rgba(37, 99, 235, 0.06);
-  --glass-blur:   16px;
+  --glass-inner: rgba(255, 255, 255, 0.6);
+  --glass-glow: rgba(37, 99, 235, 0.06);
+  --glass-blur: 16px;
 
   /* ── Texto / Foreground ───────────────────────────────── */
-  --fg-primary:   #0F172A;
+  --fg-primary: #0f172a;
   --fg-secondary: #334155;
-  --fg-tertiary:  #64748B;
-  --fg-muted:     #94A3B8;
-  --fg-inverse:   #FFFFFF;
-  --fg-on-accent: #FFFFFF;
+  --fg-tertiary: #64748b;
+  --fg-muted: #94a3b8;
+  --fg-inverse: #ffffff;
+  --fg-on-accent: #ffffff;
 
   /* ── Bordes ───────────────────────────────────────────── */
-  --line:        rgba(15, 23, 42, 0.09);
+  --line: rgba(15, 23, 42, 0.09);
   --line-subtle: rgba(15, 23, 42, 0.05);
   --line-strong: rgba(15, 23, 42, 0.16);
 
   /* ── Brand ───────────────────────────────────────────── */
-  --primary:       #2563EB;
-  --primary-hover: #1D4ED8;
-  --primary-muted: rgba(37, 99, 235, 0.10);
-  --primary-ring:  rgba(37, 99, 235, 0.25);
-  --secondary:     #0284C7;
-  --secondary-muted: rgba(2, 132, 199, 0.10);
-  --accent:        #D97706;
-  --accent-light:  #FEF3C7;
-  --accent-ring:   rgba(217, 119, 6, 0.20);
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-muted: rgba(37, 99, 235, 0.1);
+  --primary-ring: rgba(37, 99, 235, 0.25);
+  --secondary: #0284c7;
+  --secondary-muted: rgba(2, 132, 199, 0.1);
+  --accent: #d97706;
+  --accent-light: #fef3c7;
+  --accent-ring: rgba(217, 119, 6, 0.2);
 
   /* ── Roles ───────────────────────────────────────────── */
-  --role-admin:          #2563EB;
-  --role-admin-bg:       rgba(37, 99, 235, 0.08);
-  --role-admin-border:   rgba(37, 99, 235, 0.18);
-  --role-admin-text:     #1E40AF;
-  --role-admin-glow:     rgba(37, 99, 235, 0.12);
+  --role-admin: #2563eb;
+  --role-admin-bg: rgba(37, 99, 235, 0.08);
+  --role-admin-border: rgba(37, 99, 235, 0.18);
+  --role-admin-text: #1e40af;
+  --role-admin-glow: rgba(37, 99, 235, 0.12);
 
-  --role-teacher:        #6366F1;
-  --role-teacher-bg:     rgba(99, 102, 241, 0.08);
+  --role-teacher: #6366f1;
+  --role-teacher-bg: rgba(99, 102, 241, 0.08);
   --role-teacher-border: rgba(99, 102, 241, 0.18);
-  --role-teacher-text:   #4338CA;
-  --role-teacher-glow:   rgba(99, 102, 241, 0.10);
+  --role-teacher-text: #4338ca;
+  --role-teacher-glow: rgba(99, 102, 241, 0.1);
 
-  --role-student:        #059669;
-  --role-student-bg:     rgba(5, 150, 105, 0.08);
+  --role-student: #059669;
+  --role-student-bg: rgba(5, 150, 105, 0.08);
   --role-student-border: rgba(5, 150, 105, 0.18);
-  --role-student-text:   #065F46;
-  --role-student-glow:   rgba(5, 150, 105, 0.10);
+  --role-student-text: #065f46;
+  --role-student-glow: rgba(5, 150, 105, 0.1);
 
   /* ── Estados ─────────────────────────────────────────── */
-  --success:        #059669;
-  --success-bg:     #ECFDF5;
-  --success-border: #A7F3D0;
-  --success-text:   #065F46;
-  --success-ring:   rgba(5, 150, 105, 0.20);
+  --success: #059669;
+  --success-bg: #ecfdf5;
+  --success-border: #a7f3d0;
+  --success-text: #065f46;
+  --success-ring: rgba(5, 150, 105, 0.2);
 
-  --error:          #DC2626;
-  --error-bg:       #FEF2F2;
-  --error-border:   #FECACA;
-  --error-text:     #991B1B;
-  --error-ring:     rgba(220, 38, 38, 0.20);
+  --error: #dc2626;
+  --error-bg: #fef2f2;
+  --error-border: #fecaca;
+  --error-text: #991b1b;
+  --error-ring: rgba(220, 38, 38, 0.2);
 
-  --warning:        #D97706;
-  --warning-bg:     #FFFBEB;
-  --warning-border: #FDE68A;
-  --warning-text:   #92400E;
-  --warning-ring:   rgba(217, 119, 6, 0.20);
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
+  --warning-border: #fde68a;
+  --warning-text: #92400e;
+  --warning-ring: rgba(217, 119, 6, 0.2);
 
-  --info:           #0284C7;
-  --info-bg:        #F0F9FF;
-  --info-border:    #BAE6FD;
-  --info-text:      #075985;
-  --info-ring:      rgba(2, 132, 199, 0.20);
+  --info: #0284c7;
+  --info-bg: #f0f9ff;
+  --info-border: #bae6fd;
+  --info-text: #075985;
+  --info-ring: rgba(2, 132, 199, 0.2);
 
   /* ── Sombras ─────────────────────────────────────────── */
-  --shadow-xs:      0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-sm:      0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-md:      0 4px 12px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
-  --shadow-lg:      0 8px 24px rgba(15, 23, 42, 0.10), 0 4px 8px rgba(15, 23, 42, 0.06);
-  --shadow-xl:      0 16px 48px rgba(15, 23, 42, 0.12), 0 8px 16px rgba(15, 23, 42, 0.08);
-  --shadow-card:    0 2px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
-  --shadow-elevated:0 8px 32px rgba(15, 23, 42, 0.10), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.1), 0 4px 8px rgba(15, 23, 42, 0.06);
+  --shadow-xl: 0 16px 48px rgba(15, 23, 42, 0.12), 0 8px 16px rgba(15, 23, 42, 0.08);
+  --shadow-card: 0 2px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-elevated: 0 8px 32px rgba(15, 23, 42, 0.1), 0 4px 12px rgba(15, 23, 42, 0.06);
   --shadow-ring-primary: 0 0 0 3px rgba(37, 99, 235, 0.22);
-  --shadow-ring-sky:     0 0 0 3px rgba(14, 165, 233, 0.22);
-  --shadow-glow-admin:   0 8px 32px rgba(37, 99, 235, 0.18);
+  --shadow-ring-sky: 0 0 0 3px rgba(14, 165, 233, 0.22);
+  --shadow-glow-admin: 0 8px 32px rgba(37, 99, 235, 0.18);
   --shadow-glow-teacher: 0 8px 32px rgba(99, 102, 241, 0.18);
   --shadow-glow-student: 0 8px 32px rgba(5, 150, 105, 0.18);
 
   /* ── Gradiente de página ─────────────────────────────── */
   --page-gradient:
-    radial-gradient(1400px circle at 65%   0%, rgba(37, 99, 235, 0.07),    transparent 52%),
-    radial-gradient(900px  circle at  0%  55%, rgba(14, 165, 233, 0.06),   transparent 50%),
-    radial-gradient(800px  circle at 95%  85%, rgba(99, 102, 241, 0.05),   transparent 50%),
-    radial-gradient(1200px circle at 40%  40%, rgba(255,255,255, 0.55),     transparent 70%),
-    #EEF3FD;
+    radial-gradient(1400px circle at 65% 0%, rgba(37, 99, 235, 0.07), transparent 52%),
+    radial-gradient(900px circle at 0% 55%, rgba(14, 165, 233, 0.06), transparent 50%),
+    radial-gradient(800px circle at 95% 85%, rgba(99, 102, 241, 0.05), transparent 50%),
+    radial-gradient(1200px circle at 40% 40%, rgba(255, 255, 255, 0.55), transparent 70%), #eef3fd;
 }
-
 
 /* ══════════════════════════════════════════════════════════
    🌙  MODO OSCURO — Dark Mode  (html.dark)
@@ -192,586 +189,649 @@
   color-scheme: dark;
 
   /* ── Backgrounds ─────────────────────────────────────── */
-  --bg-base:     #020617;
-  --bg-surface:  rgba(15, 23, 42, 0.55);
+  --bg-base: #020617;
+  --bg-surface: rgba(15, 23, 42, 0.55);
   --bg-elevated: rgba(30, 41, 59, 0.65);
-  --bg-input:    rgba(2,  6,  23, 0.70);
-  --bg-overlay:  rgba(255, 255, 255, 0.05);
+  --bg-input: rgba(2, 6, 23, 0.7);
+  --bg-overlay: rgba(255, 255, 255, 0.05);
 
   /* Glass card dark */
-  --glass-bg:     rgba(15, 23, 42, 0.55);
-  --glass-border: rgba(255, 255, 255, 0.10);
-  --glass-inner:  rgba(255, 255, 255, 0.07);
-  --glass-glow:   rgba(56, 189, 248, 0.08);
-  --glass-blur:   24px;
+  --glass-bg: rgba(15, 23, 42, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-inner: rgba(255, 255, 255, 0.07);
+  --glass-glow: rgba(56, 189, 248, 0.08);
+  --glass-blur: 24px;
 
   /* ── Texto / Foreground ───────────────────────────────── */
-  --fg-primary:   #F8FAFC;
+  --fg-primary: #f8fafc;
   --fg-secondary: rgba(226, 232, 240, 0.72);
-  --fg-tertiary:  #94A3B8;
-  --fg-muted:     #64748B;
-  --fg-inverse:   #0F172A;
-  --fg-on-accent: #FFFFFF;
+  --fg-tertiary: #94a3b8;
+  --fg-muted: #64748b;
+  --fg-inverse: #0f172a;
+  --fg-on-accent: #ffffff;
 
   /* ── Bordes ───────────────────────────────────────────── */
-  --line:        rgba(255, 255, 255, 0.10);
+  --line: rgba(255, 255, 255, 0.1);
   --line-subtle: rgba(255, 255, 255, 0.06);
   --line-strong: rgba(255, 255, 255, 0.18);
 
   /* ── Brand ───────────────────────────────────────────── */
-  --primary:         #60A5FA;
-  --primary-hover:   #93C5FD;
-  --primary-muted:   rgba(96, 165, 250, 0.15);
-  --primary-ring:    rgba(96, 165, 250, 0.30);
-  --secondary:       #38BDF8;
+  --primary: #60a5fa;
+  --primary-hover: #93c5fd;
+  --primary-muted: rgba(96, 165, 250, 0.15);
+  --primary-ring: rgba(96, 165, 250, 0.3);
+  --secondary: #38bdf8;
   --secondary-muted: rgba(56, 189, 248, 0.15);
-  --accent:          #FBBF24;
-  --accent-light:    rgba(251, 191, 36, 0.15);
-  --accent-ring:     rgba(251, 191, 36, 0.25);
+  --accent: #fbbf24;
+  --accent-light: rgba(251, 191, 36, 0.15);
+  --accent-ring: rgba(251, 191, 36, 0.25);
 
   /* ── Roles ───────────────────────────────────────────── */
-  --role-admin:          #60A5FA;
-  --role-admin-bg:       rgba(96, 165, 250, 0.12);
-  --role-admin-border:   rgba(96, 165, 250, 0.22);
-  --role-admin-text:     #93C5FD;
-  --role-admin-glow:     rgba(56, 189, 248, 0.20);
+  --role-admin: #60a5fa;
+  --role-admin-bg: rgba(96, 165, 250, 0.12);
+  --role-admin-border: rgba(96, 165, 250, 0.22);
+  --role-admin-text: #93c5fd;
+  --role-admin-glow: rgba(56, 189, 248, 0.2);
 
-  --role-teacher:        #A5B4FC;
-  --role-teacher-bg:     rgba(165, 180, 252, 0.12);
+  --role-teacher: #a5b4fc;
+  --role-teacher-bg: rgba(165, 180, 252, 0.12);
   --role-teacher-border: rgba(165, 180, 252, 0.22);
-  --role-teacher-text:   #C7D2FE;
-  --role-teacher-glow:   rgba(99, 102, 241, 0.20);
+  --role-teacher-text: #c7d2fe;
+  --role-teacher-glow: rgba(99, 102, 241, 0.2);
 
-  --role-student:        #6EE7B7;
-  --role-student-bg:     rgba(110, 231, 183, 0.12);
+  --role-student: #6ee7b7;
+  --role-student-bg: rgba(110, 231, 183, 0.12);
   --role-student-border: rgba(110, 231, 183, 0.22);
-  --role-student-text:   #A7F3D0;
-  --role-student-glow:   rgba(16, 185, 129, 0.20);
+  --role-student-text: #a7f3d0;
+  --role-student-glow: rgba(16, 185, 129, 0.2);
 
   /* ── Estados ─────────────────────────────────────────── */
-  --success:        #34D399;
-  --success-bg:     rgba(16, 185, 129, 0.12);
+  --success: #34d399;
+  --success-bg: rgba(16, 185, 129, 0.12);
   --success-border: rgba(16, 185, 129, 0.25);
-  --success-text:   #6EE7B7;
-  --success-ring:   rgba(52, 211, 153, 0.25);
+  --success-text: #6ee7b7;
+  --success-ring: rgba(52, 211, 153, 0.25);
 
-  --error:          #F87171;
-  --error-bg:       rgba(239, 68, 68, 0.12);
-  --error-border:   rgba(239, 68, 68, 0.25);
-  --error-text:     #FCA5A5;
-  --error-ring:     rgba(248, 113, 113, 0.25);
+  --error: #f87171;
+  --error-bg: rgba(239, 68, 68, 0.12);
+  --error-border: rgba(239, 68, 68, 0.25);
+  --error-text: #fca5a5;
+  --error-ring: rgba(248, 113, 113, 0.25);
 
-  --warning:        #FBBF24;
-  --warning-bg:     rgba(245, 158, 11, 0.12);
+  --warning: #fbbf24;
+  --warning-bg: rgba(245, 158, 11, 0.12);
   --warning-border: rgba(245, 158, 11, 0.25);
-  --warning-text:   #FDE68A;
-  --warning-ring:   rgba(251, 191, 36, 0.25);
+  --warning-text: #fde68a;
+  --warning-ring: rgba(251, 191, 36, 0.25);
 
-  --info:           #38BDF8;
-  --info-bg:        rgba(14, 165, 233, 0.12);
-  --info-border:    rgba(14, 165, 233, 0.25);
-  --info-text:      #BAE6FD;
-  --info-ring:      rgba(56, 189, 248, 0.25);
+  --info: #38bdf8;
+  --info-bg: rgba(14, 165, 233, 0.12);
+  --info-border: rgba(14, 165, 233, 0.25);
+  --info-text: #bae6fd;
+  --info-ring: rgba(56, 189, 248, 0.25);
 
   /* ── Sombras ─────────────────────────────────────────── */
-  --shadow-xs:      0 1px 2px rgba(0, 0, 0, 0.25);
-  --shadow-sm:      0 1px 3px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.20);
-  --shadow-md:      0 4px 12px rgba(0, 0, 0, 0.40), 0 2px 4px rgba(0, 0, 0, 0.25);
-  --shadow-lg:      0 8px 24px rgba(0, 0, 0, 0.45), 0 4px 8px rgba(0, 0, 0, 0.30);
-  --shadow-xl:      0 16px 48px rgba(0, 0, 0, 0.50), 0 8px 16px rgba(0, 0, 0, 0.35);
-  --shadow-card:    0 4px 24px rgba(0, 0, 0, 0.35), 0 1px 4px rgba(0, 0, 0, 0.25);
-  --shadow-elevated:0 8px 48px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.30);
-  --shadow-ring-primary: 0 0 0 3px rgba(96, 165, 250, 0.30);
-  --shadow-ring-sky:     0 0 0 3px rgba(56, 189, 248, 0.30);
-  --shadow-glow-admin:   0 8px 48px rgba(56, 189, 248, 0.25);
-  --shadow-glow-teacher: 0 8px 48px rgba(99, 102, 241, 0.20);
-  --shadow-glow-student: 0 8px 48px rgba(16, 185, 129, 0.20);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45), 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5), 0 8px 16px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.35), 0 1px 4px rgba(0, 0, 0, 0.25);
+  --shadow-elevated: 0 8px 48px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-ring-primary: 0 0 0 3px rgba(96, 165, 250, 0.3);
+  --shadow-ring-sky: 0 0 0 3px rgba(56, 189, 248, 0.3);
+  --shadow-glow-admin: 0 8px 48px rgba(56, 189, 248, 0.25);
+  --shadow-glow-teacher: 0 8px 48px rgba(99, 102, 241, 0.2);
+  --shadow-glow-student: 0 8px 48px rgba(16, 185, 129, 0.2);
 
   /* ── Gradiente de página ─────────────────────────────── */
   --page-gradient:
-    radial-gradient(900px  circle at  6%  8%,  rgba(255, 255, 255, 0.08), transparent 45%),
-    radial-gradient(1200px circle at 50% -10%, rgba(56,  189, 248, 0.20), transparent 55%),
-    radial-gradient(900px  circle at 15%  30%, rgba(37,  99,  235, 0.16), transparent 55%),
-    radial-gradient(900px  circle at 85%  65%, rgba(99,  102, 241, 0.12), transparent 55%),
-    #020617;
+    radial-gradient(900px circle at 6% 8%, rgba(255, 255, 255, 0.08), transparent 45%),
+    radial-gradient(1200px circle at 50% -10%, rgba(56, 189, 248, 0.2), transparent 55%),
+    radial-gradient(900px circle at 15% 30%, rgba(37, 99, 235, 0.16), transparent 55%),
+    radial-gradient(900px circle at 85% 65%, rgba(99, 102, 241, 0.12), transparent 55%), #020617;
 }
-
 
 /* ══════════════════════════════════════════════════════════
    Base Layer — estilos base adaptativos
    ══════════════════════════════════════════════════════════ */
 @layer base {
-  html, body { height: 100%; }
+  html,
+  body {
+    height: 100%;
+  }
 
   body {
     background: var(--page-gradient);
     color: var(--fg-primary);
-    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-feature-settings:
+      'kern' 1,
+      'liga' 1,
+      'calt' 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition:
       background-color var(--duration-slow) var(--ease-smooth),
-      color            var(--duration-normal) var(--ease-smooth);
+      color var(--duration-normal) var(--ease-smooth);
   }
 
-  a { @apply no-underline; }
+  a {
+    @apply no-underline;
+  }
 
   /* Focus visible — accesibilidad WCAG AA */
   :focus-visible {
-    outline:        2px solid var(--primary);
+    outline: 2px solid var(--primary);
     outline-offset: 3px;
-    border-radius:  4px;
+    border-radius: 4px;
   }
 
   /* Selección de texto */
   ::selection {
     background: var(--primary-muted);
-    color:      var(--fg-primary);
+    color: var(--fg-primary);
   }
 
   /* Scrollbar sutil */
-  ::-webkit-scrollbar         { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track   { background: transparent; }
-  ::-webkit-scrollbar-thumb   {
-    background:    rgba(148, 163, 184, 0.30);
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
     border-radius: 999px;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(148, 163, 184, 0.55);
   }
-  .dark ::-webkit-scrollbar-thumb       { background: rgba(255,255,255,0.13); }
-  .dark ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.24); }
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.13);
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.24);
+  }
 }
-
 
 /* ══════════════════════════════════════════════════════════
    Utilities Layer — Sistema de clases del Design System ACCI
    ══════════════════════════════════════════════════════════ */
 @layer utilities {
-
   /* ────────────────────────────────────────────────────────
      GLASSMORPHIC CARD — componente base del sistema
      Reemplaza: rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl
      ──────────────────────────────────────────────────────── */
   .acci-card {
-    background:               var(--glass-bg);
-    border:                   1px solid var(--glass-border);
-    border-radius:            var(--radius-card);
-    box-shadow:               var(--shadow-card);
-    backdrop-filter:          blur(var(--glass-blur));
-    -webkit-backdrop-filter:  blur(var(--glass-blur));
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     transition:
-      box-shadow   var(--duration-normal) var(--ease-smooth),
-      transform    var(--duration-normal) var(--ease-smooth),
+      box-shadow var(--duration-normal) var(--ease-smooth),
+      transform var(--duration-normal) var(--ease-smooth),
       border-color var(--duration-normal) var(--ease-smooth);
   }
 
   .acci-card:hover {
-    transform:    translateY(-2px);
-    box-shadow:   var(--shadow-elevated);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
     border-color: var(--line-strong);
   }
 
   /* ── Panel (card sin hover) ─── */
   .acci-panel {
-    background:              var(--glass-bg);
-    border:                  1px solid var(--glass-border);
-    border-radius:           var(--radius-panel);
-    box-shadow:              var(--shadow-card);
-    backdrop-filter:         blur(var(--glass-blur));
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
   }
 
   /* ── Inner overlay (top-to-bottom tint dentro de card) ─ */
   .acci-card-overlay {
     pointer-events: none;
-    position:       absolute;
-    inset:          0;
-    border-radius:  inherit;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
   }
   /* Light: sutilmente blanco arriba, transparente abajo */
   .acci-card-overlay::after {
-    content:    '';
-    position:   absolute;
-    inset:      0;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.45) 0%, transparent 55%, rgba(15,23,42,0.04) 100%);
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.45) 0%,
+      transparent 55%,
+      rgba(15, 23, 42, 0.04) 100%
+    );
     border-radius: inherit;
   }
   .dark .acci-card-overlay::after {
-    background: linear-gradient(to bottom, rgba(255,255,255,0.07) 0%, transparent 50%, rgba(0,0,0,0.35) 100%);
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.07) 0%,
+      transparent 50%,
+      rgba(0, 0, 0, 0.35) 100%
+    );
   }
 
   /* ── Accent bar (línea top del card) ─────────────────── */
-  .acci-bar              { height: 3px; width: 100%; border-radius: 3px 3px 0 0; }
-  .acci-bar-primary      { background: linear-gradient(to right, #38BDF8, #2563EB); }
-  .acci-bar-admin        { background: linear-gradient(to right, #3B82F6, #6366F1); }
-  .acci-bar-teacher      { background: linear-gradient(to right, #0EA5E9, #3B82F6); }
-  .acci-bar-student      { background: linear-gradient(to right, #10B981, #059669); }
-  .acci-bar-sacred       { background: linear-gradient(to right, #F59E0B, #D97706); }
-  .acci-bar-spiritual    { background: linear-gradient(to right, #F59E0B, #D97706, #B45309); }
-  .acci-bar-success      { background: linear-gradient(to right, #34D399, #10B981); }
-  .acci-bar-error        { background: linear-gradient(to right, #F87171, #DC2626); }
+  .acci-bar {
+    height: 3px;
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+  }
+  .acci-bar-primary {
+    background: linear-gradient(to right, #38bdf8, #2563eb);
+  }
+  .acci-bar-admin {
+    background: linear-gradient(to right, #3b82f6, #6366f1);
+  }
+  .acci-bar-teacher {
+    background: linear-gradient(to right, #0ea5e9, #3b82f6);
+  }
+  .acci-bar-student {
+    background: linear-gradient(to right, #10b981, #059669);
+  }
+  .acci-bar-sacred {
+    background: linear-gradient(to right, #f59e0b, #d97706);
+  }
+  .acci-bar-spiritual {
+    background: linear-gradient(to right, #f59e0b, #d97706, #b45309);
+  }
+  .acci-bar-success {
+    background: linear-gradient(to right, #34d399, #10b981);
+  }
+  .acci-bar-error {
+    background: linear-gradient(to right, #f87171, #dc2626);
+  }
 
   /* ── Glow overlay (posición absoluta detrás del card) ── */
   .acci-glow {
     pointer-events: none;
-    position:       absolute;
-    inset:          -5rem;
-    border-radius:  inherit;
-    filter:         blur(48px);
-    opacity:        0.45;
-    transition:     opacity var(--duration-slow) var(--ease-smooth);
+    position: absolute;
+    inset: -5rem;
+    border-radius: inherit;
+    filter: blur(48px);
+    opacity: 0.45;
+    transition: opacity var(--duration-slow) var(--ease-smooth);
   }
-  .acci-glow-admin   { background: radial-gradient(ellipse at center, var(--role-admin-glow), transparent 70%); }
-  .acci-glow-teacher { background: radial-gradient(ellipse at center, var(--role-teacher-glow), transparent 70%); }
-  .acci-glow-student { background: radial-gradient(ellipse at center, var(--role-student-glow), transparent 70%); }
-  .acci-glow-primary { background: radial-gradient(ellipse at center, rgba(37,99,235,0.12), transparent 70%); }
+  .acci-glow-admin {
+    background: radial-gradient(ellipse at center, var(--role-admin-glow), transparent 70%);
+  }
+  .acci-glow-teacher {
+    background: radial-gradient(ellipse at center, var(--role-teacher-glow), transparent 70%);
+  }
+  .acci-glow-student {
+    background: radial-gradient(ellipse at center, var(--role-student-glow), transparent 70%);
+  }
+  .acci-glow-primary {
+    background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.12), transparent 70%);
+  }
 
   /* ────────────────────────────────────────────────────────
      INPUT
      ──────────────────────────────────────────────────────── */
   .acci-input {
-    width:         100%;
-    background:    var(--bg-input);
-    border:        1px solid var(--line);
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--line);
     border-radius: var(--radius-input);
-    color:         var(--fg-primary);
-    padding:       0.625rem 1rem;
-    font-size:     0.875rem;
+    color: var(--fg-primary);
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
     transition:
       border-color var(--duration-fast) var(--ease-smooth),
-      box-shadow   var(--duration-fast) var(--ease-smooth),
-      background   var(--duration-fast) var(--ease-smooth);
+      box-shadow var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth);
   }
-  .acci-input::placeholder { color: var(--fg-muted); }
+  .acci-input::placeholder {
+    color: var(--fg-muted);
+  }
   .acci-input:focus {
-    outline:      none;
+    outline: none;
     border-color: var(--secondary);
-    box-shadow:   var(--shadow-ring-sky);
-    background:   var(--bg-surface);
+    box-shadow: var(--shadow-ring-sky);
+    background: var(--bg-surface);
   }
 
   /* ── Select ─── */
   .acci-select {
-    width:            100%;
-    background:       var(--bg-input);
-    border:           1px solid var(--line);
-    border-radius:    var(--radius-input);
-    color:            var(--fg-primary);
-    padding:          0.625rem 1rem;
-    font-size:        0.875rem;
-    appearance:       none;
-    cursor:           pointer;
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-input);
+    color: var(--fg-primary);
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    appearance: none;
+    cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     padding-right: 2.5rem;
     transition:
       border-color var(--duration-fast) var(--ease-smooth),
-      box-shadow   var(--duration-fast) var(--ease-smooth);
+      box-shadow var(--duration-fast) var(--ease-smooth);
   }
   .acci-select:focus {
-    outline:      none;
+    outline: none;
     border-color: var(--secondary);
-    box-shadow:   var(--shadow-ring-sky);
+    box-shadow: var(--shadow-ring-sky);
   }
 
   /* ────────────────────────────────────────────────────────
      BOTONES
      ──────────────────────────────────────────────────────── */
   .acci-btn {
-    display:          inline-flex;
-    align-items:      center;
-    justify-content:  center;
-    gap:              0.5rem;
-    border-radius:    var(--radius-btn);
-    font-weight:      800;
-    font-size:        0.875rem;
-    padding:          0.625rem 1.25rem;
-    cursor:           pointer;
-    border:           1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-btn);
+    font-weight: 800;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+    cursor: pointer;
+    border: 1px solid transparent;
     transition:
-      filter      var(--duration-fast) var(--ease-smooth),
-      transform   var(--duration-fast) var(--ease-spring),
-      box-shadow  var(--duration-fast) var(--ease-smooth),
-      background  var(--duration-fast) var(--ease-smooth),
+      filter var(--duration-fast) var(--ease-smooth),
+      transform var(--duration-fast) var(--ease-spring),
+      box-shadow var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth),
       border-color var(--duration-fast) var(--ease-smooth);
     user-select: none;
   }
-  .acci-btn:active { transform: scale(0.98); }
+  .acci-btn:active {
+    transform: scale(0.98);
+  }
 
   /* Primary */
   .acci-btn-primary {
-    background: linear-gradient(135deg, #38BDF8 0%, #2563EB 100%);
-    color:      #FFFFFF;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.30);
+    background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
   }
   .acci-btn-primary:hover {
-    filter:     brightness(1.10);
+    filter: brightness(1.1);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
-    transform:  translateY(-1px);
+    transform: translateY(-1px);
   }
 
   /* Secondary */
   .acci-btn-secondary {
-    background:   var(--bg-surface);
-    color:        var(--fg-primary);
+    background: var(--bg-surface);
+    color: var(--fg-primary);
     border-color: var(--line);
-    box-shadow:   var(--shadow-sm);
+    box-shadow: var(--shadow-sm);
   }
   .acci-btn-secondary:hover {
-    background:   var(--bg-elevated);
+    background: var(--bg-elevated);
     border-color: var(--line-strong);
-    transform:    translateY(-1px);
+    transform: translateY(-1px);
   }
 
   /* Ghost */
   .acci-btn-ghost {
     background: transparent;
-    color:      var(--fg-secondary);
+    color: var(--fg-secondary);
   }
   .acci-btn-ghost:hover {
     background: var(--bg-overlay);
-    color:      var(--fg-primary);
+    color: var(--fg-primary);
   }
 
   /* Danger */
   .acci-btn-danger {
-    background:   var(--error-bg);
-    color:        var(--error-text);
+    background: var(--error-bg);
+    color: var(--error-text);
     border-color: var(--error-border);
   }
   .acci-btn-danger:hover {
-    background:   var(--error-border);
+    background: var(--error-border);
     border-color: var(--error);
-    transform:    translateY(-1px);
+    transform: translateY(-1px);
   }
 
   /* Warning */
   .acci-btn-warning {
-    background:   var(--warning-bg);
-    color:        var(--warning-text);
+    background: var(--warning-bg);
+    color: var(--warning-text);
     border-color: var(--warning-border);
   }
   .acci-btn-warning:hover {
     border-color: var(--warning);
-    transform:    translateY(-1px);
+    transform: translateY(-1px);
   }
 
   /* Success */
   .acci-btn-success {
-    background:   var(--success-bg);
-    color:        var(--success-text);
+    background: var(--success-bg);
+    color: var(--success-text);
     border-color: var(--success-border);
   }
   .acci-btn-success:hover {
     border-color: var(--success);
-    transform:    translateY(-1px);
+    transform: translateY(-1px);
   }
 
   /* ────────────────────────────────────────────────────────
      BADGES / ETIQUETAS
      ──────────────────────────────────────────────────────── */
   .acci-badge {
-    display:       inline-flex;
-    align-items:   center;
+    display: inline-flex;
+    align-items: center;
     border-radius: var(--radius-badge);
-    font-weight:   700;
-    font-size:     0.6875rem;
-    line-height:   1;
-    padding:       0.2rem 0.6rem;
-    border:        1px solid;
-    white-space:   nowrap;
-    transition:    opacity var(--duration-fast) var(--ease-smooth);
+    font-weight: 700;
+    font-size: 0.6875rem;
+    line-height: 1;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid;
+    white-space: nowrap;
+    transition: opacity var(--duration-fast) var(--ease-smooth);
   }
 
   /* Status */
   .acci-badge-success {
-    background:   var(--success-bg);
+    background: var(--success-bg);
     border-color: var(--success-border);
-    color:        var(--success-text);
+    color: var(--success-text);
   }
   .acci-badge-error {
-    background:   var(--error-bg);
+    background: var(--error-bg);
     border-color: var(--error-border);
-    color:        var(--error-text);
+    color: var(--error-text);
   }
   .acci-badge-warning {
-    background:   var(--warning-bg);
+    background: var(--warning-bg);
     border-color: var(--warning-border);
-    color:        var(--warning-text);
+    color: var(--warning-text);
   }
   .acci-badge-info {
-    background:   var(--info-bg);
+    background: var(--info-bg);
     border-color: var(--info-border);
-    color:        var(--info-text);
+    color: var(--info-text);
   }
 
   /* Roles */
   .acci-badge-admin {
-    background:   var(--role-admin-bg);
+    background: var(--role-admin-bg);
     border-color: var(--role-admin-border);
-    color:        var(--role-admin-text);
+    color: var(--role-admin-text);
   }
   .acci-badge-teacher {
-    background:   var(--role-teacher-bg);
+    background: var(--role-teacher-bg);
     border-color: var(--role-teacher-border);
-    color:        var(--role-teacher-text);
+    color: var(--role-teacher-text);
   }
   .acci-badge-student {
-    background:   var(--role-student-bg);
+    background: var(--role-student-bg);
     border-color: var(--role-student-border);
-    color:        var(--role-student-text);
+    color: var(--role-student-text);
   }
 
   /* Brand institucional */
   .acci-badge-brand {
-    background:   var(--primary-muted);
+    background: var(--primary-muted);
     border-color: var(--primary-ring);
-    color:        var(--primary);
-    font-weight:  700;
+    color: var(--primary);
+    font-weight: 700;
   }
 
   /* Actividad */
   .acci-badge-quiz {
-    background:   rgba(139, 92, 246, 0.10);
+    background: rgba(139, 92, 246, 0.1);
     border-color: rgba(139, 92, 246, 0.22);
-    color:        #7C3AED;
+    color: #7c3aed;
   }
   .dark .acci-badge-quiz {
-    background:   rgba(167, 139, 250, 0.12);
+    background: rgba(167, 139, 250, 0.12);
     border-color: rgba(167, 139, 250, 0.25);
-    color:        #C4B5FD;
+    color: #c4b5fd;
   }
   .acci-badge-task {
-    background:   rgba(217, 119, 6, 0.10);
+    background: rgba(217, 119, 6, 0.1);
     border-color: rgba(217, 119, 6, 0.22);
-    color:        #92400E;
+    color: #92400e;
   }
   .dark .acci-badge-task {
-    background:   rgba(251, 191, 36, 0.12);
+    background: rgba(251, 191, 36, 0.12);
     border-color: rgba(251, 191, 36, 0.25);
-    color:        #FDE68A;
+    color: #fde68a;
   }
   .acci-badge-material {
-    background:   rgba(2, 132, 199, 0.10);
+    background: rgba(2, 132, 199, 0.1);
     border-color: rgba(2, 132, 199, 0.22);
-    color:        #075985;
+    color: #075985;
   }
   .dark .acci-badge-material {
-    background:   rgba(56, 189, 248, 0.12);
+    background: rgba(56, 189, 248, 0.12);
     border-color: rgba(56, 189, 248, 0.25);
-    color:        #BAE6FD;
+    color: #bae6fd;
   }
 
   /* ────────────────────────────────────────────────────────
      NAVEGACIÓN
      ──────────────────────────────────────────────────────── */
   .acci-nav-link {
-    display:       inline-flex;
-    align-items:   center;
-    gap:           0.375rem;
-    padding:       0.375rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
     border-radius: 0.5rem;
-    font-weight:   700;
-    font-size:     0.875rem;
-    color:         var(--fg-secondary);
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--fg-secondary);
     transition:
-      color       var(--duration-fast) var(--ease-smooth),
-      background  var(--duration-fast) var(--ease-smooth);
+      color var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth);
   }
   .acci-nav-link:hover {
-    color:      var(--fg-primary);
+    color: var(--fg-primary);
     background: var(--bg-overlay);
   }
-  .acci-nav-link[data-active="true"],
+  .acci-nav-link[data-active='true'],
   .acci-nav-link.active {
-    color:      var(--primary);
+    color: var(--primary);
     background: var(--primary-muted);
   }
 
   /* ── Sidebar navigation link ──────────────────────────── */
   .acci-sidebar-link {
-    display:       block;
-    padding:       0.75rem 1rem;
+    display: block;
+    padding: 0.75rem 1rem;
     border-radius: var(--radius-panel);
-    border:        1px solid var(--line);
-    background:    var(--glass-bg);
-    color:         var(--fg-secondary);
-    font-size:     0.875rem;
-    font-weight:   700;
+    border: 1px solid var(--line);
+    background: var(--glass-bg);
+    color: var(--fg-secondary);
+    font-size: 0.875rem;
+    font-weight: 700;
     transition:
-      background   var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth),
       border-color var(--duration-fast) var(--ease-smooth),
-      color        var(--duration-fast) var(--ease-smooth);
+      color var(--duration-fast) var(--ease-smooth);
   }
   .acci-sidebar-link:hover {
-    background:   var(--bg-elevated);
+    background: var(--bg-elevated);
     border-color: var(--line-strong);
-    color:        var(--fg-primary);
+    color: var(--fg-primary);
   }
-  .acci-sidebar-link[data-active="true"],
+  .acci-sidebar-link[data-active='true'],
   .acci-sidebar-link.active {
-    background:   var(--primary-muted);
+    background: var(--primary-muted);
     border-color: var(--primary-ring);
-    color:        var(--primary);
+    color: var(--primary);
   }
 
   /* ────────────────────────────────────────────────────────
      TIPOGRAFÍA SEMÁNTICA
      ──────────────────────────────────────────────────────── */
   .acci-page-title {
-    font-size:      1.5rem;
-    font-weight:    900;
-    color:          var(--fg-primary);
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--fg-primary);
     letter-spacing: -0.02em;
-    line-height:    1.2;
+    line-height: 1.2;
   }
   .acci-section-title {
-    font-size:   1.125rem;
+    font-size: 1.125rem;
     font-weight: 800;
-    color:       var(--fg-primary);
+    color: var(--fg-primary);
     line-height: 1.3;
   }
   .acci-label {
-    font-size:      0.6875rem;
-    font-weight:    700;
-    color:          var(--fg-tertiary);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--fg-tertiary);
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
-  .acci-body { color: var(--fg-secondary); }
-  .acci-muted { color: var(--fg-muted); font-size: 0.8125rem; }
+  .acci-body {
+    color: var(--fg-secondary);
+  }
+  .acci-muted {
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+  }
 
   /* ── KPI / Stat Card ─────────────────────────────────── */
   .acci-stat-value {
-    font-size:   2.5rem;
+    font-size: 2.5rem;
     font-weight: 900;
     line-height: 1;
-    color:       var(--fg-primary);
-    font-feature-settings: "tnum";
+    color: var(--fg-primary);
+    font-feature-settings: 'tnum';
   }
   .acci-stat-label {
-    font-size:      0.6875rem;
-    font-weight:    600;
-    color:          var(--fg-tertiary);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--fg-tertiary);
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    margin-top:     0.25rem;
+    margin-top: 0.25rem;
   }
 
   /* ────────────────────────────────────────────────────────
      TABLA
      ──────────────────────────────────────────────────────── */
-  .acci-table { width: 100%; border-collapse: collapse; }
+  .acci-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
   .acci-table-header {
-    background:     var(--bg-elevated);
-    color:          var(--fg-tertiary);
-    font-size:      0.6875rem;
-    font-weight:    700;
+    background: var(--bg-elevated);
+    color: var(--fg-tertiary);
+    font-size: 0.6875rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    border-bottom:  1px solid var(--line);
+    border-bottom: 1px solid var(--line);
   }
   .acci-table-header th {
     padding: 0.75rem 1rem;
@@ -779,47 +839,58 @@
   }
   .acci-table-row {
     border-bottom: 1px solid var(--line-subtle);
-    transition:    background var(--duration-fast) var(--ease-smooth);
+    transition: background var(--duration-fast) var(--ease-smooth);
   }
-  .acci-table-row:hover { background: var(--bg-overlay); }
-  .acci-table-row td   { padding: 0.875rem 1rem; color: var(--fg-primary); font-size: 0.875rem; }
-  .acci-table-cell-secondary { color: var(--fg-tertiary); font-size: 0.8125rem; }
+  .acci-table-row:hover {
+    background: var(--bg-overlay);
+  }
+  .acci-table-row td {
+    padding: 0.875rem 1rem;
+    color: var(--fg-primary);
+    font-size: 0.875rem;
+  }
+  .acci-table-cell-secondary {
+    color: var(--fg-tertiary);
+    font-size: 0.8125rem;
+  }
 
   /* ── Divider ─────────────────────────────────────────── */
-  .acci-divider { border-top: 1px solid var(--line); }
+  .acci-divider {
+    border-top: 1px solid var(--line);
+  }
 
   /* ────────────────────────────────────────────────────────
      QUIZ / PROGRESO / TEMPORIZADOR
      ──────────────────────────────────────────────────────── */
   /* Progress bar */
   .acci-progress {
-    background:    var(--line);
+    background: var(--line);
     border-radius: 999px;
-    overflow:      hidden;
-    height:        6px;
+    overflow: hidden;
+    height: 6px;
   }
   .acci-progress-fill {
-    background:    linear-gradient(to right, #38BDF8, #2563EB);
+    background: linear-gradient(to right, #38bdf8, #2563eb);
     border-radius: 999px;
-    height:        100%;
-    transition:    width var(--duration-slow) var(--ease-smooth);
+    height: 100%;
+    transition: width var(--duration-slow) var(--ease-smooth);
   }
   .acci-progress-fill-success {
-    background: linear-gradient(to right, #34D399, #059669);
+    background: linear-gradient(to right, #34d399, #059669);
   }
   .acci-progress-fill-warning {
-    background: linear-gradient(to right, #FBBF24, #D97706);
+    background: linear-gradient(to right, #fbbf24, #d97706);
   }
   .acci-progress-fill-error {
-    background: linear-gradient(to right, #F87171, #DC2626);
+    background: linear-gradient(to right, #f87171, #dc2626);
   }
 
   /* Timer states (WCAG: color + font-weight, no solo color) */
   .acci-timer {
-    font-weight:     900;
-    font-size:       1.125rem;
-    font-feature-settings: "tnum";
-    letter-spacing:  0.02em;
+    font-weight: 900;
+    font-size: 1.125rem;
+    font-feature-settings: 'tnum';
+    letter-spacing: 0.02em;
   }
   .acci-timer-safe {
     color: var(--success);
@@ -835,48 +906,48 @@
 
   /* Quiz option states */
   .acci-quiz-option {
-    background:    var(--glass-bg);
-    border:        1px solid var(--line);
+    background: var(--glass-bg);
+    border: 1px solid var(--line);
     border-radius: var(--radius-panel);
-    padding:       0.875rem 1rem;
-    cursor:        pointer;
+    padding: 0.875rem 1rem;
+    cursor: pointer;
     transition:
-      background   var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth),
       border-color var(--duration-fast) var(--ease-smooth),
-      transform    var(--duration-fast) var(--ease-spring);
+      transform var(--duration-fast) var(--ease-spring);
   }
   .acci-quiz-option:hover {
     border-color: var(--secondary);
-    background:   var(--secondary-muted);
-    transform:    translateX(4px);
+    background: var(--secondary-muted);
+    transform: translateX(4px);
   }
   .acci-quiz-option-selected {
     border-color: var(--primary);
-    background:   var(--primary-muted);
+    background: var(--primary-muted);
   }
   .acci-quiz-option-correct {
     border-color: var(--success-border);
-    background:   var(--success-bg);
+    background: var(--success-bg);
   }
   .acci-quiz-option-incorrect {
     border-color: var(--error-border);
-    background:   var(--error-bg);
+    background: var(--error-bg);
   }
 
   /* Quiz feedback */
   .acci-quiz-feedback-correct {
-    background:   var(--success-bg);
-    border:       1px solid var(--success-border);
-    color:        var(--success-text);
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    color: var(--success-text);
     border-radius: var(--radius-panel);
-    padding:      1rem;
+    padding: 1rem;
   }
   .acci-quiz-feedback-incorrect {
-    background:   var(--error-bg);
-    border:       1px solid var(--error-border);
-    color:        var(--error-text);
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: var(--error-text);
     border-radius: var(--radius-panel);
-    padding:      1rem;
+    padding: 1rem;
   }
 
   /* ────────────────────────────────────────────────────────
@@ -886,35 +957,35 @@
   .acci-attendance-absent,
   .acci-attendance-late,
   .acci-attendance-excused {
-    display:       inline-flex;
-    align-items:   center;
+    display: inline-flex;
+    align-items: center;
     border-radius: var(--radius-badge);
-    font-weight:   700;
-    font-size:     0.6875rem;
-    line-height:   1;
-    padding:       0.2rem 0.6rem;
-    border:        1px solid;
-    white-space:   nowrap;
+    font-weight: 700;
+    font-size: 0.6875rem;
+    line-height: 1;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid;
+    white-space: nowrap;
   }
   .acci-attendance-present {
-    background:   var(--success-bg);
+    background: var(--success-bg);
     border-color: var(--success-border);
-    color:        var(--success-text);
+    color: var(--success-text);
   }
   .acci-attendance-absent {
-    background:   var(--error-bg);
+    background: var(--error-bg);
     border-color: var(--error-border);
-    color:        var(--error-text);
+    color: var(--error-text);
   }
   .acci-attendance-late {
-    background:   var(--warning-bg);
+    background: var(--warning-bg);
     border-color: var(--warning-border);
-    color:        var(--warning-text);
+    color: var(--warning-text);
   }
   .acci-attendance-excused {
-    background:   var(--info-bg);
+    background: var(--info-bg);
     border-color: var(--info-border);
-    color:        var(--info-text);
+    color: var(--info-text);
   }
 
   /* ────────────────────────────────────────────────────────
@@ -922,17 +993,17 @@
      ──────────────────────────────────────────────────────── */
   .acci-video-container {
     border-radius: var(--radius-panel);
-    overflow:      hidden;
-    box-shadow:    var(--shadow-lg);
-    background:    #000;
-    position:      relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    background: #000;
+    position: relative;
   }
   .acci-video-overlay {
     background: linear-gradient(
       to top,
-      rgba(2,  6,  23, 0.85) 0%,
-      rgba(2,  6,  23, 0.30) 40%,
-      transparent            80%
+      rgba(2, 6, 23, 0.85) 0%,
+      rgba(2, 6, 23, 0.3) 40%,
+      transparent 80%
     );
   }
   /* Light: overlay ligeramente más suave */
@@ -941,26 +1012,26 @@
       to top,
       rgba(15, 23, 42, 0.75) 0%,
       rgba(15, 23, 42, 0.25) 40%,
-      transparent            80%
+      transparent 80%
     );
   }
   .acci-video-badge-available {
-    background:   var(--success-bg);
-    border:       1px solid var(--success-border);
-    color:        var(--success-text);
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    color: var(--success-text);
     border-radius: 0.5rem;
-    padding:      0.25rem 0.625rem;
-    font-size:    0.75rem;
-    font-weight:  700;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 700;
   }
   .acci-video-badge-unavailable {
-    background:   var(--error-bg);
-    border:       1px solid var(--error-border);
-    color:        var(--error-text);
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: var(--error-text);
     border-radius: 0.5rem;
-    padding:      0.25rem 0.625rem;
-    font-size:    0.75rem;
-    font-weight:  700;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 700;
   }
 
   /* ────────────────────────────────────────────────────────
@@ -968,23 +1039,27 @@
      ──────────────────────────────────────────────────────── */
   /* Light: cálido dorado-crema */
   .acci-spiritual-card {
-    background:              rgba(254, 243, 199, 0.55);
-    border:                  1px solid rgba(217, 119, 6, 0.16);
-    border-radius:           var(--radius-card);
-    box-shadow:              0 4px 24px rgba(217, 119, 6, 0.08), 0 1px 4px rgba(217, 119, 6, 0.05);
-    backdrop-filter:         blur(12px);
+    background: rgba(254, 243, 199, 0.55);
+    border: 1px solid rgba(217, 119, 6, 0.16);
+    border-radius: var(--radius-card);
+    box-shadow:
+      0 4px 24px rgba(217, 119, 6, 0.08),
+      0 1px 4px rgba(217, 119, 6, 0.05);
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
   /* Dark: profundo y cálido, no frío */
   .dark .acci-spiritual-card {
-    background:   rgba(28, 18, 4, 0.65);
+    background: rgba(28, 18, 4, 0.65);
     border-color: rgba(245, 158, 11, 0.16);
-    box-shadow:   0 8px 48px rgba(245, 158, 11, 0.08), 0 2px 8px rgba(0,0,0,0.45);
+    box-shadow:
+      0 8px 48px rgba(245, 158, 11, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.45);
   }
 
   .acci-spiritual-text {
-    color:       var(--accent);
-    font-style:  italic;
+    color: var(--accent);
+    font-style: italic;
     font-weight: 500;
     line-height: 1.7;
   }
@@ -997,134 +1072,181 @@
      SELECCIÓN DE PERFIL / ROL
      ──────────────────────────────────────────────────────── */
   /* Role card hover: cada rol tiene su glow propio */
-  .acci-role-card-admin:hover   { box-shadow: var(--shadow-glow-admin),   var(--shadow-elevated); }
-  .acci-role-card-teacher:hover { box-shadow: var(--shadow-glow-teacher), var(--shadow-elevated); }
-  .acci-role-card-student:hover { box-shadow: var(--shadow-glow-student), var(--shadow-elevated); }
+  .acci-role-card-admin:hover {
+    box-shadow: var(--shadow-glow-admin), var(--shadow-elevated);
+  }
+  .acci-role-card-teacher:hover {
+    box-shadow: var(--shadow-glow-teacher), var(--shadow-elevated);
+  }
+  .acci-role-card-student:hover {
+    box-shadow: var(--shadow-glow-student), var(--shadow-elevated);
+  }
 
   /* ────────────────────────────────────────────────────────
      PAGINACIÓN
      ──────────────────────────────────────────────────────── */
   .acci-page-btn {
-    display:       inline-flex;
-    align-items:   center;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    min-width:     2rem;
-    height:        2rem;
-    padding:       0 0.5rem;
-    border:        1px solid var(--line);
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--line);
     border-radius: 0.5rem;
-    background:    var(--glass-bg);
-    color:         var(--fg-secondary);
-    font-size:     0.875rem;
-    font-weight:   700;
+    background: var(--glass-bg);
+    color: var(--fg-secondary);
+    font-size: 0.875rem;
+    font-weight: 700;
     transition:
-      background   var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth),
       border-color var(--duration-fast) var(--ease-smooth),
-      color        var(--duration-fast) var(--ease-smooth);
+      color var(--duration-fast) var(--ease-smooth);
   }
-  .acci-page-btn:hover { background: var(--bg-elevated); border-color: var(--line-strong); }
+  .acci-page-btn:hover {
+    background: var(--bg-elevated);
+    border-color: var(--line-strong);
+  }
   .acci-page-btn.active {
-    background:   var(--primary-muted);
+    background: var(--primary-muted);
     border-color: var(--primary-ring);
-    color:        var(--primary);
+    color: var(--primary);
   }
   .acci-page-btn:disabled {
-    opacity: 0.40;
-    cursor:  not-allowed;
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 
   /* ────────────────────────────────────────────────────────
      ALERTS / MENSAJES INLINE
      ──────────────────────────────────────────────────────── */
   .acci-alert {
-    display:       flex;
-    gap:           0.625rem;
-    align-items:   flex-start;
+    display: flex;
+    gap: 0.625rem;
+    align-items: flex-start;
     border-radius: 0.75rem;
-    padding:       0.75rem 1rem;
-    font-size:     0.875rem;
-    font-weight:   500;
-    border:        1px solid;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid;
   }
   .acci-alert-success {
-    background:   var(--success-bg);
+    background: var(--success-bg);
     border-color: var(--success-border);
-    color:        var(--success-text);
+    color: var(--success-text);
   }
   .acci-alert-error {
-    background:   var(--error-bg);
+    background: var(--error-bg);
     border-color: var(--error-border);
-    color:        var(--error-text);
+    color: var(--error-text);
   }
   .acci-alert-warning {
-    background:   var(--warning-bg);
+    background: var(--warning-bg);
     border-color: var(--warning-border);
-    color:        var(--warning-text);
+    color: var(--warning-text);
   }
   .acci-alert-info {
-    background:   var(--info-bg);
+    background: var(--info-bg);
     border-color: var(--info-border);
-    color:        var(--info-text);
+    color: var(--info-text);
   }
 
   /* ────────────────────────────────────────────────────────
      ANIMACIONES
      ──────────────────────────────────────────────────────── */
-  .acci-fade-in  { animation: acci-fade-in  var(--duration-normal) var(--ease-smooth) both; }
-  .acci-scale-in { animation: acci-scale-in var(--duration-normal) var(--ease-spring) both; }
-  .acci-slide-up { animation: acci-slide-up 0.30s var(--ease-smooth) both; }
+  .acci-fade-in {
+    animation: acci-fade-in var(--duration-normal) var(--ease-smooth) both;
+  }
+  .acci-scale-in {
+    animation: acci-scale-in var(--duration-normal) var(--ease-spring) both;
+  }
+  .acci-slide-up {
+    animation: acci-slide-up 0.3s var(--ease-smooth) both;
+  }
 
   @keyframes acci-fade-in {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   @keyframes acci-scale-in {
-    from { opacity: 0; transform: scale(0.96); }
-    to   { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
   @keyframes acci-slide-up {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   @keyframes acci-pulse-soft {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.65; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.65;
+    }
   }
   @keyframes acci-pulse-urgent {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.40; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
   }
   @keyframes acci-glow-pulse {
-    0%, 100% { filter: brightness(1); }
-    50%       { filter: brightness(1.15); }
+    0%,
+    100% {
+      filter: brightness(1);
+    }
+    50% {
+      filter: brightness(1.15);
+    }
   }
 
   /* ── Toggle de tema ────────────────────────────────────── */
   .acci-theme-toggle {
-    display:       inline-flex;
-    align-items:   center;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    width:         2.25rem;
-    height:        2.25rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 0.625rem;
-    border:        1px solid var(--line);
-    background:    var(--glass-bg);
-    color:         var(--fg-secondary);
-    cursor:        pointer;
+    border: 1px solid var(--line);
+    background: var(--glass-bg);
+    color: var(--fg-secondary);
+    cursor: pointer;
     transition:
-      background   var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth),
       border-color var(--duration-fast) var(--ease-smooth),
-      color        var(--duration-fast) var(--ease-smooth),
-      transform    var(--duration-fast) var(--ease-spring);
+      color var(--duration-fast) var(--ease-smooth),
+      transform var(--duration-fast) var(--ease-spring);
   }
   .acci-theme-toggle:hover {
-    background:   var(--bg-elevated);
+    background: var(--bg-elevated);
     border-color: var(--line-strong);
-    color:        var(--fg-primary);
-    transform:    scale(1.08);
+    color: var(--fg-primary);
+    transform: scale(1.08);
   }
 }
-
 
 /* ══════════════════════════════════════════════════════════
    ☀️  LIGHT MODE — Remap de variables nativas de Tailwind v4
@@ -1139,68 +1261,68 @@ html:not(.dark) {
   color-scheme: light;
 
   /* ── Fondos de cards (bg-slate-950/*, bg-slate-900/*) ── */
-  --color-slate-950: #F8FAFF;   /* card bg → blanco glass         */
-  --color-slate-900: #EEF3FD;   /* surfaces alternativas          */
-  --color-slate-800: #E5EBF8;   /* surfaces más profundas         */
+  --color-slate-950: #f8faff; /* card bg → blanco glass         */
+  --color-slate-900: #eef3fd; /* surfaces alternativas          */
+  --color-slate-800: #e5ebf8; /* surfaces más profundas         */
 
   /* ── Texto y bordes basados en "white" ─────────────────
      text-white → navy profundo
      border-white/10 → rgba(15,23,42,0.10)
      bg-white/5  → rgba(15,23,42,0.05)
      bg-white/10 → rgba(15,23,42,0.10)        ────────── */
-  --color-white: #0F172A;
+  --color-white: #0f172a;
 
   /* ── Texto "slate-50" (body default) ───────────────────── */
-  --color-slate-50: #0F172A;
+  --color-slate-50: #0f172a;
 
   /* ── Textos secundarios ────────────────────────────────── */
-  --color-slate-200: #1E293B;   /* text-slate-200/70 → legible   */
-  --color-slate-300: #334155;   /* text-slate-300/60-80 → visible */
+  --color-slate-200: #1e293b; /* text-slate-200/70 → legible   */
+  --color-slate-300: #334155; /* text-slate-300/60-80 → visible */
 
   /* ── Texto slate-100 (descripciones de rol, stat subtitles) */
   /* En dark: slate-100 = #f1f5f9 (casi blanco, legible)
      En light: necesita ser oscuro para contrastar           */
-  --color-slate-100: #1E293B;   /* text-slate-100/90 → navy      */
+  --color-slate-100: #1e293b; /* text-slate-100/90 → navy      */
 
   /* ── Labels y texto muted ──────────────────────────────── */
   /* En dark: slate-400 = #90a1b9 (legible sobre oscuro)
      En light: necesita ser más oscuro para contrastar       */
-  --color-slate-400: #475569;   /* labels, metadata → contraste AA */
-  --color-slate-500: #475569;   /* placeholders → visible           */
-  --color-slate-600: #374151;   /* texto muted adicional            */
-  --color-slate-700: #1F2937;   /* texto secundario fuerte          */
+  --color-slate-400: #475569; /* labels, metadata → contraste AA */
+  --color-slate-500: #475569; /* placeholders → visible           */
+  --color-slate-600: #374151; /* texto muted adicional            */
+  --color-slate-700: #1f2937; /* texto secundario fuerte          */
 
   /* ── Overlay interno de card (to-black/45) ─────────────
      En dark: to-black/45 → gradiente oscuro al fondo del card
      En light: → casi invisible                             */
-  --color-black: #EEF3FD;
+  --color-black: #eef3fd;
 
   /* ── Textos de badges en dark usan tonos pastel claro ───
      (text-emerald-300, text-sky-200, text-red-300, etc.)
      En fondo blanco necesitan versiones más oscuras.       */
   --color-emerald-200: #047857;
   --color-emerald-300: #059669;
-  --color-sky-200:     #0369A1;
-  --color-sky-300:     #0284C7;
-  --color-sky-400:     #0284C7;
-  --color-blue-200:    #1D4ED8;
-  --color-blue-300:    #2563EB;
-  --color-indigo-300:  #4338CA;
-  --color-violet-200:  #6D28D9;
-  --color-violet-300:  #7C3AED;
-  --color-red-200:     #B91C1C;
-  --color-red-300:     #DC2626;
-  --color-amber-200:   #92400E;
-  --color-amber-300:   #B45309;
-  --color-cyan-200:    #0369A1;
-  --color-cyan-300:    #0284C7;
-  --color-purple-300:  #7E22CE;
+  --color-sky-200: #0369a1;
+  --color-sky-300: #0284c7;
+  --color-sky-400: #0284c7;
+  --color-blue-200: #1d4ed8;
+  --color-blue-300: #2563eb;
+  --color-indigo-300: #4338ca;
+  --color-violet-200: #6d28d9;
+  --color-violet-300: #7c3aed;
+  --color-red-200: #b91c1c;
+  --color-red-300: #dc2626;
+  --color-amber-200: #92400e;
+  --color-amber-300: #b45309;
+  --color-cyan-200: #0369a1;
+  --color-cyan-300: #0284c7;
+  --color-purple-300: #7e22ce;
 }
 
 /* Fondo de página y texto base */
 html:not(.dark) body {
   background: var(--page-gradient);
-  color:      var(--fg-primary);
+  color: var(--fg-primary);
 }
 
 /* Transición suave al cambiar de modo */
@@ -1221,33 +1343,32 @@ html:not(.dark) *::after {
    El remap de --color-white los oscurece; aquí lo revertimos
    solo para elementos con fondo degradado (botones CTA).   */
 html:not(.dark) .bg-gradient-to-r {
-  --color-white: #FFFFFF;
+  --color-white: #ffffff;
 }
 html:not(.dark) .bg-gradient-to-br {
-  --color-white: #FFFFFF;
+  --color-white: #ffffff;
 }
 
 /* ── Inputs: borde visible + texto oscuro + placeholder ───── */
 html:not(.dark) input,
 html:not(.dark) textarea,
 html:not(.dark) select {
-  color: #0F172A;
+  color: #0f172a;
   border-color: rgba(15, 23, 42, 0.22) !important;
-  background-color: rgba(255, 255, 255, 0.80) !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
 }
 html:not(.dark) input:focus,
 html:not(.dark) textarea:focus,
 html:not(.dark) select:focus {
-  border-color: #0EA5E9 !important;
+  border-color: #0ea5e9 !important;
   box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18) !important;
-  background-color: #FFFFFF !important;
+  background-color: #ffffff !important;
   outline: none;
 }
 html:not(.dark) input::placeholder,
 html:not(.dark) textarea::placeholder {
-  color: #94A3B8 !important;
+  color: #94a3b8 !important;
 }
-
 
 /* ══════════════════════════════════════════════════════════
    LOGO ACCI — Light mode
@@ -1269,36 +1390,30 @@ html:not(.dark) .acci-logo-img {
 
 /* Capa de relleno: gradiente sobre las letras ACCI únicamente */
 html:not(.dark) .acci-logo-fill {
-  position:       absolute;
-  inset:          0;
+  position: absolute;
+  inset: 0;
   pointer-events: none;
 
   /* Gradiente brand concentrado en la zona ACCI (top 65%) */
-  background: radial-gradient(
-    ellipse 90% 50% at 50% 28%,
-    #0EA5E9  5%,
-    #2563EB 50%,
-    transparent 65%
-  );
+  background: radial-gradient(ellipse 90% 50% at 50% 28%, #0ea5e9 5%, #2563eb 50%, transparent 65%);
 
   /* PNG como máscara luminance: blanco = opaco, negro = transparente */
-  -webkit-mask-image:    url('/brand/acci.png');
-          mask-image:    url('/brand/acci.png');
-  -webkit-mask-size:     contain;
-          mask-size:     contain;
-  -webkit-mask-repeat:   no-repeat;
-          mask-repeat:   no-repeat;
+  -webkit-mask-image: url('/brand/acci.png');
+  mask-image: url('/brand/acci.png');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   -webkit-mask-position: center;
-          mask-position: center;
-  -webkit-mask-mode:     luminance;
-          mask-mode:     luminance;
+  mask-position: center;
+  -webkit-mask-mode: luminance;
+  mask-mode: luminance;
 }
 
 /* En dark mode, ocultar la capa de relleno */
 .dark .acci-logo-fill {
   display: none;
 }
-
 
 /* ══════════════════════════════════════════════════════════
    IMAGEN IGLESIA — Fondo negro en ambos modos
@@ -1308,12 +1423,12 @@ html:not(.dark) .acci-logo-fill {
    ══════════════════════════════════════════════════════════ */
 
 /* Contenedor del sello en DashboardHeader y Login */
-:has(> img[alt="Iglesia ACCI"]) {
+:has(> img[alt='Iglesia ACCI']) {
   background-color: #000000 !important;
   background-image: none !important;
 }
 
 /* Anular el remap de bg-white/5 para este contenedor específico */
-html:not(.dark) :has(> img[alt="Iglesia ACCI"]) {
+html:not(.dark) :has(> img[alt='Iglesia ACCI']) {
   background-color: #000000 !important;
 }

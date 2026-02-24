@@ -1,17 +1,20 @@
-import { cookies } from "next/headers";
-import ProfileForm from "./ProfileForm";
+import { cookies } from 'next/headers';
+import ProfileForm from './ProfileForm';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 export default async function ConfiguracionPage() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get('accessToken')?.value;
 
   if (!accessToken) {
     return (
       <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
         <div className="text-white font-extrabold text-xl">Sesión no válida</div>
-        <a href="/acceso" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
+        <a
+          href="/acceso"
+          className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+        >
           Ir a /acceso
         </a>
       </div>
@@ -20,7 +23,7 @@ export default async function ConfiguracionPage() {
 
   const r = await fetch(`${API_URL}/users/me`, {
     headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   const data = await r.json().catch(() => null);
   const user = data?.user;
@@ -33,7 +36,7 @@ export default async function ConfiguracionPage() {
     );
   }
 
-  const roleLabels = { STUDENT: "Estudiante", TEACHER: "Instructor", ADMIN: "Coordinador" };
+  const roleLabels = { STUDENT: 'Estudiante', TEACHER: 'Instructor', ADMIN: 'Coordinador' };
 
   return (
     <div className="space-y-6">
@@ -55,12 +58,16 @@ export default async function ConfiguracionPage() {
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
               <div className="text-xs font-semibold text-slate-400">Rol</div>
-              <div className="mt-1 text-sm font-bold text-white">{roleLabels[user.role] || user.role}</div>
+              <div className="mt-1 text-sm font-bold text-white">
+                {roleLabels[user.role] || user.role}
+              </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
               <div className="text-xs font-semibold text-slate-400">Estado</div>
-              <div className={`mt-1 text-sm font-bold ${user.isActive ? "text-emerald-300" : "text-red-300"}`}>
-                {user.isActive ? "Activo" : "Inactivo"}
+              <div
+                className={`mt-1 text-sm font-bold ${user.isActive ? 'text-emerald-300' : 'text-red-300'}`}
+              >
+                {user.isActive ? 'Activo' : 'Inactivo'}
               </div>
             </div>
           </div>

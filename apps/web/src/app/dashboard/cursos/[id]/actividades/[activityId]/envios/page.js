@@ -1,19 +1,23 @@
-import { cookies } from "next/headers";
-import Link from "next/link";
+import { cookies } from 'next/headers';
+import Link from 'next/link';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 function formatDate(dateStr) {
-  if (!dateStr) return "-";
-  return new Date(dateStr).toLocaleDateString("es-CO", {
-    day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+  if (!dateStr) return '-';
+  return new Date(dateStr).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 }
 
 export default async function EnviosPage({ params }) {
   const { id, activityId } = await params;
   const cookieStore = await cookies();
-  const raw = cookieStore.get("accessToken")?.value;
+  const raw = cookieStore.get('accessToken')?.value;
   const accessToken = raw ? decodeURIComponent(raw) : null;
 
   if (!accessToken) {
@@ -26,7 +30,7 @@ export default async function EnviosPage({ params }) {
 
   const r = await fetch(`${API_URL}/courses/${id}/activities/${activityId}/submissions`, {
     headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   const data = await r.json().catch(() => null);
   const submissions = data?.submissions || [];
@@ -34,7 +38,10 @@ export default async function EnviosPage({ params }) {
 
   return (
     <div className="space-y-6">
-      <Link href={`/dashboard/cursos/${id}`} className="text-sm font-semibold text-slate-300/70 hover:text-white transition">
+      <Link
+        href={`/dashboard/cursos/${id}`}
+        className="text-sm font-semibold text-slate-300/70 hover:text-white transition"
+      >
         ← Volver al curso
       </Link>
 
@@ -45,7 +52,7 @@ export default async function EnviosPage({ params }) {
 
         <div className="relative p-7">
           <h1 className="text-xl font-extrabold text-white">
-            Envíos: {activity?.title || "Actividad"}
+            Envíos: {activity?.title || 'Actividad'}
           </h1>
           <p className="text-sm text-slate-400 mt-1">{submissions.length} envíos recibidos</p>
 
@@ -69,7 +76,7 @@ export default async function EnviosPage({ params }) {
                   <div className="text-right shrink-0 ml-4">
                     {sub.grade != null ? (
                       <span className="text-sm font-bold text-emerald-300">
-                        {sub.grade}/{sub.maxGrade || "-"}
+                        {sub.grade}/{sub.maxGrade || '-'}
                       </span>
                     ) : (
                       <span className="inline-flex items-center rounded-full bg-amber-500/15 text-amber-300 border border-amber-400/20 px-2 py-0.5 text-xs font-bold">

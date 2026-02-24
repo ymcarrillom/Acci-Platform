@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 /**
  * Marca secundaria fija (arriba-derecha) integrada al layout:

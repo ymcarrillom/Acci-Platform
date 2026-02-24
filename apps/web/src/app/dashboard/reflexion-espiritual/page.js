@@ -1,39 +1,39 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const inputClass =
-  "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-emerald-400/50 focus:outline-none";
+  'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-emerald-400/50 focus:outline-none';
 
 const actionTypes = [
-  { value: "oracion", label: "Oracion" },
-  { value: "servicio", label: "Servicio" },
-  { value: "reflexion", label: "Reflexion" },
+  { value: 'oracion', label: 'Oracion' },
+  { value: 'servicio', label: 'Servicio' },
+  { value: 'reflexion', label: 'Reflexion' },
 ];
 
 const actionBadge = {
-  oracion: "bg-violet-500/20 text-violet-300 border-violet-500/30",
-  servicio: "bg-sky-500/20 text-sky-300 border-sky-500/30",
-  reflexion: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+  oracion: 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  servicio: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+  reflexion: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
 };
 
 export default function ReflexionEspiritualPage() {
   const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState("");
-  const [actionType, setActionType] = useState("reflexion");
-  const [content, setContent] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState('');
+  const [actionType, setActionType] = useState('reflexion');
+  const [content, setContent] = useState('');
   const [reflections, setReflections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [editContent, setEditContent] = useState("");
-  const [editActionType, setEditActionType] = useState("");
+  const [editContent, setEditContent] = useState('');
+  const [editActionType, setEditActionType] = useState('');
   const [message, setMessage] = useState(null);
 
   // Load enrolled courses
   useEffect(() => {
-    fetch("/api/courses")
+    fetch('/api/courses')
       .then((r) => r.json())
       .then((data) => {
         const list = data?.courses || [];
@@ -62,21 +62,21 @@ export default function ReflexionEspiritualPage() {
     setMessage(null);
     try {
       const r = await fetch(`/api/courses/${selectedCourse}/reflections`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: content.trim(), actionType }),
       });
       if (r.ok) {
         const data = await r.json();
         setReflections((prev) => [data.reflection, ...prev]);
-        setContent("");
-        setMessage({ type: "ok", text: "Reflexion guardada correctamente." });
+        setContent('');
+        setMessage({ type: 'ok', text: 'Reflexion guardada correctamente.' });
       } else {
         const err = await r.json().catch(() => null);
-        setMessage({ type: "err", text: err?.message || "Error al guardar." });
+        setMessage({ type: 'err', text: err?.message || 'Error al guardar.' });
       }
     } catch {
-      setMessage({ type: "err", text: "Error de conexion." });
+      setMessage({ type: 'err', text: 'Error de conexion.' });
     } finally {
       setSubmitting(false);
     }
@@ -86,8 +86,8 @@ export default function ReflexionEspiritualPage() {
     if (!editContent.trim()) return;
     try {
       const r = await fetch(`/api/courses/${selectedCourse}/reflections/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: editContent.trim(), actionType: editActionType }),
       });
       if (r.ok) {
@@ -99,10 +99,10 @@ export default function ReflexionEspiritualPage() {
   }
 
   async function handleDelete(id) {
-    if (!confirm("Eliminar esta reflexion?")) return;
+    if (!confirm('Eliminar esta reflexion?')) return;
     try {
       const r = await fetch(`/api/courses/${selectedCourse}/reflections/${id}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       if (r.ok) {
         setReflections((prev) => prev.filter((ref) => ref.id !== id));
@@ -128,7 +128,8 @@ export default function ReflexionEspiritualPage() {
         <div className="relative p-7">
           <h1 className="text-xl font-extrabold text-white">Aplicacion Espiritual</h1>
           <p className="mt-1 text-sm font-semibold text-slate-100/70">
-            Registra una accion practica: oracion, servicio o reflexion. Crecimiento integral: fe + caracter.
+            Registra una accion practica: oracion, servicio o reflexion. Crecimiento integral: fe +
+            caracter.
           </p>
         </div>
       </div>
@@ -149,19 +150,25 @@ export default function ReflexionEspiritualPage() {
                 >
                   {courses.length === 0 && <option value="">Sin cursos inscritos</option>}
                   {courses.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-200/80 mb-1">Tipo de accion</label>
+                <label className="block text-sm font-bold text-slate-200/80 mb-1">
+                  Tipo de accion
+                </label>
                 <select
                   value={actionType}
                   onChange={(e) => setActionType(e.target.value)}
                   className={inputClass}
                 >
                   {actionTypes.map((t) => (
-                    <option key={t.value} value={t.value}>{t.label}</option>
+                    <option key={t.value} value={t.value}>
+                      {t.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -179,7 +186,9 @@ export default function ReflexionEspiritualPage() {
             </div>
 
             {message && (
-              <div className={`text-sm font-semibold ${message.type === "ok" ? "text-emerald-400" : "text-red-400"}`}>
+              <div
+                className={`text-sm font-semibold ${message.type === 'ok' ? 'text-emerald-400' : 'text-red-400'}`}
+              >
                 {message.text}
               </div>
             )}
@@ -189,7 +198,7 @@ export default function ReflexionEspiritualPage() {
               disabled={submitting || !content.trim() || !selectedCourse}
               className="rounded-xl bg-emerald-500/20 border border-emerald-500/30 px-5 py-2 text-sm font-bold text-emerald-300 hover:bg-emerald-500/30 transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {submitting ? "Guardando..." : "Guardar reflexion"}
+              {submitting ? 'Guardando...' : 'Guardar reflexion'}
             </button>
           </form>
         </div>
@@ -205,7 +214,9 @@ export default function ReflexionEspiritualPage() {
           {reflections.length === 0 ? (
             <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-6 text-center">
               <div className="text-white/70 font-bold">Sin reflexiones aun</div>
-              <p className="text-sm text-slate-300/60 mt-1">Escribe tu primera reflexion espiritual.</p>
+              <p className="text-sm text-slate-300/60 mt-1">
+                Escribe tu primera reflexion espiritual.
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -222,7 +233,9 @@ export default function ReflexionEspiritualPage() {
                         className={`${inputClass} max-w-xs`}
                       >
                         {actionTypes.map((t) => (
-                          <option key={t.value} value={t.value}>{t.label}</option>
+                          <option key={t.value} value={t.value}>
+                            {t.label}
+                          </option>
                         ))}
                       </select>
                       <textarea
@@ -250,17 +263,20 @@ export default function ReflexionEspiritualPage() {
                     <>
                       <div className="flex items-center gap-2 mb-2">
                         {ref.actionType && (
-                          <span className={`inline-block rounded-md border px-2 py-0.5 text-xs font-bold ${actionBadge[ref.actionType] || actionBadge.reflexion}`}>
-                            {actionTypes.find((t) => t.value === ref.actionType)?.label || ref.actionType}
+                          <span
+                            className={`inline-block rounded-md border px-2 py-0.5 text-xs font-bold ${actionBadge[ref.actionType] || actionBadge.reflexion}`}
+                          >
+                            {actionTypes.find((t) => t.value === ref.actionType)?.label ||
+                              ref.actionType}
                           </span>
                         )}
                         <span className="text-xs text-slate-400/70">
-                          {new Date(ref.createdAt).toLocaleDateString("es-CO", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
+                          {new Date(ref.createdAt).toLocaleDateString('es-CO', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
                           })}
                         </span>
                       </div>
@@ -270,7 +286,7 @@ export default function ReflexionEspiritualPage() {
                           onClick={() => {
                             setEditingId(ref.id);
                             setEditContent(ref.content);
-                            setEditActionType(ref.actionType || "reflexion");
+                            setEditActionType(ref.actionType || 'reflexion');
                           }}
                           className="rounded-lg bg-white/5 border border-white/10 px-3 py-1 text-xs font-bold text-white/70 hover:bg-white/10 transition"
                         >

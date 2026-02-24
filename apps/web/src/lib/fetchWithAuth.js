@@ -13,15 +13,15 @@
 let refreshPromise = null;
 
 export async function fetchWithAuth(input, init = {}) {
-  const res = await fetch(input, { ...init, credentials: "include" });
+  const res = await fetch(input, { ...init, credentials: 'include' });
 
   if (res.status !== 401) return res;
 
   // Deduplicate: if multiple requests fail simultaneously, only one refresh call is made
   if (!refreshPromise) {
-    refreshPromise = fetch("/api/auth/refresh", {
-      method: "POST",
-      credentials: "include",
+    refreshPromise = fetch('/api/auth/refresh', {
+      method: 'POST',
+      credentials: 'include',
     }).finally(() => {
       refreshPromise = null;
     });
@@ -31,12 +31,12 @@ export async function fetchWithAuth(input, init = {}) {
 
   if (!refreshRes.ok) {
     // Token truly expired and refresh token is gone — force re-login
-    if (typeof window !== "undefined") {
-      window.location.replace("/acceso");
+    if (typeof window !== 'undefined') {
+      window.location.replace('/acceso');
     }
     return res; // return the original 401 response
   }
 
   // New accessToken cookie is now set — retry the original request
-  return fetch(input, { ...init, credentials: "include" });
+  return fetch(input, { ...init, credentials: 'include' });
 }

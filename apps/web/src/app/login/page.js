@@ -1,32 +1,34 @@
-"use client";
+'use client';
 
-import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
+import { Suspense, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 
 function roleLabel(role) {
-  if (role === "TEACHER") return "Instructor";
-  if (role === "ADMIN") return "Coordinador";
-  return "Estudiante";
+  if (role === 'TEACHER') return 'Instructor';
+  if (role === 'ADMIN') return 'Coordinador';
+  return 'Estudiante';
 }
 
 function roleAccent(role) {
-  if (role === "TEACHER") return "from-sky-500/25 via-indigo-500/10 to-transparent";
-  if (role === "ADMIN") return "from-blue-500/25 via-slate-500/10 to-transparent";
-  return "from-emerald-500/25 via-sky-500/10 to-transparent";
+  if (role === 'TEACHER') return 'from-sky-500/25 via-indigo-500/10 to-transparent';
+  if (role === 'ADMIN') return 'from-blue-500/25 via-slate-500/10 to-transparent';
+  return 'from-emerald-500/25 via-sky-500/10 to-transparent';
 }
 
 function getRedirectPath(role) {
-  return "/dashboard";
+  return '/dashboard';
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white font-bold">Cargando...</div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-white font-bold">Cargando...</div>
+        </div>
+      }
+    >
       <LoginForm />
     </Suspense>
   );
@@ -35,32 +37,32 @@ export default function LoginPage() {
 function LoginForm() {
   const router = useRouter();
   const search = useSearchParams();
-  const role = (search.get("role") || "STUDENT").toUpperCase();
-  const next = search.get("next") || "/dashboard";
+  const role = (search.get('role') || 'STUDENT').toUpperCase();
+  const next = search.get('next') || '/dashboard';
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   async function onSubmit(e) {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
     try {
-      const r = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const r = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data?.message || "No se pudo iniciar sesión");
+      if (!r.ok) throw new Error(data?.message || 'No se pudo iniciar sesión');
 
       // Redirigir según el rol (tokens se manejan via httpOnly cookies en el BFF)
       const redirectPath = getRedirectPath(data.role || role);
       router.replace(redirectPath);
     } catch (err) {
-      setError(err.message || "Error");
+      setError(err.message || 'Error');
     } finally {
       setLoading(false);
     }
@@ -70,7 +72,9 @@ function LoginForm() {
     <div className="min-h-screen px-6 py-10 flex items-center justify-center">
       <div className="w-full max-w-md">
         <div className="relative rounded-3xl border border-white/10 bg-slate-950/45 backdrop-blur-xl p-7 shadow-2xl overflow-hidden">
-          <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${roleAccent(role)} opacity-70`} />
+          <div
+            className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${roleAccent(role)} opacity-70`}
+          />
           <div className="relative">
             {/* Sello institucional */}
             <div className="flex justify-center mb-5">
@@ -89,7 +93,9 @@ function LoginForm() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-lg font-extrabold text-white">Iniciar sesión</div>
-                <p className="mt-1 text-sm font-semibold text-slate-200/70">Usa tus credenciales ACCI.</p>
+                <p className="mt-1 text-sm font-semibold text-slate-200/70">
+                  Usa tus credenciales ACCI.
+                </p>
               </div>
 
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white">
@@ -130,7 +136,7 @@ function LoginForm() {
                 disabled={loading}
                 className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-4 py-3 text-sm font-extrabold text-white hover:from-sky-400 hover:to-blue-500 transition disabled:opacity-60"
               >
-                {loading ? "Ingresando..." : "Ingresar"}
+                {loading ? 'Ingresando...' : 'Ingresar'}
               </button>
 
               <div className="flex items-center justify-center gap-2 text-xs font-semibold text-slate-300/80">
@@ -139,8 +145,18 @@ function LoginForm() {
                   href="/acceso"
                   className="inline-flex items-center gap-1 rounded-lg border border-white/15 bg-white/10 px-2.5 py-1 text-xs font-semibold text-white/80 hover:bg-white/20 hover:text-white transition"
                 >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M19 12H5M12 5l-7 7 7 7"/>
+                  <svg
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M19 12H5M12 5l-7 7 7 7" />
                   </svg>
                   Volver
                 </a>

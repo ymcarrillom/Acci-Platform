@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
-const inputClass = "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-violet-400/50 focus:outline-none";
+const inputClass =
+  'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-violet-400/50 focus:outline-none';
 
 export default function QuizPlayer({ courseId, activity }) {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function QuizPlayer({ courseId, activity }) {
   const [startToken, setStartToken] = useState(null);
   const [answers, setAnswers] = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [timeLeft, setTimeLeft] = useState(activity.timeLimit ? activity.timeLimit * 60 : null);
   const timerRef = useRef(null);
 
@@ -31,14 +32,14 @@ export default function QuizPlayer({ courseId, activity }) {
 
   async function handleStart() {
     setStarting(true);
-    setError("");
+    setError('');
     try {
       const r = await fetchWithAuth(`/api/courses/${courseId}/activities/${activity.id}/start`, {
-        method: "POST",
+        method: 'POST',
       });
       const data = await r.json().catch(() => null);
       if (!r.ok) {
-        setError(data?.message || "No se pudo iniciar el quiz");
+        setError(data?.message || 'No se pudo iniciar el quiz');
         setShowModal(false);
         return;
       }
@@ -46,7 +47,7 @@ export default function QuizPlayer({ courseId, activity }) {
       setShowModal(false);
       setStarted(true);
     } catch {
-      setError("Error de conexión al iniciar el quiz");
+      setError('Error de conexión al iniciar el quiz');
       setShowModal(false);
     } finally {
       setStarting(false);
@@ -70,15 +71,15 @@ export default function QuizPlayer({ courseId, activity }) {
   async function handleSubmit(e) {
     if (e) e.preventDefault();
     if (submitting) return;
-    setError("");
+    setError('');
     setSubmitting(true);
 
     try {
       const answerList = activity.questions.map((q) => {
         const ans = { questionId: q.id };
-        if (q.type === "OPEN_ENDED") {
-          ans.answerText = answers[q.id] || "";
-        } else if (q.type === "MULTIPLE_ANSWERS") {
+        if (q.type === 'OPEN_ENDED') {
+          ans.answerText = answers[q.id] || '';
+        } else if (q.type === 'MULTIPLE_ANSWERS') {
           ans.selectedOptionIds = answers[q.id] || [];
         } else {
           ans.selectedOptionId = answers[q.id] || undefined;
@@ -87,15 +88,15 @@ export default function QuizPlayer({ courseId, activity }) {
       });
 
       const r = await fetchWithAuth(`/api/courses/${courseId}/activities/${activity.id}/submit`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answers: answerList, ...(startToken ? { startToken } : {}) }),
       });
 
       const data = await r.json().catch(() => null);
 
       if (!r.ok) {
-        setError(data?.message || "Error al enviar");
+        setError(data?.message || 'Error al enviar');
         return;
       }
 
@@ -108,7 +109,7 @@ export default function QuizPlayer({ courseId, activity }) {
   function formatTime(seconds) {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, "0")}`;
+    return `${m}:${s.toString().padStart(2, '0')}`;
   }
 
   /* ── Pantalla de inicio (antes de comenzar) ── */
@@ -124,12 +125,16 @@ export default function QuizPlayer({ courseId, activity }) {
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
               <div className="text-xs text-slate-400">Preguntas</div>
-              <div className="mt-0.5 text-lg font-extrabold text-white">{activity.questions.length}</div>
+              <div className="mt-0.5 text-lg font-extrabold text-white">
+                {activity.questions.length}
+              </div>
             </div>
             {activity.timeLimit ? (
               <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                 <div className="text-xs text-slate-400">Tiempo límite</div>
-                <div className="mt-0.5 text-lg font-extrabold text-white">{activity.timeLimit} min</div>
+                <div className="mt-0.5 text-lg font-extrabold text-white">
+                  {activity.timeLimit} min
+                </div>
               </div>
             ) : (
               <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
@@ -140,7 +145,7 @@ export default function QuizPlayer({ courseId, activity }) {
             <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
               <div className="text-xs text-slate-400">Intentos permitidos</div>
               <div className="mt-0.5 text-lg font-extrabold text-white">
-                {activity.maxAttempts === 0 ? "Ilimitados" : activity.maxAttempts}
+                {activity.maxAttempts === 0 ? 'Ilimitados' : activity.maxAttempts}
               </div>
             </div>
           </div>
@@ -163,11 +168,12 @@ export default function QuizPlayer({ courseId, activity }) {
               <div className="relative p-7 space-y-4">
                 <div className="text-lg font-extrabold text-white">¿Listo para comenzar?</div>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Vas a iniciar el quiz <span className="font-semibold text-white">"{activity.title}"</span>.
+                  Vas a iniciar el quiz{' '}
+                  <span className="font-semibold text-white">"{activity.title}"</span>.
                   {activity.timeLimit
                     ? ` Tendrás ${activity.timeLimit} minutos y el tiempo comenzará al instante.`
-                    : " Una vez que comiences podrás tomarte el tiempo que necesites."}
-                  {" "}¿Deseas continuar?
+                    : ' Una vez que comiences podrás tomarte el tiempo que necesites.'}{' '}
+                  ¿Deseas continuar?
                 </p>
 
                 <div className="flex gap-3 pt-1">
@@ -182,7 +188,7 @@ export default function QuizPlayer({ courseId, activity }) {
                     disabled={starting}
                     className="flex-1 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg hover:shadow-violet-500/25 transition disabled:opacity-60"
                   >
-                    {starting ? "Iniciando..." : "Sí, comenzar"}
+                    {starting ? 'Iniciando...' : 'Sí, comenzar'}
                   </button>
                 </div>
               </div>
@@ -197,11 +203,13 @@ export default function QuizPlayer({ courseId, activity }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {timeLeft !== null && (
-        <div className={`sticky top-0 z-10 rounded-xl border px-4 py-2 text-sm font-bold text-center ${
-          timeLeft < 60
-            ? "border-red-400/30 bg-red-500/15 text-red-300"
-            : "border-white/10 bg-slate-950/80 text-white"
-        }`}>
+        <div
+          className={`sticky top-0 z-10 rounded-xl border px-4 py-2 text-sm font-bold text-center ${
+            timeLeft < 60
+              ? 'border-red-400/30 bg-red-500/15 text-red-300'
+              : 'border-white/10 bg-slate-950/80 text-white'
+          }`}
+        >
           Tiempo restante: {formatTime(timeLeft)}
         </div>
       )}
@@ -212,20 +220,18 @@ export default function QuizPlayer({ courseId, activity }) {
             <p className="text-sm font-bold text-white">
               {i + 1}. {q.text}
             </p>
-            <span className="shrink-0 text-xs font-semibold text-slate-400">
-              {q.points} pts
-            </span>
+            <span className="shrink-0 text-xs font-semibold text-slate-400">{q.points} pts</span>
           </div>
 
-          {q.type === "OPEN_ENDED" ? (
+          {q.type === 'OPEN_ENDED' ? (
             <textarea
-              value={answers[q.id] || ""}
+              value={answers[q.id] || ''}
               onChange={(e) => setAnswer(q.id, e.target.value)}
               placeholder="Escribe tu respuesta..."
               rows={4}
               className={inputClass}
             />
-          ) : q.type === "MULTIPLE_ANSWERS" ? (
+          ) : q.type === 'MULTIPLE_ANSWERS' ? (
             <div className="space-y-2">
               {q.options?.map((opt) => {
                 const selected = (answers[q.id] || []).includes(opt.id);
@@ -234,8 +240,8 @@ export default function QuizPlayer({ courseId, activity }) {
                     key={opt.id}
                     className={`flex items-center gap-3 rounded-lg border px-4 py-2.5 cursor-pointer transition ${
                       selected
-                        ? "border-violet-400/40 bg-violet-500/10 text-white"
-                        : "border-white/10 bg-white/3 text-slate-300 hover:bg-white/5"
+                        ? 'border-violet-400/40 bg-violet-500/10 text-white'
+                        : 'border-white/10 bg-white/3 text-slate-300 hover:bg-white/5'
                     }`}
                   >
                     <input
@@ -256,8 +262,8 @@ export default function QuizPlayer({ courseId, activity }) {
                   key={opt.id}
                   className={`flex items-center gap-3 rounded-lg border px-4 py-2.5 cursor-pointer transition ${
                     answers[q.id] === opt.id
-                      ? "border-violet-400/40 bg-violet-500/10 text-white"
-                      : "border-white/10 bg-white/3 text-slate-300 hover:bg-white/5"
+                      ? 'border-violet-400/40 bg-violet-500/10 text-white'
+                      : 'border-white/10 bg-white/3 text-slate-300 hover:bg-white/5'
                   }`}
                 >
                   <input
@@ -287,7 +293,7 @@ export default function QuizPlayer({ courseId, activity }) {
         disabled={submitting}
         className="w-full rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg hover:shadow-violet-500/25 transition disabled:opacity-50"
       >
-        {submitting ? "Enviando..." : "Enviar respuestas"}
+        {submitting ? 'Enviando...' : 'Enviar respuestas'}
       </button>
     </form>
   );

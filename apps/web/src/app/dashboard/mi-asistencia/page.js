@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const statusConfig = {
-  PRESENT: { label: "Presente", cls: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
-  ABSENT: { label: "Ausente", cls: "bg-red-500/15 text-red-300 border-red-500/30" },
-  LATE: { label: "Tarde", cls: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
-  EXCUSED: { label: "Excusado", cls: "bg-sky-500/15 text-sky-300 border-sky-500/30" },
+  PRESENT: { label: 'Presente', cls: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' },
+  ABSENT: { label: 'Ausente', cls: 'bg-red-500/15 text-red-300 border-red-500/30' },
+  LATE: { label: 'Tarde', cls: 'bg-amber-500/15 text-amber-300 border-amber-500/30' },
+  EXCUSED: { label: 'Excusado', cls: 'bg-sky-500/15 text-sky-300 border-sky-500/30' },
 };
 
 function formatDate(dateStr) {
-  if (!dateStr) return "";
-  return new Date(dateStr).toLocaleDateString("es-CO", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString('es-CO', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
   });
 }
 
@@ -24,7 +24,7 @@ export default function MiAsistenciaPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/dashboard/my-attendance")
+    fetch('/api/dashboard/my-attendance')
       .then((r) => r.json())
       .then((d) => setData(d))
       .catch(() => {})
@@ -43,7 +43,10 @@ export default function MiAsistenciaPage() {
     return (
       <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
         <div className="text-white font-extrabold text-xl">Sin datos de asistencia</div>
-        <Link href="/dashboard" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
+        <Link
+          href="/dashboard"
+          className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+        >
           Volver al dashboard
         </Link>
       </div>
@@ -68,8 +71,10 @@ export default function MiAsistenciaPage() {
               </p>
             </div>
             <div className="text-center">
-              <div className={`text-4xl font-black ${globalPct !== null && globalPct < 60 ? "text-red-300" : "text-emerald-300"}`}>
-                {globalPct !== null ? `${globalPct}%` : "--"}
+              <div
+                className={`text-4xl font-black ${globalPct !== null && globalPct < 60 ? 'text-red-300' : 'text-emerald-300'}`}
+              >
+                {globalPct !== null ? `${globalPct}%` : '--'}
               </div>
               <div className="text-xs font-semibold text-slate-400 mt-1">
                 {presentClasses} de {totalClasses} clases
@@ -83,27 +88,39 @@ export default function MiAsistenciaPage() {
       {courses.length === 0 ? (
         <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-8 text-center">
           <div className="text-white font-bold">Sin cursos inscritos</div>
-          <p className="text-sm text-slate-300/70 mt-1">Inscribete en un curso para ver tu asistencia.</p>
+          <p className="text-sm text-slate-300/70 mt-1">
+            Inscribete en un curso para ver tu asistencia.
+          </p>
         </div>
       ) : (
         courses.map((c) => (
-          <div key={c.course.id} className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl shadow-2xl">
+          <div
+            key={c.course.id}
+            className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl shadow-2xl"
+          >
             <div className="pointer-events-none absolute -inset-20 opacity-30 blur-3xl bg-gradient-to-br from-sky-500/35 via-emerald-500/20 to-transparent" />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/7 via-transparent to-black/45" />
             <div className="relative p-7">
               {/* Curso header */}
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <Link href={`/dashboard/cursos/${c.course.id}`} className="text-sm font-extrabold text-white hover:text-sky-300 transition">
+                  <Link
+                    href={`/dashboard/cursos/${c.course.id}`}
+                    className="text-sm font-extrabold text-white hover:text-sky-300 transition"
+                  >
                     {c.course.name}
                   </Link>
                   <span className="ml-2 text-xs text-slate-400">{c.course.code}</span>
                 </div>
                 <div className="text-right">
-                  <span className={`text-lg font-black ${c.pct !== null && c.pct < 60 ? "text-red-300" : "text-emerald-300"}`}>
-                    {c.pct !== null ? `${c.pct}%` : "--"}
+                  <span
+                    className={`text-lg font-black ${c.pct !== null && c.pct < 60 ? 'text-red-300' : 'text-emerald-300'}`}
+                  >
+                    {c.pct !== null ? `${c.pct}%` : '--'}
                   </span>
-                  <div className="text-[10px] text-slate-500">{c.present + c.late}/{c.total} clases</div>
+                  <div className="text-[10px] text-slate-500">
+                    {c.present + c.late}/{c.total} clases
+                  </div>
                 </div>
               </div>
 
@@ -111,7 +128,7 @@ export default function MiAsistenciaPage() {
               {c.total > 0 && (
                 <div className="w-full h-2 rounded-full bg-white/10 mb-4 overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all ${c.pct >= 60 ? "bg-emerald-500" : "bg-red-500"}`}
+                    className={`h-full rounded-full transition-all ${c.pct >= 60 ? 'bg-emerald-500' : 'bg-red-500'}`}
                     style={{ width: `${c.pct || 0}%` }}
                   />
                 </div>
@@ -120,12 +137,15 @@ export default function MiAsistenciaPage() {
               {/* Stats mini */}
               <div className="grid grid-cols-4 gap-2 mb-4">
                 {[
-                  { label: "Presente", val: c.present, cls: "text-emerald-300" },
-                  { label: "Tarde", val: c.late, cls: "text-amber-300" },
-                  { label: "Ausente", val: c.absent, cls: "text-red-300" },
-                  { label: "Excusado", val: c.excused, cls: "text-sky-300" },
+                  { label: 'Presente', val: c.present, cls: 'text-emerald-300' },
+                  { label: 'Tarde', val: c.late, cls: 'text-amber-300' },
+                  { label: 'Ausente', val: c.absent, cls: 'text-red-300' },
+                  { label: 'Excusado', val: c.excused, cls: 'text-sky-300' },
                 ].map((s) => (
-                  <div key={s.label} className="rounded-lg border border-white/10 bg-white/5 p-2 text-center">
+                  <div
+                    key={s.label}
+                    className="rounded-lg border border-white/10 bg-white/5 p-2 text-center"
+                  >
                     <div className={`text-lg font-black ${s.cls}`}>{s.val}</div>
                     <div className="text-[10px] font-semibold text-slate-500">{s.label}</div>
                   </div>
@@ -139,9 +159,16 @@ export default function MiAsistenciaPage() {
                   {c.records.map((r, i) => {
                     const cfg = statusConfig[r.status] || statusConfig.ABSENT;
                     return (
-                      <div key={i} className="flex items-center justify-between rounded-lg border border-white/5 bg-white/3 px-3 py-2">
-                        <span className="text-xs font-semibold text-slate-300">{formatDate(r.date)}</span>
-                        <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-bold ${cfg.cls}`}>
+                      <div
+                        key={i}
+                        className="flex items-center justify-between rounded-lg border border-white/5 bg-white/3 px-3 py-2"
+                      >
+                        <span className="text-xs font-semibold text-slate-300">
+                          {formatDate(r.date)}
+                        </span>
+                        <span
+                          className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-bold ${cfg.cls}`}
+                        >
                           {cfg.label}
                         </span>
                       </div>
@@ -151,7 +178,9 @@ export default function MiAsistenciaPage() {
               )}
 
               {c.total === 0 && (
-                <p className="text-sm text-slate-400 text-center">Sin registros de asistencia aun.</p>
+                <p className="text-sm text-slate-400 text-center">
+                  Sin registros de asistencia aun.
+                </p>
               )}
             </div>
           </div>

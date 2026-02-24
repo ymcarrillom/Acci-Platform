@@ -39,9 +39,11 @@ model User {
   passwordHash String
   role         Role
   fullName     String
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isActive            Boolean   @default(true)
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   refreshTokens RefreshToken[]
   auditLogs     AuditLog[]
@@ -53,6 +55,7 @@ model User {
   reflections     SpiritualReflection[] @relation("StudentReflections")
   uploadedRecoveryVideos RecoveryVideo[] @relation("UploadedRecoveryVideos")
   recoveryVideoAccess    RecoveryVideoAccess[] @relation("RecoveryVideoAccess")
+  passwordResetTokens    PasswordResetToken[]
 }
 
 model RefreshToken {
@@ -64,6 +67,20 @@ model RefreshToken {
   expiresAt DateTime
 
   user      User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([tokenHash])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([tokenHash])

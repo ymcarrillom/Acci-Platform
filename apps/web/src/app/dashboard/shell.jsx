@@ -1,37 +1,37 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 function roleLabel(role) {
-  if (role === "TEACHER") return "Instructor";
-  if (role === "ADMIN") return "Coordinador";
-  return "Estudiante";
+  if (role === 'TEACHER') return 'Instructor';
+  if (role === 'ADMIN') return 'Coordinador';
+  return 'Estudiante';
 }
 
 function navByRole(role) {
   const common = [
-    { href: "/dashboard", label: "Inicio" },
-    { href: "/dashboard/cursos", label: "Cursos" },
-    { href: "/dashboard/actividades", label: "Actividades" },
-    { href: "/dashboard/quizzes", label: "Quizzes" },
+    { href: '/dashboard', label: 'Inicio' },
+    { href: '/dashboard/cursos', label: 'Cursos' },
+    { href: '/dashboard/actividades', label: 'Actividades' },
+    { href: '/dashboard/quizzes', label: 'Quizzes' },
   ];
 
-  if (role === "TEACHER") {
+  if (role === 'TEACHER') {
     return [
       ...common,
-      { href: "/dashboard/revision", label: "Revisión" },
-      { href: "/dashboard/reportes", label: "Reportes" },
+      { href: '/dashboard/revision', label: 'Revisión' },
+      { href: '/dashboard/reportes', label: 'Reportes' },
     ];
   }
 
-  if (role === "ADMIN") {
+  if (role === 'ADMIN') {
     return [
       ...common,
-      { href: "/dashboard/usuarios", label: "Usuarios" },
-      { href: "/dashboard/reportes", label: "Reportes" },
-      { href: "/dashboard/configuracion", label: "Configuración" },
+      { href: '/dashboard/usuarios', label: 'Usuarios' },
+      { href: '/dashboard/reportes', label: 'Reportes' },
+      { href: '/dashboard/configuracion', label: 'Configuración' },
     ];
   }
 
-  return [...common, { href: "/dashboard/progreso", label: "Progreso" }];
+  return [...common, { href: '/dashboard/progreso', label: 'Progreso' }];
 }
 
 export default function DashboardShell({ me, children }) {
@@ -46,19 +46,13 @@ export default function DashboardShell({ me, children }) {
             <div className="text-white font-extrabold text-lg leading-tight">
               {me.name || me.email}
             </div>
-            <div className="mt-1 text-sm font-semibold text-slate-100/70">
-              {roleLabel(me.role)}
-            </div>
+            <div className="mt-1 text-sm font-semibold text-slate-100/70">{roleLabel(me.role)}</div>
           </div>
 
           <nav className="p-3">
             <div className="grid gap-2">
               {items.map((it) => (
-                <Link
-                  key={it.href}
-                  href={it.href}
-                  className="acci-sidebar-link"
-                >
+                <Link key={it.href} href={it.href} className="acci-sidebar-link">
                   {it.label}
                 </Link>
               ))}
@@ -67,9 +61,7 @@ export default function DashboardShell({ me, children }) {
 
           <div className="p-4 border-t border-[var(--line)]">
             <form action="/api/auth/logout" method="POST">
-              <button className="acci-btn acci-btn-danger w-full">
-                Cerrar sesión
-              </button>
+              <button className="acci-btn acci-btn-danger w-full">Cerrar sesión</button>
             </form>
           </div>
         </aside>

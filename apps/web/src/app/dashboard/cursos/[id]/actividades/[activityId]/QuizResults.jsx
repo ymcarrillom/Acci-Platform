@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 export default function QuizResults({ activity, submission }) {
   const { showScore, showAnswers } = activity;
@@ -35,29 +35,35 @@ export default function QuizResults({ activity, submission }) {
               <div key={ans.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-sm font-semibold text-white">
-                    {i + 1}. {question?.text || ans.question?.text || "Pregunta"}
+                    {i + 1}. {question?.text || ans.question?.text || 'Pregunta'}
                   </p>
                   {ans.isCorrect != null && (
-                    <span className={`shrink-0 text-xs font-bold rounded-full px-2 py-0.5 ${
-                      ans.isCorrect
-                        ? "bg-emerald-500/15 text-emerald-300 border border-emerald-400/20"
-                        : "bg-red-500/15 text-red-300 border border-red-400/20"
-                    }`}>
-                      {ans.isCorrect ? "Correcta" : "Incorrecta"}
+                    <span
+                      className={`shrink-0 text-xs font-bold rounded-full px-2 py-0.5 ${
+                        ans.isCorrect
+                          ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/20'
+                          : 'bg-red-500/15 text-red-300 border border-red-400/20'
+                      }`}
+                    >
+                      {ans.isCorrect ? 'Correcta' : 'Incorrecta'}
                     </span>
                   )}
                 </div>
                 <div className="mt-2 text-sm text-slate-300">
-                  {ans.selectedOptionIds ? (() => {
-                    let ids = [];
-                    try { ids = JSON.parse(ans.selectedOptionIds); } catch {}
-                    if (!ids.length) return <span className="text-slate-400">Sin respuesta</span>;
-                    const optTexts = ids.map((id) => {
-                      const opt = question?.options?.find((o) => o.id === id);
-                      return opt?.text || id;
-                    });
-                    return <span>Tus respuestas: {optTexts.join(", ")}</span>;
-                  })() : ans.selectedOption ? (
+                  {ans.selectedOptionIds ? (
+                    (() => {
+                      let ids = [];
+                      try {
+                        ids = JSON.parse(ans.selectedOptionIds);
+                      } catch {}
+                      if (!ids.length) return <span className="text-slate-400">Sin respuesta</span>;
+                      const optTexts = ids.map((id) => {
+                        const opt = question?.options?.find((o) => o.id === id);
+                        return opt?.text || id;
+                      });
+                      return <span>Tus respuestas: {optTexts.join(', ')}</span>;
+                    })()
+                  ) : ans.selectedOption ? (
                     <span>Tu respuesta: {ans.selectedOption.text}</span>
                   ) : ans.answerText ? (
                     <span>{ans.answerText}</span>

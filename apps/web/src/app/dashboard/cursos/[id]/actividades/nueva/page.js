@@ -1,12 +1,15 @@
-import Link from "next/link";
-import ActivityForm from "../ActivityForm";
+import Link from 'next/link';
+import ActivityForm from '../ActivityForm';
 
 export default async function NuevaActividadPage({ params }) {
   const { id } = await params;
 
   return (
     <div className="space-y-6">
-      <Link href={`/dashboard/cursos/${id}`} className="text-sm font-semibold text-slate-300/70 hover:text-white transition">
+      <Link
+        href={`/dashboard/cursos/${id}`}
+        className="text-sm font-semibold text-slate-300/70 hover:text-white transition"
+      >
         ← Volver al curso
       </Link>
 

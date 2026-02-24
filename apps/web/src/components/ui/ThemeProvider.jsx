@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
 
 /* ── Contexto ────────────────────────────────────────────── */
 const ThemeContext = createContext(null);
@@ -13,14 +13,14 @@ const ThemeContext = createContext(null);
  * - Agrega/quita la clase "dark" en <html>
  * - No modifica ningún componente existente
  */
-export function ThemeProvider({ children, defaultTheme = "light" }) {
+export function ThemeProvider({ children, defaultTheme = 'light' }) {
   const [theme, setTheme] = useState(defaultTheme);
   const [mounted, setMounted] = useState(false);
 
   /* Leer preferencia guardada al montar */
   useEffect(() => {
-    const stored = localStorage.getItem("acci-theme");
-    if (stored === "light" || stored === "dark") {
+    const stored = localStorage.getItem('acci-theme');
+    if (stored === 'light' || stored === 'dark') {
       setTheme(stored);
     }
     setMounted(true);
@@ -30,13 +30,12 @@ export function ThemeProvider({ children, defaultTheme = "light" }) {
   useEffect(() => {
     if (!mounted) return;
     const root = document.documentElement;
-    root.classList.remove("light", "dark");
+    root.classList.remove('light', 'dark');
     root.classList.add(theme);
-    localStorage.setItem("acci-theme", theme);
+    localStorage.setItem('acci-theme', theme);
   }, [theme, mounted]);
 
-  const toggleTheme = () =>
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
@@ -63,6 +62,6 @@ export function ThemeProvider({ children, defaultTheme = "light" }) {
  */
 export function useTheme() {
   const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme debe usarse dentro de <ThemeProvider>");
+  if (!ctx) throw new Error('useTheme debe usarse dentro de <ThemeProvider>');
   return ctx;
 }

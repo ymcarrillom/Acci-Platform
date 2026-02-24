@@ -1,12 +1,12 @@
-import { cookies } from "next/headers";
-import Link from "next/link";
+import { cookies } from 'next/headers';
+import Link from 'next/link';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 async function getCourses(token) {
   const r = await fetch(`${API_URL}/courses`, {
     headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   if (!r.ok) return null;
   return r.json();
@@ -15,7 +15,7 @@ async function getCourses(token) {
 async function getUserRole(token) {
   const r = await fetch(`${API_URL}/dashboard`, {
     headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   if (!r.ok) return null;
   const data = await r.json();
@@ -27,27 +27,27 @@ function StatusBadge({ isActive }) {
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${
         isActive
-          ? "bg-emerald-500/15 text-emerald-300 border border-emerald-400/20"
-          : "bg-red-500/15 text-red-300 border border-red-400/20"
+          ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/20'
+          : 'bg-red-500/15 text-red-300 border border-red-400/20'
       }`}
     >
-      {isActive ? "Activo" : "Inactivo"}
+      {isActive ? 'Activo' : 'Inactivo'}
     </span>
   );
 }
 
 function formatDate(dateStr) {
-  if (!dateStr) return "-";
-  return new Date(dateStr).toLocaleDateString("es-CO", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
+  if (!dateStr) return '-';
+  return new Date(dateStr).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
   });
 }
 
 export default async function CursosPage() {
   const cookieStore = await cookies();
-  const raw = cookieStore.get("accessToken")?.value;
+  const raw = cookieStore.get('accessToken')?.value;
   const accessToken = raw ? decodeURIComponent(raw) : null;
 
   if (!accessToken) {
@@ -55,17 +55,17 @@ export default async function CursosPage() {
       <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
         <div className="text-white font-extrabold text-xl">Sesión no válida</div>
         <p className="text-slate-200/80 mt-2">Vuelve a ingresar.</p>
-        <a href="/acceso" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
+        <a
+          href="/acceso"
+          className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+        >
           Ir a /acceso
         </a>
       </div>
     );
   }
 
-  const [data, role] = await Promise.all([
-    getCourses(accessToken),
-    getUserRole(accessToken),
-  ]);
+  const [data, role] = await Promise.all([getCourses(accessToken), getUserRole(accessToken)]);
 
   const courses = data?.courses || [];
 
@@ -76,15 +76,15 @@ export default async function CursosPage() {
         <div>
           <h1 className="text-2xl font-extrabold text-white">Cursos</h1>
           <p className="mt-1 text-sm font-medium text-slate-200/70">
-            {role === "ADMIN"
-              ? "Gestiona todos los cursos de la plataforma."
-              : role === "TEACHER"
-              ? "Cursos asignados a tu cargo."
-              : "Cursos en los que estás inscrito."}
+            {role === 'ADMIN'
+              ? 'Gestiona todos los cursos de la plataforma.'
+              : role === 'TEACHER'
+                ? 'Cursos asignados a tu cargo.'
+                : 'Cursos en los que estás inscrito.'}
           </p>
         </div>
 
-        {role === "ADMIN" && (
+        {role === 'ADMIN' && (
           <Link
             href="/dashboard/cursos/nuevo"
             className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-5 py-2.5 text-sm font-extrabold text-white hover:from-sky-400 hover:to-blue-500 transition"
@@ -101,9 +101,9 @@ export default async function CursosPage() {
           <div className="relative">
             <div className="text-lg font-extrabold text-white">Sin cursos</div>
             <p className="mt-2 text-sm font-medium text-slate-200/70">
-              {role === "ADMIN"
-                ? "Crea tu primer curso para comenzar."
-                : "No tienes cursos asignados aún."}
+              {role === 'ADMIN'
+                ? 'Crea tu primer curso para comenzar.'
+                : 'No tienes cursos asignados aún.'}
             </p>
           </div>
         </div>
@@ -139,7 +139,7 @@ export default async function CursosPage() {
                 <div className="space-y-1.5 text-xs font-semibold text-slate-200/60">
                   <div className="flex items-center gap-2">
                     <span className="text-slate-400">Instructor:</span>
-                    <span className="text-slate-200/90">{course.teacher?.fullName || "-"}</span>
+                    <span className="text-slate-200/90">{course.teacher?.fullName || '-'}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-slate-400">Periodo:</span>

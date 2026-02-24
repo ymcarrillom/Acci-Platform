@@ -1,29 +1,27 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function PeriodoForm({ period }) {
   const router = useRouter();
   const isEdit = Boolean(period);
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
-  const [name, setName] = useState(period?.name || "");
+  const [name, setName] = useState(period?.name || '');
   const [startDate, setStartDate] = useState(
-    period?.startDate ? period.startDate.slice(0, 10) : ""
+    period?.startDate ? period.startDate.slice(0, 10) : ''
   );
-  const [endDate, setEndDate] = useState(
-    period?.endDate ? period.endDate.slice(0, 10) : ""
-  );
+  const [endDate, setEndDate] = useState(period?.endDate ? period.endDate.slice(0, 10) : '');
 
   async function onSubmit(e) {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (!name || !startDate || !endDate) {
-      setError("Todos los campos son obligatorios.");
+      setError('Todos los campos son obligatorios.');
       return;
     }
 
@@ -31,17 +29,17 @@ export default function PeriodoForm({ period }) {
     try {
       const body = { name, startDate, endDate };
 
-      const url = isEdit ? `/api/periodos/${period.id}` : "/api/periodos";
-      const method = isEdit ? "PUT" : "POST";
+      const url = isEdit ? `/api/periodos/${period.id}` : '/api/periodos';
+      const method = isEdit ? 'PUT' : 'POST';
 
       const r = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 
       const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data?.message || "Error al guardar");
+      if (!r.ok) throw new Error(data?.message || 'Error al guardar');
 
       router.push(`/dashboard/periodos/${data.periodo?.id || period?.id}`);
       router.refresh();
@@ -53,7 +51,7 @@ export default function PeriodoForm({ period }) {
   }
 
   const inputClass =
-    "mt-1 w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/40";
+    'mt-1 w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/40';
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl shadow-2xl">
@@ -63,19 +61,17 @@ export default function PeriodoForm({ period }) {
 
       <div className="relative p-7">
         <h2 className="text-lg font-extrabold text-white">
-          {isEdit ? "Editar periodo" : "Crear periodo"}
+          {isEdit ? 'Editar periodo' : 'Crear periodo'}
         </h2>
         <p className="mt-1 text-sm font-medium text-slate-200/70">
           {isEdit
-            ? "Modifica los datos del periodo academico."
-            : "Completa los datos para crear un nuevo periodo."}
+            ? 'Modifica los datos del periodo academico.'
+            : 'Completa los datos para crear un nuevo periodo.'}
         </p>
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-200">
-              Nombre del periodo *
-            </label>
+            <label className="block text-sm font-medium text-slate-200">Nombre del periodo *</label>
             <input
               className={inputClass}
               value={name}
@@ -88,9 +84,7 @@ export default function PeriodoForm({ period }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-200">
-                Fecha de inicio *
-              </label>
+              <label className="block text-sm font-medium text-slate-200">Fecha de inicio *</label>
               <input
                 className={inputClass}
                 type="date"
@@ -100,9 +94,7 @@ export default function PeriodoForm({ period }) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-200">
-                Fecha de fin *
-              </label>
+              <label className="block text-sm font-medium text-slate-200">Fecha de fin *</label>
               <input
                 className={inputClass}
                 type="date"
@@ -125,11 +117,7 @@ export default function PeriodoForm({ period }) {
               disabled={loading}
               className="rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 px-6 py-2.5 text-sm font-extrabold text-white hover:from-violet-400 hover:to-purple-500 transition disabled:opacity-60"
             >
-              {loading
-                ? "Guardando..."
-                : isEdit
-                ? "Guardar cambios"
-                : "Crear periodo"}
+              {loading ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Crear periodo'}
             </button>
             <button
               type="button"

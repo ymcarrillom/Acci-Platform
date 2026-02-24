@@ -1,17 +1,20 @@
-import { cookies } from "next/headers";
-import Link from "next/link";
+import { cookies } from 'next/headers';
+import Link from 'next/link';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 export default async function ReportesPage() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get('accessToken')?.value;
 
   if (!accessToken) {
     return (
       <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
         <div className="text-white font-extrabold text-xl">Sesión no válida</div>
-        <a href="/acceso" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
+        <a
+          href="/acceso"
+          className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+        >
           Ir a /acceso
         </a>
       </div>
@@ -20,15 +23,18 @@ export default async function ReportesPage() {
 
   const dashRes = await fetch(`${API_URL}/dashboard`, {
     headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
+    cache: 'no-store',
   });
   const dashData = await dashRes.json().catch(() => null);
 
-  if (dashData?.role !== "ADMIN") {
+  if (dashData?.role !== 'ADMIN') {
     return (
       <div className="rounded-3xl border border-white/10 bg-slate-950/55 backdrop-blur-xl p-8 shadow-2xl text-center">
         <div className="text-white font-extrabold text-xl">Acceso denegado</div>
-        <Link href="/dashboard" className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15">
+        <Link
+          href="/dashboard"
+          className="inline-block mt-4 rounded-xl bg-white/10 border border-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/15"
+        >
           Volver al dashboard
         </Link>
       </div>
@@ -39,11 +45,11 @@ export default async function ReportesPage() {
   const [coursesRes, usersRes] = await Promise.all([
     fetch(`${API_URL}/courses`, {
       headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
+      cache: 'no-store',
     }),
     fetch(`${API_URL}/users`, {
       headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
+      cache: 'no-store',
     }),
   ]);
 
@@ -53,12 +59,15 @@ export default async function ReportesPage() {
   const users = usersData.users || [];
 
   const metrics = dashData.metrics || {};
-  const students = users.filter((u) => u.role === "STUDENT");
-  const teachers = users.filter((u) => u.role === "TEACHER");
+  const students = users.filter((u) => u.role === 'STUDENT');
+  const teachers = users.filter((u) => u.role === 'TEACHER');
 
   return (
     <div className="space-y-6">
-      <Link href="/dashboard" className="text-sm font-semibold text-slate-300/70 hover:text-white transition">
+      <Link
+        href="/dashboard"
+        className="text-sm font-semibold text-slate-300/70 hover:text-white transition"
+      >
         ← Volver al dashboard
       </Link>
 
@@ -76,7 +85,9 @@ export default async function ReportesPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-center">
               <div className="text-xs font-semibold text-slate-400">Usuarios</div>
-              <div className="text-2xl font-extrabold text-white mt-1">{metrics.totalUsers ?? 0}</div>
+              <div className="text-2xl font-extrabold text-white mt-1">
+                {metrics.totalUsers ?? 0}
+              </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-center">
               <div className="text-xs font-semibold text-slate-400">Estudiantes</div>
@@ -88,7 +99,9 @@ export default async function ReportesPage() {
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-center">
               <div className="text-xs font-semibold text-slate-400">Cursos</div>
-              <div className="text-2xl font-extrabold text-violet-300 mt-1">{metrics.totalCourses ?? 0}</div>
+              <div className="text-2xl font-extrabold text-violet-300 mt-1">
+                {metrics.totalCourses ?? 0}
+              </div>
             </div>
           </div>
 
@@ -98,10 +111,15 @@ export default async function ReportesPage() {
               <h2 className="text-sm font-bold text-slate-400">Cursos activos</h2>
               <div className="space-y-2">
                 {courses.map((c) => (
-                  <div key={c.id} className="rounded-xl border border-white/10 bg-white/5 p-4 flex items-center justify-between">
+                  <div
+                    key={c.id}
+                    className="rounded-xl border border-white/10 bg-white/5 p-4 flex items-center justify-between"
+                  >
                     <div>
                       <div className="text-sm font-bold text-white">{c.name}</div>
-                      <div className="text-xs text-slate-400">{c.code} | Profesor: {c.teacher?.fullName || "-"}</div>
+                      <div className="text-xs text-slate-400">
+                        {c.code} | Profesor: {c.teacher?.fullName || '-'}
+                      </div>
                     </div>
                     <div className="text-xs text-slate-400">
                       {c._count?.enrollments ?? 0} inscritos

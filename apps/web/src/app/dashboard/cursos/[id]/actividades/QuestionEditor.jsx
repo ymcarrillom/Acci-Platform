@@ -1,26 +1,27 @@
-"use client";
+'use client';
 
 const questionTypes = [
-  { value: "MULTIPLE_CHOICE", label: "Opción múltiple" },
-  { value: "MULTIPLE_ANSWERS", label: "Múltiples respuestas" },
-  { value: "TRUE_FALSE", label: "Verdadero/Falso" },
-  { value: "OPEN_ENDED", label: "Respuesta abierta" },
+  { value: 'MULTIPLE_CHOICE', label: 'Opción múltiple' },
+  { value: 'MULTIPLE_ANSWERS', label: 'Múltiples respuestas' },
+  { value: 'TRUE_FALSE', label: 'Verdadero/Falso' },
+  { value: 'OPEN_ENDED', label: 'Respuesta abierta' },
 ];
 
-const inputClass = "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-violet-400/50 focus:outline-none";
+const inputClass =
+  'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-violet-400/50 focus:outline-none';
 
 export default function QuestionEditor({ questions, onChange }) {
   function addQuestion() {
     onChange([
       ...questions,
       {
-        type: "MULTIPLE_CHOICE",
-        text: "",
+        type: 'MULTIPLE_CHOICE',
+        text: '',
         order: questions.length + 1,
         points: 1,
         options: [
-          { text: "", isCorrect: true, order: 1 },
-          { text: "", isCorrect: false, order: 2 },
+          { text: '', isCorrect: true, order: 1 },
+          { text: '', isCorrect: false, order: 2 },
         ],
       },
     ]);
@@ -35,23 +36,29 @@ export default function QuestionEditor({ questions, onChange }) {
     updated[index] = { ...updated[index], [field]: value };
 
     // When changing type, reset options
-    if (field === "type") {
-      if (value === "TRUE_FALSE") {
+    if (field === 'type') {
+      if (value === 'TRUE_FALSE') {
         updated[index].options = [
-          { text: "Verdadero", isCorrect: true, order: 1 },
-          { text: "Falso", isCorrect: false, order: 2 },
+          { text: 'Verdadero', isCorrect: true, order: 1 },
+          { text: 'Falso', isCorrect: false, order: 2 },
         ];
-      } else if (value === "OPEN_ENDED") {
+      } else if (value === 'OPEN_ENDED') {
         updated[index].options = [];
-      } else if (value === "MULTIPLE_CHOICE" && (!updated[index].options?.length || updated[index].options.length < 2)) {
+      } else if (
+        value === 'MULTIPLE_CHOICE' &&
+        (!updated[index].options?.length || updated[index].options.length < 2)
+      ) {
         updated[index].options = [
-          { text: "", isCorrect: true, order: 1 },
-          { text: "", isCorrect: false, order: 2 },
+          { text: '', isCorrect: true, order: 1 },
+          { text: '', isCorrect: false, order: 2 },
         ];
-      } else if (value === "MULTIPLE_ANSWERS" && (!updated[index].options?.length || updated[index].options.length < 2)) {
+      } else if (
+        value === 'MULTIPLE_ANSWERS' &&
+        (!updated[index].options?.length || updated[index].options.length < 2)
+      ) {
         updated[index].options = [
-          { text: "", isCorrect: false, order: 1 },
-          { text: "", isCorrect: false, order: 2 },
+          { text: '', isCorrect: false, order: 1 },
+          { text: '', isCorrect: false, order: 2 },
         ];
       }
     }
@@ -62,7 +69,10 @@ export default function QuestionEditor({ questions, onChange }) {
   function addOption(qIndex) {
     const updated = [...questions];
     const q = updated[qIndex];
-    q.options = [...(q.options || []), { text: "", isCorrect: false, order: (q.options?.length || 0) + 1 }];
+    q.options = [
+      ...(q.options || []),
+      { text: '', isCorrect: false, order: (q.options?.length || 0) + 1 },
+    ];
     onChange(updated);
   }
 
@@ -78,7 +88,7 @@ export default function QuestionEditor({ questions, onChange }) {
     opts[oIndex] = { ...opts[oIndex], [field]: value };
 
     // If marking as correct, unmark others (single correct for MC/TF only)
-    if (field === "isCorrect" && value === true && updated[qIndex].type !== "MULTIPLE_ANSWERS") {
+    if (field === 'isCorrect' && value === true && updated[qIndex].type !== 'MULTIPLE_ANSWERS') {
       opts.forEach((o, i) => {
         if (i !== oIndex) o.isCorrect = false;
       });
@@ -106,11 +116,13 @@ export default function QuestionEditor({ questions, onChange }) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <select
               value={q.type}
-              onChange={(e) => updateQuestion(qIndex, "type", e.target.value)}
+              onChange={(e) => updateQuestion(qIndex, 'type', e.target.value)}
               className={inputClass}
             >
               {questionTypes.map((t) => (
-                <option key={t.value} value={t.value} className="bg-slate-900 text-white">{t.label}</option>
+                <option key={t.value} value={t.value} className="bg-slate-900 text-white">
+                  {t.label}
+                </option>
               ))}
             </select>
             <input
@@ -118,7 +130,7 @@ export default function QuestionEditor({ questions, onChange }) {
               min="0.5"
               step="0.5"
               value={q.points}
-              onChange={(e) => updateQuestion(qIndex, "points", parseFloat(e.target.value) || 1)}
+              onChange={(e) => updateQuestion(qIndex, 'points', parseFloat(e.target.value) || 1)}
               placeholder="Puntos"
               className={inputClass}
             />
@@ -126,25 +138,27 @@ export default function QuestionEditor({ questions, onChange }) {
 
           <textarea
             value={q.text}
-            onChange={(e) => updateQuestion(qIndex, "text", e.target.value)}
+            onChange={(e) => updateQuestion(qIndex, 'text', e.target.value)}
             placeholder="Texto de la pregunta..."
             rows={2}
             className={inputClass}
           />
 
           {/* Options for MC, MA and TF */}
-          {q.type !== "OPEN_ENDED" && (
+          {q.type !== 'OPEN_ENDED' && (
             <div className="space-y-2 ml-4">
               <span className="text-xs font-semibold text-slate-500">
-                {q.type === "MULTIPLE_ANSWERS" ? "Opciones (marca las correctas)" : "Opciones (marca la correcta)"}
+                {q.type === 'MULTIPLE_ANSWERS'
+                  ? 'Opciones (marca las correctas)'
+                  : 'Opciones (marca la correcta)'}
               </span>
               {(q.options || []).map((opt, oIndex) => (
                 <div key={oIndex} className="flex items-center gap-2">
-                  {q.type === "MULTIPLE_ANSWERS" ? (
+                  {q.type === 'MULTIPLE_ANSWERS' ? (
                     <input
                       type="checkbox"
                       checked={opt.isCorrect}
-                      onChange={(e) => updateOption(qIndex, oIndex, "isCorrect", e.target.checked)}
+                      onChange={(e) => updateOption(qIndex, oIndex, 'isCorrect', e.target.checked)}
                       className="accent-violet-500"
                     />
                   ) : (
@@ -152,29 +166,30 @@ export default function QuestionEditor({ questions, onChange }) {
                       type="radio"
                       name={`correct-${qIndex}`}
                       checked={opt.isCorrect}
-                      onChange={() => updateOption(qIndex, oIndex, "isCorrect", true)}
+                      onChange={() => updateOption(qIndex, oIndex, 'isCorrect', true)}
                       className="accent-violet-500"
                     />
                   )}
                   <input
                     value={opt.text}
-                    onChange={(e) => updateOption(qIndex, oIndex, "text", e.target.value)}
+                    onChange={(e) => updateOption(qIndex, oIndex, 'text', e.target.value)}
                     placeholder={`Opción ${oIndex + 1}`}
                     className={`flex-1 ${inputClass}`}
-                    disabled={q.type === "TRUE_FALSE"}
+                    disabled={q.type === 'TRUE_FALSE'}
                   />
-                  {(q.type === "MULTIPLE_CHOICE" || q.type === "MULTIPLE_ANSWERS") && q.options.length > 2 && (
-                    <button
-                      type="button"
-                      onClick={() => removeOption(qIndex, oIndex)}
-                      className="text-xs text-red-400/60 hover:text-red-300"
-                    >
-                      x
-                    </button>
-                  )}
+                  {(q.type === 'MULTIPLE_CHOICE' || q.type === 'MULTIPLE_ANSWERS') &&
+                    q.options.length > 2 && (
+                      <button
+                        type="button"
+                        onClick={() => removeOption(qIndex, oIndex)}
+                        className="text-xs text-red-400/60 hover:text-red-300"
+                      >
+                        x
+                      </button>
+                    )}
                 </div>
               ))}
-              {(q.type === "MULTIPLE_CHOICE" || q.type === "MULTIPLE_ANSWERS") && (
+              {(q.type === 'MULTIPLE_CHOICE' || q.type === 'MULTIPLE_ANSWERS') && (
                 <button
                   type="button"
                   onClick={() => addOption(qIndex)}

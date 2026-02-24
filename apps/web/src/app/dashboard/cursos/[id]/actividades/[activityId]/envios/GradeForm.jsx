@@ -1,21 +1,28 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function GradeForm({ courseId, activityId, submissionId, currentGrade, currentFeedback, maxGrade }) {
+export default function GradeForm({
+  courseId,
+  activityId,
+  submissionId,
+  currentGrade,
+  currentFeedback,
+  maxGrade,
+}) {
   const router = useRouter();
-  const [grade, setGrade] = useState(currentGrade ?? "");
-  const [feedback, setFeedback] = useState(currentFeedback || "");
+  const [grade, setGrade] = useState(currentGrade ?? '');
+  const [feedback, setFeedback] = useState(currentFeedback || '');
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
+    setError('');
 
-    if (grade === "" || isNaN(parseFloat(grade))) {
-      setError("Ingresa una calificación válida");
+    if (grade === '' || isNaN(parseFloat(grade))) {
+      setError('Ingresa una calificación válida');
       return;
     }
 
@@ -24,15 +31,15 @@ export default function GradeForm({ courseId, activityId, submissionId, currentG
       const r = await fetch(
         `/api/courses/${courseId}/activities/${activityId}/submissions/${submissionId}/grade`,
         {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ grade: parseFloat(grade), feedback }),
         }
       );
       const data = await r.json().catch(() => null);
 
       if (!r.ok) {
-        setError(data?.message || "Error al calificar");
+        setError(data?.message || 'Error al calificar');
         return;
       }
 
@@ -42,10 +49,14 @@ export default function GradeForm({ courseId, activityId, submissionId, currentG
     }
   }
 
-  const inputClass = "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none";
+  const inputClass =
+    'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none';
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mt-4 rounded-xl border border-white/10 bg-white/3 p-4">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 mt-4 rounded-xl border border-white/10 bg-white/3 p-4"
+    >
       <h3 className="text-sm font-bold text-white">Calificar envío</h3>
 
       <div className="flex items-center gap-3">
@@ -76,16 +87,14 @@ export default function GradeForm({ courseId, activityId, submissionId, currentG
         />
       </div>
 
-      {error && (
-        <div className="text-sm font-semibold text-red-300">{error}</div>
-      )}
+      {error && <div className="text-sm font-semibold text-red-300">{error}</div>}
 
       <button
         type="submit"
         disabled={saving}
         className="rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-2 text-sm font-bold text-white shadow-lg hover:shadow-emerald-500/25 transition disabled:opacity-50"
       >
-        {saving ? "Guardando..." : "Guardar calificación"}
+        {saving ? 'Guardando...' : 'Guardar calificación'}
       </button>
     </form>
   );

@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, Suspense } from 'react';
 
 function SearchInner() {
   const router = useRouter();
   const sp = useSearchParams();
-  const [search, setSearch] = useState(sp.get("search") || "");
-  const [role, setRole] = useState(sp.get("role") || "");
+  const [search, setSearch] = useState(sp.get('search') || '');
+  const [role, setRole] = useState(sp.get('role') || '');
 
   function handleSearch(e) {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (search.trim()) params.set("search", search.trim());
-    if (role) params.set("role", role);
-    params.set("page", "1");
+    if (search.trim()) params.set('search', search.trim());
+    if (role) params.set('role', role);
+    params.set('page', '1');
     router.push(`/dashboard/usuarios?${params}`);
   }
 
   function clearFilters() {
-    setSearch("");
-    setRole("");
-    router.push("/dashboard/usuarios");
+    setSearch('');
+    setRole('');
+    router.push('/dashboard/usuarios');
   }
 
   return (

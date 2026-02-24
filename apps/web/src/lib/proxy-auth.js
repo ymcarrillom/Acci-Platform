@@ -1,6 +1,6 @@
-import { cookies } from "next/headers";
+import { cookies } from 'next/headers';
 
-const API_URL = process.env.API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || 'http://localhost:4000';
 
 /**
  * Get a valid access token from cookies. If the accessToken cookie is missing,
@@ -9,20 +9,20 @@ const API_URL = process.env.API_URL || "http://localhost:4000";
  */
 export async function getTokenOrRefresh() {
   const c = await cookies();
-  const token = c.get("accessToken")?.value;
+  const token = c.get('accessToken')?.value;
   if (token) return { token: decodeURIComponent(token), refreshed: false };
 
-  const refreshCookie = c.get("refreshToken")?.value;
+  const refreshCookie = c.get('refreshToken')?.value;
   if (!refreshCookie) return { token: null, refreshed: false };
 
   try {
     const r = await fetch(`${API_URL}/auth/refresh`, {
-      method: "POST",
+      method: 'POST',
       headers: {
         cookie: `refreshToken=${refreshCookie}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      cache: "no-store",
+      cache: 'no-store',
     });
     if (r.ok) {
       const data = await r.json();
@@ -39,11 +39,11 @@ export async function getTokenOrRefresh() {
  * Set the accessToken cookie on a NextResponse.
  */
 export function applyTokenCookie(response, token) {
-  response.cookies.set("accessToken", token, {
+  response.cookies.set('accessToken', token, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
     maxAge: 60 * 60 * 4,
   });
 }

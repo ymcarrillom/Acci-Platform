@@ -13,6 +13,12 @@
     "web:dev": "pnpm -C apps/web dev",
     "prisma:migrate": "pnpm --filter @acci/api prisma:migrate",
     "prisma:seed": "pnpm --filter @acci/api prisma:seed",
-    "prisma:studio": "pnpm --filter @acci/api prisma:studio"
+    "prisma:studio": "pnpm --filter @acci/api prisma:studio",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format",
+    "format:check": "pnpm -r format:check"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1"
   }
 }

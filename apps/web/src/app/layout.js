@@ -1,10 +1,10 @@
-import "./globals.css";
-import { ThemeProvider } from "@/components/ui/ThemeProvider";
-import { FloatingThemeToggle } from "@/components/ui/FloatingThemeToggle";
+import './globals.css';
+import { ThemeProvider } from '@/components/ui/ThemeProvider';
+import { FloatingThemeToggle } from '@/components/ui/FloatingThemeToggle';
 
 export const metadata = {
-  title: "ACCI Platform",
-  description: "Plataforma educativa cristiana (LMS)",
+  title: 'ACCI Platform',
+  description: 'Plataforma educativa cristiana (LMS)',
 };
 
 export default function RootLayout({ children }) {

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function ResetButton({ courseId, activityId, submissionId, studentName }) {
   const router = useRouter();
@@ -11,9 +11,12 @@ export default function ResetButton({ courseId, activityId, submissionId, studen
   async function handleReset() {
     setResetting(true);
     try {
-      const r = await fetch(`/api/courses/${courseId}/activities/${activityId}/submissions/${submissionId}/reset`, {
-        method: "DELETE",
-      });
+      const r = await fetch(
+        `/api/courses/${courseId}/activities/${activityId}/submissions/${submissionId}/reset`,
+        {
+          method: 'DELETE',
+        }
+      );
 
       if (r.ok) {
         router.push(`/dashboard/cursos/${courseId}/actividades/${activityId}/envios`);
@@ -47,7 +50,7 @@ export default function ResetButton({ courseId, activityId, submissionId, studen
           disabled={resetting}
           className="rounded-lg bg-red-600 px-4 py-1.5 text-xs font-bold text-white hover:bg-red-700 transition disabled:opacity-50"
         >
-          {resetting ? "Eliminando..." : "Confirmar"}
+          {resetting ? 'Eliminando...' : 'Confirmar'}
         </button>
         <button
           onClick={() => setConfirming(false)}

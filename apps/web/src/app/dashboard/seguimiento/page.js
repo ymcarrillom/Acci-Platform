@@ -1,16 +1,20 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const inputClass =
-  "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none";
+  'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none';
 
 function StatMini({ label, value, alert }) {
   return (
-    <div className={`rounded-xl border p-4 ${alert ? "border-red-500/30 bg-red-500/5" : "border-white/10 bg-white/3"}`}>
+    <div
+      className={`rounded-xl border p-4 ${alert ? 'border-red-500/30 bg-red-500/5' : 'border-white/10 bg-white/3'}`}
+    >
       <div className="text-xs font-semibold text-slate-400">{label}</div>
-      <div className={`mt-1 text-2xl font-black ${alert ? "text-red-300" : "text-white"}`}>{value ?? "—"}</div>
+      <div className={`mt-1 text-2xl font-black ${alert ? 'text-red-300' : 'text-white'}`}>
+        {value ?? '—'}
+      </div>
     </div>
   );
 }
@@ -18,12 +22,12 @@ function StatMini({ label, value, alert }) {
 export default function SeguimientoPage() {
   const [courses, setCourses] = useState([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
-  const [courseId, setCourseId] = useState("");
+  const [courseId, setCourseId] = useState('');
   const [tracking, setTracking] = useState(null);
   const [loadingTracking, setLoadingTracking] = useState(false);
 
   useEffect(() => {
-    fetch("/api/courses")
+    fetch('/api/courses')
       .then((r) => r.json())
       .then((data) => setCourses(data?.courses || data || []))
       .catch(() => {})
@@ -31,7 +35,10 @@ export default function SeguimientoPage() {
   }, []);
 
   useEffect(() => {
-    if (!courseId) { setTracking(null); return; }
+    if (!courseId) {
+      setTracking(null);
+      return;
+    }
     setLoadingTracking(true);
     fetch(`/api/dashboard/group-tracking/${courseId}`)
       .then((r) => r.json())
@@ -65,16 +72,24 @@ export default function SeguimientoPage() {
 
       {/* Course selector */}
       <div>
-        <select value={courseId} onChange={(e) => setCourseId(e.target.value)} className={`${inputClass} max-w-md`}>
+        <select
+          value={courseId}
+          onChange={(e) => setCourseId(e.target.value)}
+          className={`${inputClass} max-w-md`}
+        >
           <option value="">— Selecciona un curso —</option>
           {courses.map((c) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
           ))}
         </select>
       </div>
 
       {loadingTracking && (
-        <div className="text-white/60 font-semibold text-center py-8">Cargando datos del grupo...</div>
+        <div className="text-white/60 font-semibold text-center py-8">
+          Cargando datos del grupo...
+        </div>
       )}
 
       {tracking && !loadingTracking && (
@@ -84,12 +99,12 @@ export default function SeguimientoPage() {
             <StatMini label="Estudiantes" value={tracking.totalStudents} />
             <StatMini
               label="Asistencia promedio"
-              value={tracking.groupAttendanceAvg !== null ? `${tracking.groupAttendanceAvg}%` : "—"}
+              value={tracking.groupAttendanceAvg !== null ? `${tracking.groupAttendanceAvg}%` : '—'}
               alert={tracking.groupAttendanceAvg !== null && tracking.groupAttendanceAvg < 60}
             />
             <StatMini
               label="Calificación promedio"
-              value={tracking.groupGradeAvg !== null ? tracking.groupGradeAvg : "—"}
+              value={tracking.groupGradeAvg !== null ? tracking.groupGradeAvg : '—'}
               alert={tracking.groupGradeAvg !== null && tracking.groupGradeAvg < 60}
             />
             <StatMini
@@ -119,23 +134,31 @@ export default function SeguimientoPage() {
                       <div className="text-xs text-slate-400">{s.email}</div>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`font-bold ${s.attendance?.pct !== null && s.attendance.pct < 60 ? "text-red-300" : "text-white"}`}>
-                        {s.attendance?.pct !== null ? `${s.attendance.pct}%` : "—"}
+                      <span
+                        className={`font-bold ${s.attendance?.pct !== null && s.attendance.pct < 60 ? 'text-red-300' : 'text-white'}`}
+                      >
+                        {s.attendance?.pct !== null ? `${s.attendance.pct}%` : '—'}
                       </span>
                       {s.attendance?.total > 0 && (
-                        <div className="text-xs text-slate-500">{s.attendance.present}/{s.attendance.total}</div>
+                        <div className="text-xs text-slate-500">
+                          {s.attendance.present}/{s.attendance.total}
+                        </div>
                       )}
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`font-bold ${s.grades?.avg !== null && s.grades.avg < 60 ? "text-red-300" : "text-white"}`}>
-                        {s.grades?.avg !== null ? s.grades.avg : "—"}
+                      <span
+                        className={`font-bold ${s.grades?.avg !== null && s.grades.avg < 60 ? 'text-red-300' : 'text-white'}`}
+                      >
+                        {s.grades?.avg !== null ? s.grades.avg : '—'}
                       </span>
                       {s.grades?.count > 0 && (
                         <div className="text-xs text-slate-500">{s.grades.count} eval.</div>
                       )}
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`font-bold ${s.pending > 0 ? "text-amber-300" : "text-white"}`}>
+                      <span
+                        className={`font-bold ${s.pending > 0 ? 'text-amber-300' : 'text-white'}`}
+                      >
                         {s.pending}
                       </span>
                     </td>
@@ -168,7 +191,9 @@ export default function SeguimientoPage() {
       {!courseId && !loadingTracking && (
         <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-8 text-center">
           <div className="text-white font-bold">Selecciona un curso</div>
-          <p className="text-sm text-slate-300/70 mt-1">Elige un curso para ver el seguimiento de los estudiantes.</p>
+          <p className="text-sm text-slate-300/70 mt-1">
+            Elige un curso para ver el seguimiento de los estudiantes.
+          </p>
         </div>
       )}
 

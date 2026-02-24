@@ -1,23 +1,39 @@
-import { Router } from "express";
-import { z } from "zod";
-import { authRequired, requireRole } from "../middlewares/auth.middleware.js";
-import { prisma } from "../utils/prisma.js";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
-import { access, stat, unlink, mkdir } from "fs/promises";
-import { fileURLToPath } from "url";
+import { Router } from 'express';
+import { z } from 'zod';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
+import { authRequired, requireRole } from '../middlewares/auth.middleware.js';
+import { prisma } from '../utils/prisma.js';
+import { storage } from '../utils/storage.js';
+import multer from 'multer';
+import path from 'path';
+import { access, unlink, mkdir } from 'fs/promises';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = Router({ mergeParams: true });
 
+// Limiter por usuario (no por IP) — cada docente tiene su propia cuota de 20 uploads/hora
+// Se aplica DENTRO del router, después de authRequired, para que req.user.sub esté disponible
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 20,
+  keyGenerator: (req) => req.user?.sub || ipKeyGenerator(req),
+  message: { message: 'Limite de uploads alcanzado. Intenta en 1 hora.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // ===== Upload config (500MB limit) =====
-const videosDir = path.resolve(__dirname, "../../uploads/recovery-videos");
+const videosDir = path.resolve(__dirname, '../../uploads/recovery-videos');
 // Ensure upload dir exists (runs once at startup, async IIFE)
 (async () => {
-  try { await access(videosDir); } catch { await mkdir(videosDir, { recursive: true }); }
+  try {
+    await access(videosDir);
+  } catch {
+    await mkdir(videosDir, { recursive: true });
+  }
 })();
 
 const storage = multer.diskStorage({
@@ -33,12 +49,12 @@ const upload = multer({
   storage,
   limits: { fileSize: 2 * 1024 * 1024 * 1024 }, // 2GB
   fileFilter: (req, file, cb) => {
-    const allowed = [".mp4", ".webm", ".mov"];
+    const allowed = ['.mp4', '.webm', '.mov'];
     const ext = path.extname(file.originalname).toLowerCase();
     if (allowed.includes(ext)) {
       cb(null, true);
     } else {
-      cb(new Error("Solo se permiten archivos .mp4, .webm o .mov"));
+      cb(new Error('Solo se permiten archivos .mp4, .webm o .mov'));
     }
   },
 });
@@ -46,8 +62,8 @@ const upload = multer({
 // Multer error handler middleware
 function handleMulterError(err, req, res, next) {
   if (err instanceof multer.MulterError) {
-    if (err.code === "LIMIT_FILE_SIZE") {
-      return res.status(413).json({ message: "El archivo excede el limite de 2GB" });
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ message: 'El archivo excede el limite de 2GB' });
     }
     return res.status(400).json({ message: err.message });
   }
@@ -68,19 +84,19 @@ async function verifyCourseAccess(req, res, next) {
     });
 
     if (!course) {
-      return res.status(404).json({ message: "Curso no encontrado" });
+      return res.status(404).json({ message: 'Curso no encontrado' });
     }
 
-    if (role === "TEACHER" && course.teacherId !== sub) {
-      return res.status(403).json({ message: "Sin permisos" });
+    if (role === 'TEACHER' && course.teacherId !== sub) {
+      return res.status(403).json({ message: 'Sin permisos' });
     }
 
-    if (role === "STUDENT") {
+    if (role === 'STUDENT') {
       const enrolled = await prisma.courseEnrollment.findUnique({
         where: { courseId_studentId: { courseId, studentId: sub } },
       });
       if (!enrolled) {
-        return res.status(403).json({ message: "Sin permisos" });
+        return res.status(403).json({ message: 'Sin permisos' });
       }
     }
 
@@ -91,20 +107,19 @@ async function verifyCourseAccess(req, res, next) {
   }
 }
 
-// ===== Path safety helper =====
-function safeFilePath(fileUrl) {
-  const resolved = path.resolve(videosDir, path.basename(fileUrl));
-  if (!resolved.startsWith(videosDir)) return null;
-  return resolved;
-}
-
 // ===== Zod Schemas =====
 const accessSchema = z.object({
   studentId: z.string().min(1),
-  expiresAt: z.string().min(1).refine(
-    (val) => { const d = new Date(val); return !isNaN(d.getTime()) && d > new Date(); },
-    { message: "La fecha de expiracion debe ser una fecha futura valida" }
-  ),
+  expiresAt: z
+    .string()
+    .min(1)
+    .refine(
+      (val) => {
+        const d = new Date(val);
+        return !isNaN(d.getTime()) && d > new Date();
+      },
+      { message: 'La fecha de expiracion debe ser una fecha futura valida' }
+    ),
 });
 
 const toggleSchema = z.object({
@@ -113,11 +128,12 @@ const toggleSchema = z.object({
 
 // ===== POST / — Upload recovery video (optionally assign student) =====
 router.post(
-  "/",
+  '/',
   authRequired,
-  requireRole("TEACHER", "ADMIN"),
+  uploadLimiter, // keyed por userId — cada docente tiene su cuota independiente
+  requireRole('TEACHER', 'ADMIN'),
   verifyCourseAccess,
-  upload.single("video"),
+  upload.single('video'),
   handleMulterError,
   async (req, res, next) => {
     try {
@@ -125,28 +141,43 @@ router.post(
       const { sub } = req.user;
 
       if (!req.file) {
-        return res.status(400).json({ message: "Archivo de video requerido" });
+        return res.status(400).json({ message: 'Archivo de video requerido' });
       }
 
       const { title, description, studentId, expiresAt } = req.body;
       if (!title || !title.trim()) {
         await unlink(req.file.path).catch(() => {});
-        return res.status(400).json({ message: "El titulo es requerido" });
+        return res.status(400).json({ message: 'El titulo es requerido' });
       }
 
       // If student is provided, verify enrollment
       if (studentId) {
         if (!expiresAt) {
           await unlink(req.file.path).catch(() => {});
-          return res.status(400).json({ message: "Fecha de expiracion requerida al asignar estudiante" });
+          return res
+            .status(400)
+            .json({ message: 'Fecha de expiracion requerida al asignar estudiante' });
         }
         const enrolled = await prisma.courseEnrollment.findUnique({
           where: { courseId_studentId: { courseId, studentId } },
         });
         if (!enrolled) {
           await unlink(req.file.path).catch(() => {});
-          return res.status(400).json({ message: "El estudiante no esta inscrito en este curso" });
+          return res.status(400).json({ message: 'El estudiante no esta inscrito en este curso' });
         }
+      }
+
+      // Move file to the configured storage backend (local disk or S3/R2)
+      const storageKey = `recovery-videos/${req.file.filename}`;
+      const ext = path.extname(req.file.originalname).toLowerCase();
+      const mimeTypes = { '.mp4': 'video/mp4', '.webm': 'video/webm', '.mov': 'video/quicktime' };
+      const contentType = mimeTypes[ext] || 'video/mp4';
+
+      try {
+        await storage.saveUpload(req.file.path, storageKey, contentType);
+      } catch (uploadErr) {
+        await unlink(req.file.path).catch(() => {});
+        return next(uploadErr);
       }
 
       const video = await prisma.recoveryVideo.create({
@@ -155,7 +186,8 @@ router.post(
           uploadedById: sub,
           title: title.trim(),
           description: description?.trim() || null,
-          fileUrl: `/uploads/recovery-videos/${req.file.filename}`,
+          // Key is provider-agnostic; stream/signed-url endpoint resolves actual URL
+          fileUrl: storageKey,
           // If student provided, create access grant in same transaction
           ...(studentId && expiresAt
             ? {
@@ -184,7 +216,7 @@ router.post(
 );
 
 // ===== GET / — List recovery videos =====
-router.get("/", authRequired, verifyCourseAccess, async (req, res, next) => {
+router.get('/', authRequired, verifyCourseAccess, async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const { role, sub } = req.user;
@@ -193,7 +225,7 @@ router.get("/", authRequired, verifyCourseAccess, async (req, res, next) => {
     const limit = Math.min(Math.max(1, parseInt(limitQ) || 20), 100);
     const skip = (page - 1) * limit;
 
-    if (role === "STUDENT") {
+    if (role === 'STUDENT') {
       const studentWhere = {
         courseId,
         accessGrants: {
@@ -217,7 +249,7 @@ router.get("/", authRequired, verifyCourseAccess, async (req, res, next) => {
               },
             },
           },
-          orderBy: { createdAt: "desc" },
+          orderBy: { createdAt: 'desc' },
           skip,
           take: limit,
         }),
@@ -236,7 +268,7 @@ router.get("/", authRequired, verifyCourseAccess, async (req, res, next) => {
             include: { student: { select: { id: true, fullName: true, email: true } } },
           },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
         skip,
         take: limit,
       }),
@@ -250,7 +282,7 @@ router.get("/", authRequired, verifyCourseAccess, async (req, res, next) => {
 });
 
 // ===== GET /:videoId — Video detail =====
-router.get("/:videoId", authRequired, verifyCourseAccess, async (req, res, next) => {
+router.get('/:videoId', authRequired, verifyCourseAccess, async (req, res, next) => {
   try {
     const { videoId } = req.params;
     const { role, sub } = req.user;
@@ -266,15 +298,15 @@ router.get("/:videoId", authRequired, verifyCourseAccess, async (req, res, next)
     });
 
     if (!video) {
-      return res.status(404).json({ message: "Video no encontrado" });
+      return res.status(404).json({ message: 'Video no encontrado' });
     }
 
-    if (role === "STUDENT") {
+    if (role === 'STUDENT') {
       const hasAccess = video.accessGrants.some(
         (g) => g.studentId === sub && g.enabled && new Date(g.expiresAt) > new Date()
       );
       if (!hasAccess) {
-        return res.status(403).json({ message: "Sin acceso a este video" });
+        return res.status(403).json({ message: 'Sin acceso a este video' });
       }
     }
 
@@ -285,7 +317,7 @@ router.get("/:videoId", authRequired, verifyCourseAccess, async (req, res, next)
 });
 
 // ===== GET /:videoId/stream — Stream video file (range requests supported) =====
-router.get("/:videoId/stream", authRequired, verifyCourseAccess, async (req, res, next) => {
+router.get('/:videoId/stream', authRequired, verifyCourseAccess, async (req, res, next) => {
   try {
     const { videoId } = req.params;
     const { role, sub } = req.user;
@@ -296,64 +328,63 @@ router.get("/:videoId/stream", authRequired, verifyCourseAccess, async (req, res
     });
 
     if (!video) {
-      return res.status(404).json({ message: "Video no encontrado" });
+      return res.status(404).json({ message: 'Video no encontrado' });
     }
 
-    if (role === "STUDENT") {
+    if (role === 'STUDENT') {
       const hasAccess = video.accessGrants.some(
         (g) => g.studentId === sub && g.enabled && new Date(g.expiresAt) > new Date()
       );
       if (!hasAccess) {
-        return res.status(403).json({ message: "Sin acceso a este video" });
+        return res.status(403).json({ message: 'Sin acceso a este video' });
       }
     }
 
-    const filePath = safeFilePath(video.fileUrl);
-    if (!filePath) return res.status(400).json({ message: "Ruta de archivo invalida" });
-    let fileStat;
-    try {
-      fileStat = await stat(filePath);
-    } catch {
-      return res.status(404).json({ message: "Archivo no encontrado" });
+    const ext = path.extname(video.fileUrl).toLowerCase();
+    const mimeTypes = { '.mp4': 'video/mp4', '.webm': 'video/webm', '.mov': 'video/quicktime' };
+    const contentType = mimeTypes[ext] || 'video/mp4';
+
+    // S3/R2: redirect to a pre-signed URL (avoids proxying large files through the API)
+    if (storage.type === 's3') {
+      const signedUrl = await storage.getSignedUrl(video.fileUrl, { expiresIn: 3600 });
+      return res.redirect(302, signedUrl);
     }
 
-    const ext = path.extname(filePath).toLowerCase();
-    const mimeTypes = { ".mp4": "video/mp4", ".webm": "video/webm", ".mov": "video/quicktime" };
-    const contentType = mimeTypes[ext] || "video/mp4";
+    // Local: stream directly with range request support
+    let streamResult;
+    try {
+      streamResult = await storage.getStream(video.fileUrl, req.headers.range);
+    } catch {
+      return res.status(404).json({ message: 'Archivo no encontrado' });
+    }
 
-    const range = req.headers.range;
-    if (range) {
-      const parts = range.replace(/bytes=/, "").split("-");
-      const start = parseInt(parts[0], 10);
-      const end = parts[1] ? parseInt(parts[1], 10) : fileStat.size - 1;
-      const chunkSize = end - start + 1;
-
+    if (streamResult.partial) {
+      const chunkSize = streamResult.end - streamResult.start + 1;
       res.writeHead(206, {
-        "Content-Range": `bytes ${start}-${end}/${fileStat.size}`,
-        "Accept-Ranges": "bytes",
-        "Content-Length": chunkSize,
-        "Content-Type": contentType,
+        'Content-Range': `bytes ${streamResult.start}-${streamResult.end}/${streamResult.size}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunkSize,
+        'Content-Type': contentType,
       });
-      const stream = fs.createReadStream(filePath, { start, end });
-      stream.on("error", () => { if (!res.headersSent) res.status(500).json({ message: "Error streaming video" }); });
-      stream.pipe(res);
     } else {
       res.writeHead(200, {
-        "Content-Length": fileStat.size,
-        "Content-Type": contentType,
-        "Accept-Ranges": "bytes",
+        'Content-Length': streamResult.size,
+        'Content-Type': contentType,
+        'Accept-Ranges': 'bytes',
       });
-      const stream = fs.createReadStream(filePath);
-      stream.on("error", () => { if (!res.headersSent) res.status(500).json({ message: "Error streaming video" }); });
-      stream.pipe(res);
     }
+
+    streamResult.stream.on('error', () => {
+      if (!res.headersSent) res.status(500).json({ message: 'Error streaming video' });
+    });
+    streamResult.stream.pipe(res);
   } catch (err) {
     next(err);
   }
 });
 
 // ===== PATCH /:videoId/viewed — Student marks video as viewed =====
-router.patch("/:videoId/viewed", authRequired, verifyCourseAccess, async (req, res, next) => {
+router.patch('/:videoId/viewed', authRequired, verifyCourseAccess, async (req, res, next) => {
   try {
     const { videoId } = req.params;
     const { sub } = req.user;
@@ -363,7 +394,7 @@ router.patch("/:videoId/viewed", authRequired, verifyCourseAccess, async (req, r
     });
 
     if (!access || !access.enabled || new Date(access.expiresAt) < new Date()) {
-      return res.status(403).json({ message: "Sin acceso a este video" });
+      return res.status(403).json({ message: 'Sin acceso a este video' });
     }
 
     const updated = await prisma.recoveryVideoAccess.update({
@@ -371,112 +402,135 @@ router.patch("/:videoId/viewed", authRequired, verifyCourseAccess, async (req, r
       data: { viewedAt: new Date() },
     });
 
-    return res.json({ access: updated, message: "Video marcado como visto" });
+    return res.json({ access: updated, message: 'Video marcado como visto' });
   } catch (err) {
     next(err);
   }
 });
 
 // ===== DELETE /:videoId — Delete video + file =====
-router.delete("/:videoId", authRequired, requireRole("TEACHER", "ADMIN"), verifyCourseAccess, async (req, res, next) => {
-  try {
-    const { videoId } = req.params;
+router.delete(
+  '/:videoId',
+  authRequired,
+  requireRole('TEACHER', 'ADMIN'),
+  verifyCourseAccess,
+  async (req, res, next) => {
+    try {
+      const { videoId } = req.params;
 
-    const video = await prisma.recoveryVideo.findUnique({
-      where: { id: videoId },
-    });
+      const video = await prisma.recoveryVideo.findUnique({
+        where: { id: videoId },
+      });
 
-    if (!video) {
-      return res.status(404).json({ message: "Video no encontrado" });
+      if (!video) {
+        return res.status(404).json({ message: 'Video no encontrado' });
+      }
+
+      // Delete from DB first, then storage — if DB fails, the file remains intact
+      await prisma.recoveryVideo.delete({ where: { id: videoId } });
+
+      await storage.delete(video.fileUrl);
+
+      return res.json({ message: 'Video eliminado' });
+    } catch (err) {
+      next(err);
     }
-
-    // Delete from DB first, then file — if DB fails, file is still intact
-    await prisma.recoveryVideo.delete({ where: { id: videoId } });
-
-    const filePath = safeFilePath(video.fileUrl);
-    if (filePath) await unlink(filePath).catch(() => {});
-
-    return res.json({ message: "Video eliminado" });
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 // ===== POST /:videoId/access — Grant access to student =====
-router.post("/:videoId/access", authRequired, requireRole("TEACHER", "ADMIN"), verifyCourseAccess, async (req, res, next) => {
-  try {
-    const { videoId } = req.params;
+router.post(
+  '/:videoId/access',
+  authRequired,
+  requireRole('TEACHER', 'ADMIN'),
+  verifyCourseAccess,
+  async (req, res, next) => {
+    try {
+      const { videoId } = req.params;
 
-    const parsed = accessSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return res.status(400).json({ message: "Datos invalidos", errors: parsed.error.flatten() });
+      const parsed = accessSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: 'Datos invalidos', errors: parsed.error.flatten() });
+      }
+
+      const { studentId, expiresAt } = parsed.data;
+
+      const video = await prisma.recoveryVideo.findUnique({ where: { id: videoId } });
+      if (!video) {
+        return res.status(404).json({ message: 'Video no encontrado' });
+      }
+
+      const enrolled = await prisma.courseEnrollment.findUnique({
+        where: { courseId_studentId: { courseId: video.courseId, studentId } },
+      });
+      if (!enrolled) {
+        return res.status(400).json({ message: 'El estudiante no esta inscrito en este curso' });
+      }
+
+      const access = await prisma.recoveryVideoAccess.upsert({
+        where: { recoveryVideoId_studentId: { recoveryVideoId: videoId, studentId } },
+        update: { enabled: true, expiresAt: new Date(expiresAt), viewedAt: null },
+        create: {
+          recoveryVideoId: videoId,
+          studentId,
+          expiresAt: new Date(expiresAt),
+        },
+        include: { student: { select: { id: true, fullName: true, email: true } } },
+      });
+
+      return res.status(201).json({ access });
+    } catch (err) {
+      next(err);
     }
-
-    const { studentId, expiresAt } = parsed.data;
-
-    const video = await prisma.recoveryVideo.findUnique({ where: { id: videoId } });
-    if (!video) {
-      return res.status(404).json({ message: "Video no encontrado" });
-    }
-
-    const enrolled = await prisma.courseEnrollment.findUnique({
-      where: { courseId_studentId: { courseId: video.courseId, studentId } },
-    });
-    if (!enrolled) {
-      return res.status(400).json({ message: "El estudiante no esta inscrito en este curso" });
-    }
-
-    const access = await prisma.recoveryVideoAccess.upsert({
-      where: { recoveryVideoId_studentId: { recoveryVideoId: videoId, studentId } },
-      update: { enabled: true, expiresAt: new Date(expiresAt), viewedAt: null },
-      create: {
-        recoveryVideoId: videoId,
-        studentId,
-        expiresAt: new Date(expiresAt),
-      },
-      include: { student: { select: { id: true, fullName: true, email: true } } },
-    });
-
-    return res.status(201).json({ access });
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 // ===== PATCH /:videoId/access/:accessId — Toggle enabled =====
-router.patch("/:videoId/access/:accessId", authRequired, requireRole("TEACHER", "ADMIN"), verifyCourseAccess, async (req, res, next) => {
-  try {
-    const { accessId } = req.params;
+router.patch(
+  '/:videoId/access/:accessId',
+  authRequired,
+  requireRole('TEACHER', 'ADMIN'),
+  verifyCourseAccess,
+  async (req, res, next) => {
+    try {
+      const { accessId } = req.params;
 
-    const parsed = toggleSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return res.status(400).json({ message: "Datos invalidos" });
+      const parsed = toggleSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: 'Datos invalidos' });
+      }
+
+      const access = await prisma.recoveryVideoAccess.update({
+        where: { id: accessId },
+        data: { enabled: parsed.data.enabled },
+        include: { student: { select: { id: true, fullName: true, email: true } } },
+      });
+
+      return res.json({ access });
+    } catch (err) {
+      next(err);
     }
-
-    const access = await prisma.recoveryVideoAccess.update({
-      where: { id: accessId },
-      data: { enabled: parsed.data.enabled },
-      include: { student: { select: { id: true, fullName: true, email: true } } },
-    });
-
-    return res.json({ access });
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 // ===== DELETE /:videoId/access/:accessId — Remove access =====
-router.delete("/:videoId/access/:accessId", authRequired, requireRole("TEACHER", "ADMIN"), verifyCourseAccess, async (req, res, next) => {
-  try {
-    const { accessId } = req.params;
+router.delete(
+  '/:videoId/access/:accessId',
+  authRequired,
+  requireRole('TEACHER', 'ADMIN'),
+  verifyCourseAccess,
+  async (req, res, next) => {
+    try {
+      const { accessId } = req.params;
 
-    await prisma.recoveryVideoAccess.delete({ where: { id: accessId } });
+      await prisma.recoveryVideoAccess.delete({ where: { id: accessId } });
 
-    return res.json({ message: "Acceso eliminado" });
-  } catch (err) {
-    next(err);
+      return res.json({ message: 'Acceso eliminado' });
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 // Videos never auto-delete — only the instructor can remove them manually.
 export async function cleanupExpiredVideos() {}

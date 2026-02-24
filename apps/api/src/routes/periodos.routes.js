@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { z } from "zod";
-import { authRequired, requireRole } from "../middlewares/auth.middleware.js";
-import { prisma } from "../utils/prisma.js";
+import { Router } from 'express';
+import { z } from 'zod';
+import { authRequired, requireRole } from '../middlewares/auth.middleware.js';
+import { prisma } from '../utils/prisma.js';
 
 const router = Router();
 
@@ -12,8 +12,44 @@ const periodoSchema = z.object({
   endDate: z.string(),
 });
 
+/**
+ * @openapi
+ * /periodos:
+ *   get:
+ *     tags: [Periods]
+ *     summary: Listar períodos académicos (ADMIN)
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, default: 1 }
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, default: 20 }
+ *     responses:
+ *       200:
+ *         description: Lista paginada de períodos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 periodos:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id: { type: string }
+ *                       name: { type: string }
+ *                       startDate: { type: string, format: date-time }
+ *                       endDate: { type: string, format: date-time }
+ *                       isActive: { type: boolean }
+ *                       _count: { type: object, properties: { courses: { type: integer } } }
+ *                 pagination: { $ref: '#/components/schemas/Pagination' }
+ *       401: { description: No autenticado }
+ *       403: { description: Solo ADMIN }
+ */
 // ===== GET /periodos — Listar periodos (ADMIN) =====
-router.get("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
+router.get('/', authRequired, requireRole('ADMIN'), async (req, res, next) => {
   try {
     const { page: pageQ, limit: limitQ } = req.query;
     const page = Math.max(1, parseInt(pageQ) || 1);
@@ -25,7 +61,7 @@ router.get("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
         include: {
           _count: { select: { courses: true } },
         },
-        orderBy: { startDate: "desc" },
+        orderBy: { startDate: 'desc' },
         skip,
         take: limit,
       }),
@@ -39,7 +75,7 @@ router.get("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
 });
 
 // ===== GET /periodos/active — Obtener periodo activo (cualquier rol) =====
-router.get("/active", authRequired, async (req, res, next) => {
+router.get('/active', authRequired, async (req, res, next) => {
   try {
     const periodo = await prisma.academicPeriod.findFirst({
       where: { isActive: true },
@@ -48,7 +84,7 @@ router.get("/active", authRequired, async (req, res, next) => {
       },
     });
 
-    if (!periodo) return res.status(404).json({ message: "No hay periodo activo" });
+    if (!periodo) return res.status(404).json({ message: 'No hay periodo activo' });
     return res.json({ periodo });
   } catch (err) {
     next(err);
@@ -56,7 +92,7 @@ router.get("/active", authRequired, async (req, res, next) => {
 });
 
 // ===== GET /periodos/:id — Detalle de periodo (ADMIN) =====
-router.get("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) => {
+router.get('/:id', authRequired, requireRole('ADMIN'), async (req, res, next) => {
   try {
     const periodo = await prisma.academicPeriod.findUnique({
       where: { id: req.params.id },
@@ -66,12 +102,12 @@ router.get("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) =>
             teacher: { select: { id: true, fullName: true, email: true } },
             _count: { select: { enrollments: true } },
           },
-          orderBy: { createdAt: "desc" },
+          orderBy: { createdAt: 'desc' },
         },
       },
     });
 
-    if (!periodo) return res.status(404).json({ message: "Periodo no encontrado" });
+    if (!periodo) return res.status(404).json({ message: 'Periodo no encontrado' });
     return res.json({ periodo });
   } catch (err) {
     next(err);
@@ -79,11 +115,11 @@ router.get("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) =>
 });
 
 // ===== POST /periodos — Crear periodo (ADMIN) =====
-router.post("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
+router.post('/', authRequired, requireRole('ADMIN'), async (req, res, next) => {
   try {
     const parsed = periodoSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ message: "Datos invalidos", errors: parsed.error.flatten() });
+      return res.status(400).json({ message: 'Datos invalidos', errors: parsed.error.flatten() });
     }
 
     const { name, startDate, endDate } = parsed.data;
@@ -91,7 +127,7 @@ router.post("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
     // Verificar nombre unico
     const existing = await prisma.academicPeriod.findUnique({ where: { name } });
     if (existing) {
-      return res.status(409).json({ message: "Ya existe un periodo con ese nombre" });
+      return res.status(409).json({ message: 'Ya existe un periodo con ese nombre' });
     }
 
     const periodo = await prisma.academicPeriod.create({
@@ -109,14 +145,14 @@ router.post("/", authRequired, requireRole("ADMIN"), async (req, res, next) => {
 });
 
 // ===== PUT /periodos/:id — Editar periodo (ADMIN) =====
-router.put("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) => {
+router.put('/:id', authRequired, requireRole('ADMIN'), async (req, res, next) => {
   try {
     const existing = await prisma.academicPeriod.findUnique({ where: { id: req.params.id } });
-    if (!existing) return res.status(404).json({ message: "Periodo no encontrado" });
+    if (!existing) return res.status(404).json({ message: 'Periodo no encontrado' });
 
     const parsed = periodoSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ message: "Datos invalidos", errors: parsed.error.flatten() });
+      return res.status(400).json({ message: 'Datos invalidos', errors: parsed.error.flatten() });
     }
 
     const { name, startDate, endDate } = parsed.data;
@@ -126,7 +162,7 @@ router.put("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) =>
       where: { name, id: { not: req.params.id } },
     });
     if (duplicate) {
-      return res.status(409).json({ message: "Ya existe un periodo con ese nombre" });
+      return res.status(409).json({ message: 'Ya existe un periodo con ese nombre' });
     }
 
     const periodo = await prisma.academicPeriod.update({
@@ -145,10 +181,10 @@ router.put("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) =>
 });
 
 // ===== PATCH /periodos/:id/activate — Activar periodo (ADMIN) =====
-router.patch("/:id/activate", authRequired, requireRole("ADMIN"), async (req, res, next) => {
+router.patch('/:id/activate', authRequired, requireRole('ADMIN'), async (req, res, next) => {
   try {
     const existing = await prisma.academicPeriod.findUnique({ where: { id: req.params.id } });
-    if (!existing) return res.status(404).json({ message: "Periodo no encontrado" });
+    if (!existing) return res.status(404).json({ message: 'Periodo no encontrado' });
 
     // Transaccion: desactivar todos, luego activar este
     const periodo = await prisma.$transaction(async (tx) => {
@@ -161,29 +197,29 @@ router.patch("/:id/activate", authRequired, requireRole("ADMIN"), async (req, re
       });
     });
 
-    return res.json({ periodo, message: "Periodo activado" });
+    return res.json({ periodo, message: 'Periodo activado' });
   } catch (err) {
     next(err);
   }
 });
 
 // ===== DELETE /periodos/:id — Eliminar periodo (ADMIN) =====
-router.delete("/:id", authRequired, requireRole("ADMIN"), async (req, res, next) => {
+router.delete('/:id', authRequired, requireRole('ADMIN'), async (req, res, next) => {
   try {
     const existing = await prisma.academicPeriod.findUnique({
       where: { id: req.params.id },
       include: { _count: { select: { courses: true } } },
     });
-    if (!existing) return res.status(404).json({ message: "Periodo no encontrado" });
+    if (!existing) return res.status(404).json({ message: 'Periodo no encontrado' });
 
     if (existing._count.courses > 0) {
       return res.status(409).json({
-        message: "No se puede eliminar un periodo con cursos asociados",
+        message: 'No se puede eliminar un periodo con cursos asociados',
       });
     }
 
     await prisma.academicPeriod.delete({ where: { id: req.params.id } });
-    return res.json({ message: "Periodo eliminado" });
+    return res.json({ message: 'Periodo eliminado' });
   } catch (err) {
     next(err);
   }

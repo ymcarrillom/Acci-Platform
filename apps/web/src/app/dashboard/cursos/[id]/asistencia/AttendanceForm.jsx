@@ -1,18 +1,34 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const statusConfig = {
-  PRESENT: { label: "Presente", color: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30", active: "bg-emerald-500 text-white border-emerald-500" },
-  ABSENT: { label: "Ausente", color: "bg-red-500/15 text-red-300 border-red-400/30", active: "bg-red-500 text-white border-red-500" },
-  LATE: { label: "Tardanza", color: "bg-amber-500/15 text-amber-300 border-amber-400/30", active: "bg-amber-500 text-white border-amber-500" },
-  EXCUSED: { label: "Excusado", color: "bg-blue-500/15 text-blue-300 border-blue-400/30", active: "bg-blue-500 text-white border-blue-500" },
+  PRESENT: {
+    label: 'Presente',
+    color: 'bg-emerald-500/15 text-emerald-300 border-emerald-400/30',
+    active: 'bg-emerald-500 text-white border-emerald-500',
+  },
+  ABSENT: {
+    label: 'Ausente',
+    color: 'bg-red-500/15 text-red-300 border-red-400/30',
+    active: 'bg-red-500 text-white border-red-500',
+  },
+  LATE: {
+    label: 'Tardanza',
+    color: 'bg-amber-500/15 text-amber-300 border-amber-400/30',
+    active: 'bg-amber-500 text-white border-amber-500',
+  },
+  EXCUSED: {
+    label: 'Excusado',
+    color: 'bg-blue-500/15 text-blue-300 border-blue-400/30',
+    active: 'bg-blue-500 text-white border-blue-500',
+  },
 };
 
 function todayStr() {
   const d = new Date();
-  return d.toISOString().split("T")[0];
+  return d.toISOString().split('T')[0];
 }
 
 export default function AttendanceForm({ courseId, students }) {
@@ -21,14 +37,14 @@ export default function AttendanceForm({ courseId, students }) {
   const [records, setRecords] = useState({});
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   // Initialize records for all students
   useEffect(() => {
     const initial = {};
     for (const s of students) {
-      initial[s.id] = { status: "PRESENT", notes: "" };
+      initial[s.id] = { status: 'PRESENT', notes: '' };
     }
     setRecords(initial);
   }, [students]);
@@ -39,8 +55,8 @@ export default function AttendanceForm({ courseId, students }) {
 
     async function fetchAttendance() {
       setLoadingData(true);
-      setMessage("");
-      setError("");
+      setMessage('');
+      setError('');
       try {
         const r = await fetch(`/api/courses/${courseId}/attendance?date=${date}`);
         const data = await r.json().catch(() => null);
@@ -50,15 +66,15 @@ export default function AttendanceForm({ courseId, students }) {
           for (const s of students) {
             const existing = data.attendance.find((a) => a.studentId === s.id);
             updated[s.id] = existing
-              ? { status: existing.status, notes: existing.notes || "" }
-              : { status: "PRESENT", notes: "" };
+              ? { status: existing.status, notes: existing.notes || '' }
+              : { status: 'PRESENT', notes: '' };
           }
           setRecords(updated);
         } else {
           // Reset to default
           const initial = {};
           for (const s of students) {
-            initial[s.id] = { status: "PRESENT", notes: "" };
+            initial[s.id] = { status: 'PRESENT', notes: '' };
           }
           setRecords(initial);
         }
@@ -100,8 +116,8 @@ export default function AttendanceForm({ courseId, students }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
-    setError("");
+    setMessage('');
+    setError('');
 
     try {
       const body = {
@@ -114,22 +130,22 @@ export default function AttendanceForm({ courseId, students }) {
       };
 
       const r = await fetch(`/api/courses/${courseId}/attendance`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        setError(data?.message || "Error al guardar asistencia");
+        setError(data?.message || 'Error al guardar asistencia');
         return;
       }
 
-      setMessage(data?.message || "Asistencia guardada correctamente");
+      setMessage(data?.message || 'Asistencia guardada correctamente');
       router.refresh();
     } catch {
-      setError("Error de conexión");
+      setError('Error de conexión');
     } finally {
       setLoading(false);
     }
@@ -148,9 +164,7 @@ export default function AttendanceForm({ courseId, students }) {
       {/* Date selector */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-1">
-            Fecha
-          </label>
+          <label className="block text-xs font-semibold text-slate-400 mb-1">Fecha</label>
           <input
             type="date"
             value={date}
@@ -175,9 +189,7 @@ export default function AttendanceForm({ courseId, students }) {
         </div>
       </div>
 
-      {loadingData && (
-        <div className="text-sm text-slate-400">Cargando asistencia...</div>
-      )}
+      {loadingData && <div className="text-sm text-slate-400">Cargando asistencia...</div>}
 
       {/* Student list */}
       <div className="space-y-2">
@@ -247,7 +259,7 @@ export default function AttendanceForm({ courseId, students }) {
         disabled={loading || loadingData}
         className="rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-2.5 text-sm font-extrabold text-white hover:from-sky-400 hover:to-blue-500 transition disabled:opacity-60"
       >
-        {loading ? "Guardando..." : "Guardar asistencia"}
+        {loading ? 'Guardando...' : 'Guardar asistencia'}
       </button>
     </form>
   );

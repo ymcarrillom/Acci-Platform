@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function CornerChurchMark() {
   return (
@@ -19,9 +19,7 @@ export default function CornerChurchMark() {
           <div className="text-xs font-semibold text-white leading-tight">
             Conexión con el Cielo
           </div>
-          <div className="text-[11px] text-slate-300">
-            Iglesia
-          </div>
+          <div className="text-[11px] text-slate-300">Iglesia</div>
         </div>
 
         {/* Mini glow sutil al hover (integración con fondo) */}
