@@ -9,6 +9,7 @@
     "format": "prettier --write src prisma",
     "format:check": "prettier --check src prisma",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio",
     "test": "vitest run",

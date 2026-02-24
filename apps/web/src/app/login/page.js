@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 
 function roleLabel(role) {
   if (role === 'TEACHER') return 'Instructor';
@@ -116,7 +117,15 @@ function LoginForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-200">Contraseña</label>
+                <div className="flex items-center justify-between">
+                  <label className="block text-sm font-medium text-slate-200">Contraseña</label>
+                  <Link
+                    href="/olvide-contrasena"
+                    className="text-xs font-semibold text-sky-400 hover:text-sky-300 transition"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </Link>
+                </div>
                 <input
                   className="mt-1 w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40"
                   value={password}

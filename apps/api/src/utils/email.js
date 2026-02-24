@@ -2,15 +2,12 @@ import nodemailer from 'nodemailer';
 import { logger } from './logger.js';
 
 const isTest = process.env.NODE_ENV === 'test';
+const hasSmtp = Boolean(process.env.SMTP_HOST);
 
 function createTransport() {
-  // En desarrollo/test, usar Ethereal (email falso, no envía nada real)
-  if (!process.env.SMTP_HOST) {
-    return nodemailer.createTransport({
-      host: 'localhost',
-      port: 1025,
-      ignoreTLS: true,
-    });
+  if (!hasSmtp) {
+    // Sin SMTP configurado: no-op (los emails se imprimirán en consola)
+    return null;
   }
 
   return nodemailer.createTransport({
@@ -28,6 +25,16 @@ const transporter = createTransport();
 
 export async function sendPasswordResetEmail({ to, fullName, resetUrl }) {
   if (isTest) return; // No enviar emails en tests
+
+  // Sin SMTP: imprimir en consola para desarrollo local
+  if (!transporter) {
+    logger.info({ to }, '[DEV] Password reset email (SMTP_HOST no configurado)');
+    console.log('\n============================================================');
+    console.log('[DEV] Recuperación de contraseña para:', to);
+    console.log('[DEV] URL de reset:', resetUrl);
+    console.log('============================================================\n');
+    return;
+  }
 
   const from = process.env.SMTP_FROM || 'noreply@acci.com';
 

@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import { z } from 'zod';
 import prisma from '../utils/prisma.js';
 import { env } from '../config/env.js';
+import { logger } from '../utils/logger.js';
 import { audit, getIp } from '../utils/audit.js';
 import { sendPasswordResetEmail } from '../utils/email.js';
 
@@ -374,7 +375,14 @@ router.post('/forgot-password', async (req, res, next) => {
 
       const resetUrl = `${env.WEB_ORIGIN}/reset-password?token=${rawToken}`;
 
-      await sendPasswordResetEmail({ to: email, fullName: user.fullName, resetUrl });
+      try {
+        await sendPasswordResetEmail({ to: email, fullName: user.fullName, resetUrl });
+      } catch (emailErr) {
+        // El email falló (SMTP caído, credenciales erróneas, etc.)
+        // Logeamos el error pero NO exponemos el fallo al cliente
+        // para no revelar si el email existe ni romper la UX
+        logger.error({ err: emailErr, to: email }, 'Failed to send password reset email');
+      }
 
       await audit({
         userId: user.id,

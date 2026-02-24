@@ -5,6 +5,9 @@ import { FloatingThemeToggle } from '@/components/ui/FloatingThemeToggle';
 export const metadata = {
   title: 'ACCI Platform',
   description: 'Plataforma educativa cristiana (LMS)',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({ children }) {

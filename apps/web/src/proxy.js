@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 const API_URL = process.env.API_URL || 'http://localhost:4000';
 
-export async function middleware(req) {
+export async function proxy(req) {
   const { pathname } = req.nextUrl;
 
   // Protegemos dashboard (ajusta si tienes más rutas privadas)
@@ -49,13 +49,13 @@ export async function middleware(req) {
 
     const res = NextResponse.next();
 
-    // Seteamos accessToken en cookie para localhost:3000
+    // Seteamos el nuevo accessToken como cookie httpOnly
     res.cookies.set('accessToken', newAccessToken, {
       httpOnly: true,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       path: '/',
-      maxAge: 60 * 60 * 4, // 4 hours
+      maxAge: 60 * 60 * 4, // 4h — debe coincidir con JWT_ACCESS_EXPIRES_IN en apps/api/.env
     });
 
     return res;

@@ -58,7 +58,15 @@ function buildCookie(name, value, maxAgeSec) {
 export async function POST(request) {
   const body = await request.json();
 
-  const r = await nodePostJson(`${API_URL}/auth/login`, body);
+  let r;
+  try {
+    r = await nodePostJson(`${API_URL}/auth/login`, body);
+  } catch {
+    return NextResponse.json(
+      { message: 'No se puede conectar con el servidor. Verifica que la API esté corriendo.' },
+      { status: 503 }
+    );
+  }
   const parsed = r.text ? JSON.parse(r.text) : null;
 
   if (r.statusCode < 200 || r.statusCode >= 300) {

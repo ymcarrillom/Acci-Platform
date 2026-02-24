@@ -68,6 +68,8 @@ const generalLimiter = rateLimit({
 app.use(generalLimiter);
 app.use('/auth/login', authLimiter);
 app.use('/auth/refresh', authLimiter);
+app.use('/auth/forgot-password', authLimiter);
+app.use('/auth/reset-password', authLimiter);
 
 app.use('/uploads/recovery-videos', (req, res) => {
   res.status(403).json({ message: 'Use la API para acceder a los videos' });

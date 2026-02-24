@@ -36,7 +36,7 @@ const videosDir = path.resolve(__dirname, '../../uploads/recovery-videos');
   }
 })();
 
-const storage = multer.diskStorage({
+const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, videosDir),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -46,7 +46,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-  storage,
+  storage: diskStorage,
   limits: { fileSize: 2 * 1024 * 1024 * 1024 }, // 2GB
   fileFilter: (req, file, cb) => {
     const allowed = ['.mp4', '.webm', '.mov'];
