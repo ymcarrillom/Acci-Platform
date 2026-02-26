@@ -61,9 +61,8 @@ router.get('/me', authRequired, async (req, res, next) => {
 router.put('/me', authRequired, async (req, res, next) => {
   try {
     const schema = z.object({
-      fullName: z.string().min(2).max(100).optional(),
-      currentPassword: z.string().optional(),
-      newPassword: z.string().min(6).optional(),
+      currentPassword: z.string().min(1),
+      newPassword: z.string().min(6),
     });
 
     const parsed = schema.safeParse(req.body);
@@ -71,35 +70,24 @@ router.put('/me', authRequired, async (req, res, next) => {
       return res.status(400).json({ message: 'Datos inválidos', errors: parsed.error.flatten() });
     }
 
-    const { fullName, currentPassword, newPassword } = parsed.data;
+    const { currentPassword, newPassword } = parsed.data;
     const user = await prisma.user.findUnique({ where: { id: req.user.sub } });
     if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
-    const data = {};
-    if (fullName) data.fullName = fullName;
-
-    if (newPassword) {
-      if (!currentPassword) {
-        return res.status(400).json({ message: 'Debes proporcionar la contraseña actual' });
-      }
-      const valid = await bcrypt.compare(currentPassword, user.passwordHash);
-      if (!valid) {
-        return res.status(400).json({ message: 'Contraseña actual incorrecta' });
-      }
-      data.passwordHash = await bcrypt.hash(newPassword, 10);
+    const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!valid) {
+      return res.status(400).json({ message: 'Contraseña actual incorrecta' });
     }
 
-    if (Object.keys(data).length === 0) {
-      return res.status(400).json({ message: 'No hay datos para actualizar' });
-    }
+    const passwordHash = await bcrypt.hash(newPassword, 10);
 
     const updated = await prisma.user.update({
       where: { id: req.user.sub },
-      data,
+      data: { passwordHash },
       select: { id: true, email: true, role: true, fullName: true, isActive: true },
     });
 
-    return res.json({ user: updated, message: 'Perfil actualizado' });
+    return res.json({ user: updated, message: 'Contraseña actualizada' });
   } catch (err) {
     next(err);
   }

@@ -72,7 +72,7 @@ export default async function ConfiguracionPage() {
             </div>
           </div>
 
-          <ProfileForm currentName={user.fullName} />
+          <ProfileForm />
         </div>
       </div>
     </div>
