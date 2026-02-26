@@ -5,21 +5,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 
-function roleLabel(role) {
-  if (role === 'TEACHER') return 'Instructor';
-  if (role === 'ADMIN') return 'Coordinador';
-  return 'Estudiante';
-}
-
 function roleAccent(role) {
   if (role === 'TEACHER') return 'from-sky-500/25 via-indigo-500/10 to-transparent';
   if (role === 'ADMIN') return 'from-blue-500/25 via-slate-500/10 to-transparent';
   return 'from-emerald-500/25 via-sky-500/10 to-transparent';
 }
 
-function getRedirectPath(role) {
-  return '/dashboard';
-}
+const ROLE_LABELS = { STUDENT: 'Estudiante', TEACHER: 'Instructor', ADMIN: 'Coordinador' };
 
 export default function LoginPage() {
   return (
@@ -59,9 +51,15 @@ function LoginForm() {
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(data?.message || 'No se pudo iniciar sesión');
 
-      // Redirigir según el rol (tokens se manejan via httpOnly cookies en el BFF)
-      const redirectPath = getRedirectPath(data.role || role);
-      router.replace(redirectPath);
+      // Verificar que el rol del usuario coincida con el módulo seleccionado
+      if (data.role && data.role !== role) {
+        const expected = ROLE_LABELS[role] || role;
+        throw new Error(
+          `Este acceso es para ${expected}s. Selecciona el perfil correcto en la pantalla anterior.`,
+        );
+      }
+
+      router.replace(next);
     } catch (err) {
       setError(err.message || 'Error');
     } finally {
@@ -100,7 +98,7 @@ function LoginForm() {
               </div>
 
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white">
-                {roleLabel(role)}
+                {ROLE_LABELS[role] || 'Estudiante'}
               </span>
             </div>
 
