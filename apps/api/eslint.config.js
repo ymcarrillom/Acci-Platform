@@ -26,6 +26,23 @@ export default [
       'no-console': 'off',
     },
   },
+  // Archivos de test — globals de Vitest
+  {
+    files: ['src/tests/**'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        vi: 'readonly',
+      },
+    },
+  },
   {
     ignores: ['node_modules/**', 'prisma/migrations/**'],
   },
