@@ -42,8 +42,8 @@ export const env = {
   COOKIE_SAMESITE: process.env.COOKIE_SAMESITE || 'lax',
   COOKIE_DOMAIN: process.env.COOKIE_DOMAIN || undefined,
 
-  // Email (SMTP) — requerido en producción para password reset
-  SMTP_HOST: requireInProd('SMTP_HOST') || '',
+  // Email (SMTP) — opcional, si no se configura imprime el reset URL en consola
+  SMTP_HOST: process.env.SMTP_HOST || '',
   SMTP_PORT: Number(process.env.SMTP_PORT || 587),
   SMTP_USER: process.env.SMTP_USER || '',
   SMTP_PASS: process.env.SMTP_PASS || '',
