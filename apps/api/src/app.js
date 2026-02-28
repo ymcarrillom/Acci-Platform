@@ -34,6 +34,11 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Trust the first reverse proxy (nginx on Hostinger) so req.ip reflects the real
+// client IP — without this, every request through the BFF appears as 127.0.0.1
+// and ALL users share the same rate-limit bucket.
+app.set('trust proxy', 1);
+
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
@@ -61,6 +66,9 @@ const authLimiter = rateLimit({
 const generalLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: isTest ? 10000 : 200,
+  // Video streaming makes dozens of HTTP range requests per playback session —
+  // applying a per-minute cap would cause the video to stall or return 429.
+  skip: (req) => req.method === 'GET' && req.path.endsWith('/stream'),
   standardHeaders: true,
   legacyHeaders: false,
 });

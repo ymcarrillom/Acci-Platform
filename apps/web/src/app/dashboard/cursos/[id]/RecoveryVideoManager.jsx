@@ -369,6 +369,7 @@ export default function RecoveryVideoManager({ courseId, initialVideos, students
                   {playingVideo === v.id && (
                     <video
                       controls
+                      preload="none"
                       className="w-full rounded-lg"
                       src={`/api/courses/${courseId}/recovery-videos/${v.id}/stream`}
                     >
@@ -703,6 +704,7 @@ export default function RecoveryVideoManager({ courseId, initialVideos, students
                   {playingVideo === v.id && (
                     <video
                       controls
+                      preload="none"
                       className="w-full rounded-lg mt-3"
                       src={`/api/courses/${courseId}/recovery-videos/${v.id}/stream`}
                     >
